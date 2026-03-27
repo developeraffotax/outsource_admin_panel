@@ -1,0 +1,106 @@
+You want a practical token-auth backend flow for your current CMS project, so I’ll quickly inspect your existing server structure and then map out exactly how to implement login, token generation, and frontend storage safely.
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/config)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/controller)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/router)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/services)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/index.ts)
+
+I found your auth folders are still empty, and there is also a small DB startup bug in the server entry; I’ll read config/package next so the implementation guidance matches your actual stack.
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/config/db.config.ts)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/package.json)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/client/package.json)
+
+Read [](file:///c%3A/Users/Affotax%20Developer/Desktop/CMS/server/README.md)
+
+Your flow is correct for token auth.
+
+1. Frontend sends email/password.
+2. Backend validates input.
+3. Backend finds user in DB.
+4. Backend compares hashed password.
+5. Backend signs JWT token.
+6. Backend returns token.
+7. Frontend stores token and sends it in Authorization header on protected requests.
+
+In your current backend, the auth structure is empty and there is one startup bug:
+- DB connect function is not being called in index.ts (it currently references connectDB; instead of invoking it).
+
+Also note:
+- In db.config.ts, your DB connection helper works, but you should await mongoose.connect for clean startup control.
+
+Recommended implementation shape:
+
+1. User model
+- Fields: email (unique), passwordHash, role (optional), timestamps.
+- Never store plain password.
+
+2. Auth service
+- verifyPassword(plain, hash)
+- generateAccessToken(payload)
+- optional: generateRefreshToken(payload)
+
+3. Auth controller
+- POST /api/auth/login
+- Validate body with zod (you already have zod in package.json).
+- Find user by email.
+- Compare password with bcrypt.
+- On success, sign JWT with jsonwebtoken and return:
+  - token
+  - user summary (id, email, role)
+
+4. Auth middleware
+- Read Authorization: Bearer <token>
+- Verify JWT
+- Attach decoded user info to request
+- Reject with 401 if invalid/expired
+
+5. Protected routes
+- Example: GET /api/me guarded by auth middleware.
+
+6. Frontend login integration
+- In your login submit handler, call POST /api/auth/login.
+- Save token, then include header on future requests:
+  - Authorization: Bearer <token>
+
+Security note about localStorage:
+- localStorage is simple, but vulnerable to XSS token theft.
+- Safer production option: httpOnly secure cookie for refresh token + short-lived access token.
+- If you still use localStorage, keep strict CSP, sanitize inputs, and use short token expiry.
+
+Suggested JWT strategy:
+- Access token: 15m
+- Refresh token: 7d
+- Rotate refresh tokens on refresh endpoint
+
+Minimal backend endpoints to add:
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/refresh (optional but recommended)
+- POST /api/auth/logout (if using refresh token store/blacklist)
+- GET /api/me (protected)
+
+Quick fixes you should do first:
+1. In index.ts, actually call and await DB connect before app.listen.
+2. Add auth router/controller/service/middleware modules.
+3. Add env vars in server .env:
+- MONGO_URI
+- JWT_ACCESS_SECRET
+- JWT_REFRESH_SECRET (if using refresh)
+- ACCESS_TOKEN_EXPIRES_IN
+- REFRESH_TOKEN_EXPIRES_IN
+
+If you want, I can give you a copy-paste ready first pass for:
+1. User model
+2. Login controller
+3. JWT middleware
+4. Login request from your current React form in Login.component.tsx
