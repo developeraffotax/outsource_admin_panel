@@ -9,10 +9,7 @@ export const BuyServiceSchemaZod = z.object({
 
 export type IBuyService = z.infer<typeof BuyServiceSchemaZod>;
 
-const EntrySchema = new mongoose.Schema(
-  { name: String, price: String },
-  { _id: false },
-);
+const EntrySchema = new mongoose.Schema({ name: String, price: String });
 
 const BuyServiceSchema = new mongoose.Schema(
   { entries: [EntrySchema] },

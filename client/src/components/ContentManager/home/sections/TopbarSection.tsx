@@ -17,12 +17,7 @@ const TopbarSection = ({ register, errors }: HomeSectionProps) => {
             id="topbar-email"
             type="text"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("topbar.email", {
-              validate: (value) =>
-                !value ||
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-                "Please enter a valid email address",
-            })}
+            {...register("topbar.email")}
           />
           {errors.topbar?.email && (
             <p className="mt-1 text-sm text-red-600">
@@ -43,12 +38,7 @@ const TopbarSection = ({ register, errors }: HomeSectionProps) => {
             type="text"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             placeholder="+44 1234 567890"
-            {...register("topbar.number", {
-              validate: (value) =>
-                !value ||
-                /^[+\d][\d\s\-().]{6,19}$/.test(value) ||
-                "Please enter a valid phone number",
-            })}
+            {...register("topbar.number")}
           />
           {errors.topbar?.number && (
             <p className="mt-1 text-sm text-red-600">
@@ -70,12 +60,7 @@ const TopbarSection = ({ register, errors }: HomeSectionProps) => {
           type="text"
           className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
           placeholder="+44 1234 567890"
-          {...register("topbar.eNumber", {
-            validate: (value) =>
-              !value ||
-              /^[+\d][\d\s\-().]{6,19}$/.test(value) ||
-              "Please enter a valid phone number",
-          })}
+          {...register("topbar.eNumber")}
         />
         {errors.topbar?.eNumber && (
           <p className="mt-1 text-sm text-red-600">

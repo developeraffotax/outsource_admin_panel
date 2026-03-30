@@ -206,12 +206,7 @@ const ServiceSection = ({ register, errors, control }: HomeSectionProps) => {
                     type="text"
                     className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                     placeholder="/services/example"
-                    {...register(`serviceCards.${index}.pglink`, {
-                      validate: (value) =>
-                        !value ||
-                        /^\/[^\s]*$/.test(value) ||
-                        "Link must start with / (e.g. /services/tax)",
-                    })}
+                    {...register(`serviceCards.${index}.pglink`)}
                   />
                   {(
                     errors.serviceCards?.[index]?.pglink as { message?: string }

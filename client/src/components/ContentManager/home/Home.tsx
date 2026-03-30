@@ -204,8 +204,11 @@ const Home = () => {
           heading: c.joinUsHeading ?? "",
         },
       });
-    } catch {
-      // silently ignore — form stays empty if fetch fails
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error ?? "Failed to load content. Is the server running?";
+      showSaveMessage(message);
     }
   };
 

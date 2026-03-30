@@ -27,6 +27,7 @@ export async function getHomeContentController(
 ): Promise<void> {
   try {
     const content = await getHomeContent();
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).json({ content: content ?? {} });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -175,6 +176,7 @@ export async function getBuyServiceContentController(
 ): Promise<void> {
   try {
     const content = await getBuyServiceContent();
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).json({ content: content ?? {} });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
