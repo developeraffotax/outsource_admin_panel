@@ -6,6 +6,12 @@ import {
   saveHomeContentController,
   getBuyServiceContentController,
   saveBuyServiceContentController,
+  getAboutUsContentController,
+  saveAboutUsContentController,
+  getContactUsContentController,
+  saveContactUsContentController,
+  getFaqContentController,
+  saveFaqContentController,
 } from "../controller/Content.controller";
 
 const router = express.Router();
@@ -72,5 +78,101 @@ router.put(
 router.get("/buy-service", getBuyServiceContentController);
 router.post("/buy-service", AuthMiddleware, saveBuyServiceContentController);
 router.put("/buy-service", AuthMiddleware, saveBuyServiceContentController);
+
+// about image fields
+const AboutUsImageFields = [
+  // Hero
+  { name: "imgHero", maxCount: 1 },
+  // Our Story
+  { name: "imgOurStory", maxCount: 1 },
+  // Mission Statement Cards (up to 10)
+  { name: "imgStatment_0", maxCount: 1 },
+  { name: "imgStatment_1", maxCount: 1 },
+  { name: "imgStatment_2", maxCount: 1 },
+  { name: "imgStatment_3", maxCount: 1 },
+  { name: "imgStatment_4", maxCount: 1 },
+  { name: "imgStatment_5", maxCount: 1 },
+  { name: "imgStatment_6", maxCount: 1 },
+  { name: "imgStatment_7", maxCount: 1 },
+  { name: "imgStatment_8", maxCount: 1 },
+  { name: "imgStatment_9", maxCount: 1 },
+  // Our Value Cards (up to 10)
+  { name: "imgValue_0", maxCount: 1 },
+  { name: "imgValue_1", maxCount: 1 },
+  { name: "imgValue_2", maxCount: 1 },
+  { name: "imgValue_3", maxCount: 1 },
+  { name: "imgValue_4", maxCount: 1 },
+  { name: "imgValue_5", maxCount: 1 },
+  { name: "imgValue_6", maxCount: 1 },
+  { name: "imgValue_7", maxCount: 1 },
+  { name: "imgValue_8", maxCount: 1 },
+  { name: "imgValue_9", maxCount: 1 },
+];
+
+// About Us routes
+router.get("/about-us", getAboutUsContentController);
+router.post(
+  "/about-us",
+  AuthMiddleware,
+  upload.fields(AboutUsImageFields),
+  saveAboutUsContentController,
+);
+router.put(
+  "/about-us",
+  AuthMiddleware,
+  upload.fields(AboutUsImageFields),
+  saveAboutUsContentController,
+);
+
+// Contact Us image fields
+const contactUsImageFields = [
+  { name: "img", maxCount: 1 },
+  // Get In Touch card images (up to 10)
+  { name: "getInTouchImg_0", maxCount: 1 },
+  { name: "getInTouchImg_1", maxCount: 1 },
+  { name: "getInTouchImg_2", maxCount: 1 },
+  { name: "getInTouchImg_3", maxCount: 1 },
+  { name: "getInTouchImg_4", maxCount: 1 },
+  { name: "getInTouchImg_5", maxCount: 1 },
+  { name: "getInTouchImg_6", maxCount: 1 },
+  { name: "getInTouchImg_7", maxCount: 1 },
+  { name: "getInTouchImg_8", maxCount: 1 },
+  { name: "getInTouchImg_9", maxCount: 1 },
+];
+
+// Contact Us routes
+router.get("/contact-us", getContactUsContentController);
+router.post(
+  "/contact-us",
+  AuthMiddleware,
+  upload.fields(contactUsImageFields),
+  saveContactUsContentController,
+);
+router.put(
+  "/contact-us",
+  AuthMiddleware,
+  upload.fields(contactUsImageFields),
+  saveContactUsContentController,
+);
+
+const faqImageFields = [
+  // bookACall image
+  { name: "bookACallImg", maxCount: 1 },
+];
+
+// FAQ routes
+router.get("/faq", getFaqContentController);
+router.post(
+  "/faq",
+  AuthMiddleware,
+  upload.fields(faqImageFields),
+  saveFaqContentController,
+);
+router.put(
+  "/faq",
+  AuthMiddleware,
+  upload.fields(faqImageFields),
+  saveFaqContentController,
+);
 
 export default router;

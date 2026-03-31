@@ -1,54 +1,54 @@
-import type { AboutUsSectionProps } from "./AboutUsProp";
+import type { FaqSectionProps } from "./FaqProps";
 
-const AboutUsSection = ({ register, errors, control }: AboutUsSectionProps) => {
+const BookACall = ({ register }: FaqSectionProps) => {
   return (
     <section className="space-y-4 rounded-lg border border-slate-200 p-4">
-      <h2 className="text-base font-semibold text-slate-900">
-        Hero section home
-      </h2>
+      <h2 className="text-base font-semibold text-slate-900">Book a Call</h2>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label
-            htmlFor="heading"
+            htmlFor="bookACall-heading"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            heading
+            Heading
           </label>
           <input
             type="text"
-            id="heading"
+            id="bookACall-heading"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("heading")}
+            {...register("bookACall.heading")}
           />
         </div>
+
         <div>
           <label
-            htmlFor="subHeading"
+            htmlFor="bookACall-img"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            subHeading
+            Image
           </label>
           <input
-            type="text"
-            id="subHeading"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("subHeading")}
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="bgImage"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Background image
-          </label>
-          <input
-            id="imgHero"
+            id="bookACall-img"
             type="file"
             accept="image/*"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("imgHero")}
+            {...register("bookACall.img")}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label
+            htmlFor="bookACall-description"
+            className="mb-1 block text-sm font-medium text-slate-700"
+          >
+            Description
+          </label>
+          <input
+            type="text"
+            id="bookACall-description"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            {...register("bookACall.description")}
           />
         </div>
       </div>
@@ -56,4 +56,4 @@ const AboutUsSection = ({ register, errors, control }: AboutUsSectionProps) => {
   );
 };
 
-export default AboutUsSection;
+export default BookACall;

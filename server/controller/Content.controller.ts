@@ -1,12 +1,27 @@
 import type { Request, Response } from "express";
 import {
-  getHomeContent,
-  saveHomeContent,
   getBuyServiceContent,
   saveBuyServiceContent,
-} from "../services/Content.service";
+} from "../services/BuyContent.service";
+import {
+  getHomeContent,
+  saveHomeContent,
+} from "../services/HomeContent.service";
+import {
+  getAboutUsService,
+  saveAboutUsService,
+} from "../services/AboutUs.service";
+import {
+  getContactUsService,
+  saveContactUsService,
+} from "../services/ContactUs.service";
+
+import { getFaqService, saveFaqService } from "../services/Faq.service";
 import type { IHomeContent } from "../models/HomeContent.model";
 import { BuyServiceSchemaZod } from "../models/BuyService.model";
+import { AboutUsSchemaZod } from "../models/AboutUs.model";
+import { contactUsSchema } from "../models/ContactUs.model";
+import { faqSchema } from "../models/Faq.model";
 import { z } from "zod";
 
 // Helper: safely parse a JSON string from req.body (returns empty array on failure)
@@ -33,7 +48,6 @@ export async function getHomeContentController(
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-
 // POST/PUT /api/content/home — saves home content including image files
 export async function saveHomeContentController(
   req: Request,
@@ -103,8 +117,10 @@ export async function saveHomeContentController(
     }));
     const testimonialsCard = testimonialsRaw.map((card, i) => ({
       ...card,
-      testimonialBgImg: fileUrl(`testimonialBgImg_${i}`) ?? card.testimonialBgImg,
-      testimonialPersonImg: fileUrl(`testimonialPersonImg_${i}`) ?? card.testimonialPersonImg,
+      testimonialBgImg:
+        fileUrl(`testimonialBgImg_${i}`) ?? card.testimonialBgImg,
+      testimonialPersonImg:
+        fileUrl(`testimonialPersonImg_${i}`) ?? card.testimonialPersonImg,
     }));
 
     // Build the data object — only include image URL if a new file was uploaded
@@ -169,6 +185,82 @@ export async function saveHomeContentController(
   }
 }
 
+export async function getAboutUsContentController(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const content = await getAboutUsService();
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({ content: content ?? {} });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+export async function saveAboutUsContentController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
+
+    const fileUrl = (fieldName: string): string | undefined => {
+      const file = files?.[fieldName]?.[0];
+      return file ? `/uploads/${file.filename}` : undefined;
+    };
+
+    const missionCardsRaw = parseJsonField<{
+      headingStatment?: string;
+      descriptionStatement?: string;
+    }>(req.body.missionStatmentCards);
+
+    const missionStatmentCards = missionCardsRaw.map((card, i) => ({
+      ...card,
+      ...(fileUrl(`imgStatment_${i}`) && {
+        imgStatment: fileUrl(`imgStatment_${i}`),
+      }),
+    }));
+
+    const ourValueRaw = parseJsonField<{
+      headingValue?: string;
+      descriptionValue?: string;
+    }>(req.body.OurValue);
+
+    const OurValue = ourValueRaw.map((card, i) => ({
+      ...card,
+      ...(fileUrl(`imgValue_${i}`) && { imgValue: fileUrl(`imgValue_${i}`) }),
+    }));
+
+    const data = AboutUsSchemaZod.parse({
+      heading: req.body.heading,
+      subHeading: req.body.subheading,
+      ...(fileUrl("imgHero") && { img: fileUrl("imgHero") }),
+      OurStory: {
+        headingOurStory: req.body.headingOurStory,
+        descriptionOurStory: req.body.descriptionOurStory,
+        descriptiontwoOurStory: req.body.descriptiontwoOurStory,
+        ...(fileUrl("imgOurStory") && { imgOurStory: fileUrl("imgOurStory") }),
+        missionStatmentCards,
+      },
+      OurValue,
+    });
+
+    const content = await saveAboutUsService(data);
+    res.status(200).json({ content });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
+
 // GET /api/content/buy-service
 export async function getBuyServiceContentController(
   _req: Request,
@@ -197,6 +289,136 @@ export async function saveBuyServiceContentController(
 
     const validated = BuyServiceSchemaZod.parse({ entries: entriesRaw });
     const content = await saveBuyServiceContent(validated);
+    res.status(200).json({ content });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
+
+export async function getContactUsContentController(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const content = await getContactUsService();
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({ content: content ?? {} });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+export async function saveContactUsContentController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
+
+    const fileUrl = (fieldName: string): string | undefined => {
+      const file = files?.[fieldName]?.[0];
+      return file ? `/uploads/${file.filename}` : undefined;
+    };
+    const getInTouchRaw = parseJsonField<{
+      title?: string;
+      description?: string;
+      detail?: string;
+    }>(req.body.getInTouch);
+
+    const getInTouch = getInTouchRaw.map((item, i) => ({
+      ...item,
+      ...(fileUrl(`getInTouchImg_${i}`) && {
+        img: fileUrl(`getInTouchImg_${i}`),
+      }),
+    }));
+
+    const data = contactUsSchema.parse({
+      heading: req.body.heading,
+      description: req.body.description,
+      ...(fileUrl("img") && { img: fileUrl("img") }),
+      getInTouch,
+    });
+
+    const content = await saveContactUsService(data);
+    res.status(200).json({ content });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
+
+export async function getFaqContentController(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const content = await getFaqService();
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({ content: content ?? {} });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+export async function saveFaqContentController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
+
+    const fileUrl = (fieldName: string): string | undefined => {
+      const file = files?.[fieldName]?.[0];
+      return file ? `/uploads/${file.filename}` : undefined;
+    };
+
+    const generalQuizRaw = parseJsonField<{
+      service?: string;
+      description?: string;
+    }>(req.body.generalQuiz);
+    const generalQuiz = generalQuizRaw.map((item, i) => ({
+      ...item,
+      ...(fileUrl(`generalQuizImg_${i}`) && {
+        img: fileUrl(`generalQuizImg_${i}`),
+      }),
+    }));
+
+    const bookACallRaw = {
+      heading: req.body.bookACallHeading,
+      description: req.body.bookACallDescription,
+    };
+    const bookACall = {
+      ...bookACallRaw,
+      ...(fileUrl("bookACallImg") && {
+        img: fileUrl("bookACallImg"),
+      }),
+    };
+
+    const data = {
+      heading: req.body.heading,
+      description: req.body.description,
+      link: req.body.link,
+      generalQuiz,
+      bookACall,
+    };
+
+    const validated = faqSchema.parse(data);
+    const content = await saveFaqService(validated);
     res.status(200).json({ content });
   } catch (error) {
     if (error instanceof z.ZodError) {

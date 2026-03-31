@@ -1,11 +1,9 @@
-import type { AboutUsSectionProps } from "./AboutUsProp";
+import type { FaqSectionProps } from "./FaqProps";
 
-const AboutUsSection = ({ register, errors, control }: AboutUsSectionProps) => {
+const HeroSection = ({ register }: FaqSectionProps) => {
   return (
     <section className="space-y-4 rounded-lg border border-slate-200 p-4">
-      <h2 className="text-base font-semibold text-slate-900">
-        Hero section home
-      </h2>
+      <h2 className="text-base font-semibold text-slate-900">Hero Section</h2>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
@@ -13,7 +11,7 @@ const AboutUsSection = ({ register, errors, control }: AboutUsSectionProps) => {
             htmlFor="heading"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            heading
+            Heading
           </label>
           <input
             type="text"
@@ -22,33 +20,34 @@ const AboutUsSection = ({ register, errors, control }: AboutUsSectionProps) => {
             {...register("heading")}
           />
         </div>
+
         <div>
           <label
-            htmlFor="subHeading"
+            htmlFor="link"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            subHeading
+            Link
           </label>
           <input
             type="text"
-            id="subHeading"
+            id="link"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("subHeading")}
+            {...register("link")}
           />
         </div>
-        <div>
+
+        <div className="md:col-span-2">
           <label
-            htmlFor="bgImage"
+            htmlFor="description"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            Background image
+            Description
           </label>
           <input
-            id="imgHero"
-            type="file"
-            accept="image/*"
+            type="text"
+            id="description"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("imgHero")}
+            {...register("description")}
           />
         </div>
       </div>
@@ -56,4 +55,4 @@ const AboutUsSection = ({ register, errors, control }: AboutUsSectionProps) => {
   );
 };
 
-export default AboutUsSection;
+export default HeroSection;

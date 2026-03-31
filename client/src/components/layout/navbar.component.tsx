@@ -19,10 +19,22 @@ export const Navbar = ({ title = "Dashboard" }: NavbarProps) => {
 
         <div className="flex items-center gap-2">
           <NavLink to="/dashboard" className={getNavClass}>
-            Dashboard
+            Landing page
           </NavLink>
           <NavLink to="/buy-service" className={getNavClass}>
             Buy Service
+          </NavLink>
+          <NavLink to="/about-us" className={getNavClass}>
+            About Us
+          </NavLink>
+          <NavLink to="/contact-us" className={getNavClass}>
+            Contact Us
+          </NavLink>
+          <NavLink to="/faq" className={getNavClass}>
+            Faq
+          </NavLink>
+          <NavLink to="/services" className={getNavClass}>
+            Services
           </NavLink>
         </div>
       </div>

@@ -1,16 +1,16 @@
 import { useFieldArray } from "react-hook-form";
-import type { AboutUsSectionProps } from "./AboutUsProp";
+import type { AboutUsSectionProps } from "./ConatctUsProps";
 
-const OurValue = ({ register, errors, control }: AboutUsSectionProps) => {
+const GetInTouch = ({ register, errors, control }: AboutUsSectionProps) => {
   const { fields, append } = useFieldArray({
     control,
-    name: "OurValue",
+    name: "getInTouch",
   });
 
   return (
     <section className="space-y-4 rounded-lg border border-slate-200 p-4">
       <h2 className="text-base font-semibold text-slate-900">
-        Our Value ({fields.length})
+        Get In Touch ({fields.length})
       </h2>
 
       {fields.map((field, index) => (
@@ -25,52 +25,67 @@ const OurValue = ({ register, errors, control }: AboutUsSectionProps) => {
           <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
             <div>
               <label
-                htmlFor={`imgValue-${index}`}
+                htmlFor={`getInTouch-img-${index}`}
                 className="mb-1 block text-sm font-medium text-slate-700"
               >
                 Image
               </label>
               <input
-                id={`imgValue-${index}`}
+                id={`getInTouch-img-${index}`}
                 type="file"
                 accept="image/*"
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`OurValue.${index}.imgValue`)}
+                {...register(`getInTouch.${index}.img`)}
               />
             </div>
 
             <div>
               <label
-                htmlFor={`headingValue-${index}`}
+                htmlFor={`getInTouch-title-${index}`}
                 className="mb-1 block text-sm font-medium text-slate-700"
               >
-                Heading
+                Title
               </label>
               <input
-                id={`headingValue-${index}`}
+                id={`getInTouch-title-${index}`}
                 type="text"
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`OurValue.${index}.headingValue`)}
+                {...register(`getInTouch.${index}.title`)}
               />
-              {errors.OurValue?.[index]?.headingValue && (
+              {errors.getInTouch?.[index]?.title && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.OurValue[index]?.headingValue?.message as string}
+                  {errors.getInTouch[index]?.title?.message as string}
                 </p>
               )}
             </div>
 
-            <div className="md:col-span-2">
+            <div>
               <label
-                htmlFor={`descriptionValue-${index}`}
+                htmlFor={`getInTouch-description-${index}`}
                 className="mb-1 block text-sm font-medium text-slate-700"
               >
                 Description
               </label>
               <input
-                id={`descriptionValue-${index}`}
+                id={`getInTouch-description-${index}`}
                 type="text"
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`OurValue.${index}.descriptionValue`)}
+                {...register(`getInTouch.${index}.description`)}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor={`getInTouch-detail-${index}`}
+                className="mb-1 block text-sm font-medium text-slate-700"
+              >
+                Detail
+              </label>
+              <input
+                id={`getInTouch-detail-${index}`}
+                type="text"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                {...register(`getInTouch.${index}.detail`)}
               />
             </div>
           </div>
@@ -82,9 +97,10 @@ const OurValue = ({ register, errors, control }: AboutUsSectionProps) => {
           type="button"
           onClick={() =>
             append({
-              imgValue: undefined as unknown as FileList,
-              headingValue: "",
-              descriptionValue: "",
+              img: undefined as unknown as FileList,
+              title: "",
+              description: "",
+              detail: "",
             })
           }
           className="text-sm font-medium text-slate-700 hover:text-slate-900"
@@ -96,4 +112,4 @@ const OurValue = ({ register, errors, control }: AboutUsSectionProps) => {
   );
 };
 
-export default OurValue;
+export default GetInTouch;

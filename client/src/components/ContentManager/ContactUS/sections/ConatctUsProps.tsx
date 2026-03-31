@@ -1,5 +1,5 @@
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import type { FormValues } from "../about-Form.types";
+import type { FormValues } from "../Conact-Form.types";
 
 export type AboutUsSectionProps = {
   register: UseFormRegister<FormValues>;
