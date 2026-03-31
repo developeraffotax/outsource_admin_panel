@@ -15,6 +15,10 @@ import {
   getContactUsService,
   saveContactUsService,
 } from "../services/ContactUs.service";
+import {
+  getServiceContent,
+  saveServiceContent,
+} from "../services/Service.service";
 
 import { getFaqService, saveFaqService } from "../services/Faq.service";
 import type { IHomeContent } from "../models/HomeContent.model";
@@ -22,6 +26,7 @@ import { BuyServiceSchemaZod } from "../models/BuyService.model";
 import { AboutUsSchemaZod } from "../models/AboutUs.model";
 import { contactUsSchema } from "../models/ContactUs.model";
 import { faqSchema } from "../models/Faq.model";
+import { serviceSchemaZod } from "../models/Service.model";
 import { z } from "zod";
 
 // Helper: safely parse a JSON string from req.body (returns empty array on failure)
@@ -420,6 +425,129 @@ export async function saveFaqContentController(
     const validated = faqSchema.parse(data);
     const content = await saveFaqService(validated);
     res.status(200).json({ content });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
+
+// GET /api/content/service — returns saved service content by slug
+// GET /api/content/services — returns all saved services
+export async function getServiceContentController(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const content = await getServiceContent();
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({ content: content ?? [] });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+// POST/PUT /api/content/services — saves an array of services with images
+export async function saveServiceContentController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    // upload.any() gives req.files as an array, not a record
+    const filesArray = req.files as Express.Multer.File[] | undefined;
+    const filesMap = new Map(filesArray?.map((f) => [f.fieldname, f]) ?? []);
+
+    const fileUrl = (fieldName: string): string | undefined => {
+      const file = filesMap.get(fieldName);
+      return file ? `/uploads/${file.filename}` : undefined;
+    };
+
+    // Frontend sends all text data as a JSON array under "services"
+    const servicesRaw = parseJsonField<{
+      slug?: string;
+      title?: string;
+      titleHighlight?: string;
+      subtitle?: string;
+      description?: string;
+      buttonText?: string;
+      WhatYouGet?: { heading?: string; card?: { title?: string; description?: string }[] };
+      ServiceProcess?: { heading?: string; highlightheading?: string; stepCard?: { title?: string; description?: string }[] };
+      GetStarted?: { heading?: string; descriptionone?: string; descriptiontwo?: string };
+      WhyChooseUs?: { heading?: string; card?: { title?: string; description?: string }[] };
+      statics?: { heading?: string; description?: string; card?: { title?: string; description?: string }[] };
+      WhatData?: { heading?: string; descriptionone?: string; descriptiontwo?: string };
+      WhoData?: { heading?: string; descriptionone?: string; descriptiontwo?: string };
+    }>(req.body.services);
+
+    // Save each service individually (upsert by slug)
+    const saved = await Promise.all(
+      servicesRaw.map((svc, i) => {
+        const whatYouGetCard = (svc.WhatYouGet?.card ?? []).map((c, j) => ({
+          ...c,
+          img: fileUrl(`whatYouGetCardImg_${i}_${j}`) ?? undefined,
+        }));
+
+        const serviceProcessStepCard = (svc.ServiceProcess?.stepCard ?? []).map((s, j) => ({
+          ...s,
+          imgSrc: fileUrl(`serviceProcessStepImg_${i}_${j}`) ?? undefined,
+        }));
+
+        const whyChooseUsCard = (svc.WhyChooseUs?.card ?? []).map((c, j) => ({
+          ...c,
+          img: fileUrl(`whyChooseUsCardImg_${i}_${j}`) ?? undefined,
+        }));
+
+        const staticsCard = (svc.statics?.card ?? []).map((c, j) => ({
+          ...c,
+          img: fileUrl(`staticsCardImg_${i}_${j}`) ?? undefined,
+        }));
+
+        const data = serviceSchemaZod.parse({
+          slug: svc.slug,
+          title: svc.title,
+          titleHighlight: svc.titleHighlight,
+          subtitle: svc.subtitle,
+          description: svc.description,
+          buttonText: svc.buttonText,
+          ...(fileUrl(`img_${i}`) && { img: fileUrl(`img_${i}`) }),
+          ...(fileUrl(`bgimg_${i}`) && { bgimg: fileUrl(`bgimg_${i}`) }),
+          WhatYouGet: { heading: svc.WhatYouGet?.heading, card: whatYouGetCard },
+          ServiceProcess: {
+            heading: svc.ServiceProcess?.heading,
+            highlightheading: svc.ServiceProcess?.highlightheading,
+            stepCard: serviceProcessStepCard,
+          },
+          GetStarted: svc.GetStarted,
+          WhyChooseUs: {
+            heading: svc.WhyChooseUs?.heading,
+            ...(fileUrl(`whyChooseUsImg_${i}`) && { img: fileUrl(`whyChooseUsImg_${i}`) }),
+            card: whyChooseUsCard,
+          },
+          statics: {
+            heading: svc.statics?.heading,
+            description: svc.statics?.description,
+            ...(fileUrl(`staticsImg_${i}`) && { img: fileUrl(`staticsImg_${i}`) }),
+            card: staticsCard,
+          },
+          WhatData: {
+            ...svc.WhatData,
+            ...(fileUrl(`whatDataImg_${i}`) && { img: fileUrl(`whatDataImg_${i}`) }),
+          },
+          WhoData: {
+            ...svc.WhoData,
+            ...(fileUrl(`whoDataImg_${i}`) && { img: fileUrl(`whoDataImg_${i}`) }),
+          },
+        });
+
+        return saveServiceContent(data);
+      }),
+    );
+
+    res.status(200).json({ content: saved });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: error.issues });
