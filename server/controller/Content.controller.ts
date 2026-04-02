@@ -33,6 +33,7 @@ import {
   collectCloudinaryUrls,
   deleteCloudinaryImages,
 } from "../utils/cloudinary.utils";
+import { de } from "zod/locales";
 
 // Helper: safely parse a JSON string from req.body (returns empty array on failure)
 function parseJsonField<T>(value: unknown): T[] {
@@ -68,7 +69,9 @@ export async function saveHomeContentController(
     const rawFiles = req.files;
     const filesArray: Express.Multer.File[] = Array.isArray(rawFiles)
       ? rawFiles
-      : Object.values((rawFiles as Record<string, Express.Multer.File[]>) ?? {}).flat();
+      : Object.values(
+          (rawFiles as Record<string, Express.Multer.File[]>) ?? {},
+        ).flat();
     const urlMap = await buildUrlMap(filesArray);
     const fileUrl = (fieldName: string): string | undefined =>
       urlMap.get(fieldName);
@@ -484,14 +487,41 @@ export async function saveServiceContentController(
       titleHighlight?: string;
       subtitle?: string;
       description?: string;
+      descriptiontwo?: String;
       buttonText?: string;
-      WhatYouGet?: { heading?: string; card?: { title?: string; description?: string }[] };
-      ServiceProcess?: { heading?: string; highlightheading?: string; stepCard?: { title?: string; description?: string }[] };
-      GetStarted?: { heading?: string; descriptionone?: string; descriptiontwo?: string };
-      WhyChooseUs?: { heading?: string; card?: { title?: string; description?: string }[] };
-      statics?: { heading?: string; description?: string; card?: { title?: string; description?: string }[] };
-      WhatData?: { heading?: string; descriptionone?: string; descriptiontwo?: string };
-      WhoData?: { heading?: string; descriptionone?: string; descriptiontwo?: string };
+      WhatYouGet?: {
+        heading?: string;
+        card?: { title?: string; description?: string }[];
+      };
+      ServiceProcess?: {
+        heading?: string;
+        highlightheading?: string;
+        stepCard?: { title?: string; description?: string }[];
+      };
+      GetStarted?: {
+        heading?: string;
+        descriptionone?: string;
+        descriptiontwo?: string;
+      };
+      WhyChooseUs?: {
+        heading?: string;
+        card?: { title?: string; description?: string }[];
+      };
+      statics?: {
+        heading?: string;
+        description?: string;
+        card?: { title?: string; description?: string }[];
+      };
+      WhatData?: {
+        heading?: string;
+        descriptionone?: string;
+        descriptiontwo?: string;
+      };
+      WhoData?: {
+        heading?: string;
+        descriptionone?: string;
+        descriptiontwo?: string;
+      };
     }>(req.body.services);
 
     const oldDocs = await getServiceContent();
@@ -505,10 +535,12 @@ export async function saveServiceContentController(
           img: fileUrl(`whatYouGetCardImg_${i}_${j}`) ?? undefined,
         }));
 
-        const serviceProcessStepCard = (svc.ServiceProcess?.stepCard ?? []).map((s, j) => ({
-          ...s,
-          imgSrc: fileUrl(`serviceProcessStepImg_${i}_${j}`) ?? undefined,
-        }));
+        const serviceProcessStepCard = (svc.ServiceProcess?.stepCard ?? []).map(
+          (s, j) => ({
+            ...s,
+            imgSrc: fileUrl(`serviceProcessStepImg_${i}_${j}`) ?? undefined,
+          }),
+        );
 
         const whyChooseUsCard = (svc.WhyChooseUs?.card ?? []).map((c, j) => ({
           ...c,
@@ -526,10 +558,14 @@ export async function saveServiceContentController(
           titleHighlight: svc.titleHighlight,
           subtitle: svc.subtitle,
           description: svc.description,
+          descriptiontwo: svc.descriptiontwo,
           buttonText: svc.buttonText,
           ...(fileUrl(`img_${i}`) && { img: fileUrl(`img_${i}`) }),
           ...(fileUrl(`bgimg_${i}`) && { bgimg: fileUrl(`bgimg_${i}`) }),
-          WhatYouGet: { heading: svc.WhatYouGet?.heading, card: whatYouGetCard },
+          WhatYouGet: {
+            heading: svc.WhatYouGet?.heading,
+            card: whatYouGetCard,
+          },
           ServiceProcess: {
             heading: svc.ServiceProcess?.heading,
             highlightheading: svc.ServiceProcess?.highlightheading,
@@ -538,22 +574,30 @@ export async function saveServiceContentController(
           GetStarted: svc.GetStarted,
           WhyChooseUs: {
             heading: svc.WhyChooseUs?.heading,
-            ...(fileUrl(`whyChooseUsImg_${i}`) && { img: fileUrl(`whyChooseUsImg_${i}`) }),
+            ...(fileUrl(`whyChooseUsImg_${i}`) && {
+              img: fileUrl(`whyChooseUsImg_${i}`),
+            }),
             card: whyChooseUsCard,
           },
           statics: {
             heading: svc.statics?.heading,
             description: svc.statics?.description,
-            ...(fileUrl(`staticsImg_${i}`) && { img: fileUrl(`staticsImg_${i}`) }),
+            ...(fileUrl(`staticsImg_${i}`) && {
+              img: fileUrl(`staticsImg_${i}`),
+            }),
             card: staticsCard,
           },
           WhatData: {
             ...svc.WhatData,
-            ...(fileUrl(`whatDataImg_${i}`) && { img: fileUrl(`whatDataImg_${i}`) }),
+            ...(fileUrl(`whatDataImg_${i}`) && {
+              img: fileUrl(`whatDataImg_${i}`),
+            }),
           },
           WhoData: {
             ...svc.WhoData,
-            ...(fileUrl(`whoDataImg_${i}`) && { img: fileUrl(`whoDataImg_${i}`) }),
+            ...(fileUrl(`whoDataImg_${i}`) && {
+              img: fileUrl(`whoDataImg_${i}`),
+            }),
           },
         });
 

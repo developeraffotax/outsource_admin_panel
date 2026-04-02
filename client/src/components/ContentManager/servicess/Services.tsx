@@ -61,6 +61,7 @@ const Servicess = () => {
         titleHighlight: svc.titleHighlight,
         subtitle: svc.subtitle,
         description: svc.description,
+        descriptiontwo: svc.descriptiontwo,
         buttonText: svc.buttonText,
         WhatYouGet: {
           heading: svc.WhatYouGet?.heading,
@@ -218,6 +219,7 @@ const Servicess = () => {
                   titleHighlight: "",
                   subtitle: "",
                   description: "",
+                  descriptiontwo: "",
                   buttonText: "",
                   img: undefined as unknown as FileList,
                   bgimg: undefined as unknown as FileList,
