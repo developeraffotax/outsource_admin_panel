@@ -3,7 +3,8 @@ import type { IBuyService } from "../models/BuyService.model";
 
 // Fetch buy service content
 export async function getBuyServiceContent(): Promise<IBuyService | null> {
-  return BuyService.findOne({}).lean();
+  const doc = await BuyService.findOne({}).lean();
+  return doc as IBuyService | null;
 }
 
 // Save (or update) buy service content
@@ -16,5 +17,5 @@ export async function saveBuyServiceContent(
     { upsert: true, new: true, setDefaultsOnInsert: true },
   );
   if (!doc) throw new Error("Failed to save buy service content");
-  return doc.toObject();
+  return doc.toObject() as IBuyService;
 }

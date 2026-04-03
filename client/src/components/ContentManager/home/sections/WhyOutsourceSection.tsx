@@ -4,7 +4,6 @@ import type { HomeSectionProps } from "./section-props.types";
 
 const WhyOutsourceSection = ({
   register,
-  errors,
   control,
   savedImages,
 }: HomeSectionProps) => {
@@ -79,7 +78,11 @@ const WhyOutsourceSection = ({
             {...register("imgWhyOutsourcing")}
           />
           {savedImages?.imgWhyOutsoutcing && (
-            <img src={savedImages.imgWhyOutsoutcing} alt="Current main image" className="mt-2 h-20 rounded object-cover" />
+            <img
+              src={savedImages.imgWhyOutsoutcing}
+              alt="Current main image"
+              className="mt-2 h-20 rounded object-cover"
+            />
           )}
         </div>
 
@@ -98,7 +101,11 @@ const WhyOutsourceSection = ({
             {...register("imgTwoWhyOutsourcing")}
           />
           {savedImages?.imgtwoWhyOutsoutcing && (
-            <img src={savedImages.imgtwoWhyOutsoutcing} alt="Current second image" className="mt-2 h-20 rounded object-cover" />
+            <img
+              src={savedImages.imgtwoWhyOutsoutcing}
+              alt="Current second image"
+              className="mt-2 h-20 rounded object-cover"
+            />
           )}
         </div>
       </div>
@@ -118,7 +125,11 @@ const WhyOutsourceSection = ({
           {...register("whyOutSourceAccounting")}
         />
         {savedImages?.whyOutSourceAccounting && (
-          <img src={savedImages.whyOutSourceAccounting} alt="Current accounting image" className="mt-2 h-20 rounded object-cover" />
+          <img
+            src={savedImages.whyOutSourceAccounting}
+            alt="Current accounting image"
+            className="mt-2 h-20 rounded object-cover"
+          />
         )}
       </div>
 
@@ -127,7 +138,9 @@ const WhyOutsourceSection = ({
 
         {cardDropdowns.map((dropdown, index) => {
           const whyCardSummary =
-            whyOutsourceCardSections?.[index]?.pointerTextWhyOutsourcing?.trim();
+            whyOutsourceCardSections?.[
+              index
+            ]?.pointerTextWhyOutsourcing?.trim();
 
           return (
             <details
@@ -156,7 +169,11 @@ const WhyOutsourceSection = ({
                     )}
                   />
                   {savedImages?.[`whyCardImage_${index}`] && (
-                    <img src={savedImages[`whyCardImage_${index}`]} alt="Current pointer image" className="mt-2 h-20 rounded object-cover" />
+                    <img
+                      src={savedImages[`whyCardImage_${index}`]}
+                      alt="Current pointer image"
+                      className="mt-2 h-20 rounded object-cover"
+                    />
                   )}
                 </div>
 

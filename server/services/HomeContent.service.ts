@@ -2,7 +2,8 @@ import HomeContent from "../models/HomeContent.model";
 import type { IHomeContent } from "../models/HomeContent.model";
 // Fetch the homepage content from MongoDB
 export async function getHomeContent(): Promise<IHomeContent | null> {
-  return HomeContent.findOne({}).lean();
+  const doc = await HomeContent.findOne({}).lean();
+  return doc as IHomeContent | null;
 }
 
 // Save (or update) the homepage content
@@ -17,5 +18,5 @@ export async function saveHomeContent(
     { upsert: true, new: true, setDefaultsOnInsert: true }, // create if missing, return updated doc
   );
   if (!doc) throw new Error("Failed to save home content");
-  return doc.toObject();
+  return doc.toObject() as IHomeContent;
 }

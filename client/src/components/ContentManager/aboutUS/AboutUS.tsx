@@ -8,6 +8,11 @@ import { useRef } from "react";
 import { useEffect, useState } from "react";
 import OurStory from "./sections/OurStory";
 import OurValue from "./sections/OurValue";
+import {
+  buildAboutUsFormData,
+  mapAboutUsFormDefaults,
+  mapAboutUsSavedImages,
+} from "./aboutUS.helpers";
 
 const BACKEND = import.meta.env.VITE_Backend_URL as string;
 
@@ -33,46 +38,8 @@ const AboutUS = () => {
         const c = res.data.content;
         if (!c) return;
 
-        setSavedImages({
-          imgHero: c.img,
-          imgOurStory: c.OurStory?.imgOurStory,
-          ...(c.OurStory?.missionStatmentCards ?? []).reduce(
-            (acc: SavedImages, card: { imgStatment?: string }, i: number) => {
-              acc[`imgStatment_${i}`] = card.imgStatment;
-              return acc;
-            },
-            {},
-          ),
-          ...(c.OurValue ?? []).reduce(
-            (acc: SavedImages, card: { imgValue?: string }, i: number) => {
-              acc[`imgValue_${i}`] = card.imgValue;
-              return acc;
-            },
-            {},
-          ),
-        });
-
-        reset({
-          heading: c.heading ?? "",
-          subHeading: c.subHeading ?? "",
-          OurStory: {
-            headingOurStory: c.OurStory?.headingOurStory ?? "",
-            descriptionOurStory: c.OurStory?.descriptionOurStory ?? "",
-            descriptiontwoOurStory: c.OurStory?.descriptiontwoOurStory ?? "",
-            missionStatmentCards: (c.OurStory?.missionStatmentCards ?? []).map(
-              (card: { headingStatment?: string; descriptionStatement?: string }) => ({
-                headingStatment: card.headingStatment ?? "",
-                descriptionStatement: card.descriptionStatement ?? "",
-              }),
-            ),
-          },
-          OurValue: (c.OurValue ?? []).map(
-            (card: { headingValue?: string; descriptionValue?: string }) => ({
-              headingValue: card.headingValue ?? "",
-              descriptionValue: card.descriptionValue ?? "",
-            }),
-          ),
-        });
+        setSavedImages(mapAboutUsSavedImages(c));
+        reset(mapAboutUsFormDefaults(c));
       } catch {
         // silently ignore — form keeps its defaults
       } finally {
@@ -94,68 +61,16 @@ const AboutUS = () => {
     setSaveMessage(null);
     try {
       const token = localStorage.getItem("token");
+      const formData = buildAboutUsFormData(data, savedImages);
 
-      const formData = new FormData();
-
-      // Hero text
-      formData.append("heading", data.heading);
-      formData.append("subheading", data.subHeading);
-
-      // Hero image
-      if (data.imgHero && data.imgHero.length > 0) {
-        formData.append("imgHero", data.imgHero[0]);
-      }
-
-      // OurStory text
-      if (data.OurStory?.headingOurStory)
-        formData.append("headingOurStory", data.OurStory.headingOurStory);
-      if (data.OurStory?.descriptionOurStory)
-        formData.append(
-          "descriptionOurStory",
-          data.OurStory.descriptionOurStory,
-        );
-      if (data.OurStory?.descriptiontwoOurStory)
-        formData.append(
-          "descriptiontwoOurStory",
-          data.OurStory.descriptiontwoOurStory,
-        );
-
-      // OurStory image
-      if (data.OurStory?.imgOurStory && data.OurStory.imgOurStory.length > 0) {
-        formData.append("imgOurStory", data.OurStory.imgOurStory[0]);
-      }
-
-      // missionStatmentCards — text as JSON, images as indexed files
-      if (data.OurStory?.missionStatmentCards?.length) {
-        const cardsData = data.OurStory.missionStatmentCards.map((card) => ({
-          headingStatment: card.headingStatment,
-          descriptionStatement: card.descriptionStatement,
-        }));
-        formData.append("missionStatmentCards", JSON.stringify(cardsData));
-        data.OurStory.missionStatmentCards.forEach((card, i) => {
-          if (card.imgStatment && card.imgStatment.length > 0) {
-            formData.append(`imgStatment_${i}`, card.imgStatment[0]);
-          }
-        });
-      }
-
-      // OurValue — text as JSON, images as indexed files
-      if (data.OurValue?.length) {
-        const ourValueData = data.OurValue.map((card) => ({
-          headingValue: card.headingValue,
-          descriptionValue: card.descriptionValue,
-        }));
-        formData.append("OurValue", JSON.stringify(ourValueData));
-        data.OurValue.forEach((card, i) => {
-          if (card.imgValue && card.imgValue.length > 0) {
-            formData.append(`imgValue_${i}`, card.imgValue[0]);
-          }
-        });
-      }
-
-      await axios.post(`${BACKEND}/api/content/about-us`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        `${BACKEND}/api/content/about-us`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      setSavedImages(mapAboutUsSavedImages(response.data?.content));
       showSaveMessage("Saved successfully!");
     } catch (err: unknown) {
       const message =
@@ -198,9 +113,24 @@ const AboutUS = () => {
             </span>
           )}
         </div>
-        <AboutUsSection register={register} errors={errors} control={control} savedImages={savedImages} />
-        <OurStory register={register} errors={errors} control={control} savedImages={savedImages} />
-        <OurValue register={register} errors={errors} control={control} savedImages={savedImages} />
+        <AboutUsSection
+          register={register}
+          errors={errors}
+          control={control}
+          savedImages={savedImages}
+        />
+        <OurStory
+          register={register}
+          errors={errors}
+          control={control}
+          savedImages={savedImages}
+        />
+        <OurValue
+          register={register}
+          errors={errors}
+          control={control}
+          savedImages={savedImages}
+        />
       </form>
     </div>
   );

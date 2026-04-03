@@ -10,6 +10,17 @@ import contentRouter from "./router/Content.router";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = new Set(
+  (
+    process.env.CORS_ORIGINS ||
+    process.env.REACT_APP_URL ||
+    "http://localhost:5173"
+  )
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
+
 const mongoDnsServers = process.env.MONGO_DNS_SERVERS;
 if (mongoDnsServers) {
   dns.setServers(
@@ -23,7 +34,15 @@ if (mongoDnsServers) {
 // Middleware
 app.use(
   cors({
-    origin: process.env.REACT_APP_URL || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow non-browser requests (SSR/server-to-server/curl) with no Origin header.
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
     optionsSuccessStatus: 200,
   }),
 );

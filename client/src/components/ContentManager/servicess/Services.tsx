@@ -3,6 +3,12 @@ import axios from "axios";
 import { useRef, useEffect, useState } from "react";
 import type { ServicesForm } from "./sections/ServicesProps";
 import ServiceItem from "./sections/ServiceItem";
+import {
+  appendServicesImages,
+  buildServicesTextData,
+  createEmptyService,
+  type ExistingService,
+} from "./services-form.helpers";
 
 const BACKEND = import.meta.env.VITE_Backend_URL as string;
 
@@ -23,6 +29,7 @@ const Servicess = () => {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [savedServices, setSavedServices] = useState<ExistingService[]>([]);
   const saveMessageTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -31,6 +38,7 @@ const Servicess = () => {
         const res = await axios.get(`${BACKEND}/api/content/services`);
         const services = res.data.content;
         if (!Array.isArray(services) || services.length === 0) return;
+        setSavedServices(services as ExistingService[]);
         reset({ services });
       } catch {
         // silently ignore — form keeps its defaults
@@ -55,90 +63,23 @@ const Servicess = () => {
       const formData = new FormData();
 
       // Send all text data as JSON
-      const textData = data.services.map((svc) => ({
-        slug: svc.slug,
-        title: svc.title,
-        titleHighlight: svc.titleHighlight,
-        subtitle: svc.subtitle,
-        description: svc.description,
-        descriptiontwo: svc.descriptiontwo,
-        buttonText: svc.buttonText,
-        WhatYouGet: {
-          heading: svc.WhatYouGet?.heading,
-          card: svc.WhatYouGet?.card?.map((c) => ({
-            title: c.title,
-            description: c.description,
-          })),
-        },
-        ServiceProcess: {
-          heading: svc.ServiceProcess?.heading,
-          highlightheading: svc.ServiceProcess?.highlightheading,
-          stepCard: svc.ServiceProcess?.stepCard?.map((s) => ({
-            title: s.title,
-            description: s.description,
-          })),
-        },
-        GetStarted: svc.GetStarted,
-        WhyChooseUs: {
-          heading: svc.WhyChooseUs?.heading,
-          card: svc.WhyChooseUs?.card?.map((c) => ({
-            title: c.title,
-            description: c.description,
-          })),
-        },
-        statics: {
-          heading: svc.statics?.heading,
-          description: svc.statics?.description,
-          card: svc.statics?.card?.map((c) => ({
-            title: c.title,
-            description: c.description,
-          })),
-        },
-        WhatData: {
-          heading: svc.WhatData?.heading,
-          descriptionone: svc.WhatData?.descriptionone,
-          descriptiontwo: svc.WhatData?.descriptiontwo,
-        },
-        WhoData: {
-          heading: svc.WhoData?.heading,
-          descriptionone: svc.WhoData?.descriptionone,
-          descriptiontwo: svc.WhoData?.descriptiontwo,
-        },
-      }));
+      const textData = buildServicesTextData(data, savedServices);
       formData.append("services", JSON.stringify(textData));
 
       // Append images with indexed names
-      data.services.forEach((svc, i) => {
-        if (svc.img?.[0]) formData.append(`img_${i}`, svc.img[0]);
-        if (svc.bgimg?.[0]) formData.append(`bgimg_${i}`, svc.bgimg[0]);
-        if (svc.WhyChooseUs?.img?.[0])
-          formData.append(`whyChooseUsImg_${i}`, svc.WhyChooseUs.img[0]);
-        if (svc.statics?.img?.[0])
-          formData.append(`staticsImg_${i}`, svc.statics.img[0]);
-        if (svc.WhatData?.img?.[0])
-          formData.append(`whatDataImg_${i}`, svc.WhatData.img[0]);
-        if (svc.WhoData?.img?.[0])
-          formData.append(`whoDataImg_${i}`, svc.WhoData.img[0]);
-        svc.WhatYouGet?.card?.forEach((c, j) => {
-          if (c.img?.[0])
-            formData.append(`whatYouGetCardImg_${i}_${j}`, c.img[0]);
-        });
-        svc.ServiceProcess?.stepCard?.forEach((s, j) => {
-          if (s.imgSrc?.[0])
-            formData.append(`serviceProcessStepImg_${i}_${j}`, s.imgSrc[0]);
-        });
-        svc.WhyChooseUs?.card?.forEach((c, j) => {
-          if (c.img?.[0])
-            formData.append(`whyChooseUsCardImg_${i}_${j}`, c.img[0]);
-        });
-        svc.statics?.card?.forEach((c, j) => {
-          if (c.img?.[0]) formData.append(`staticsCardImg_${i}_${j}`, c.img[0]);
-        });
-      });
+      appendServicesImages(formData, data);
 
-      await axios.post(`${BACKEND}/api/content/services`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        `${BACKEND}/api/content/services`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const content = response.data?.content;
+      if (Array.isArray(content)) {
+        setSavedServices(content as ExistingService[]);
+      }
       showSaveMessage("Saved successfully!");
     } catch (err: unknown) {
       const message =
@@ -212,53 +153,7 @@ const Servicess = () => {
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={() =>
-                append({
-                  slug: "",
-                  title: "",
-                  titleHighlight: "",
-                  subtitle: "",
-                  description: "",
-                  descriptiontwo: "",
-                  buttonText: "",
-                  img: undefined as unknown as FileList,
-                  bgimg: undefined as unknown as FileList,
-                  WhatYouGet: { heading: "", card: [] },
-                  ServiceProcess: {
-                    heading: "",
-                    highlightheading: "",
-                    stepCard: [],
-                  },
-                  GetStarted: {
-                    heading: "",
-                    descriptionone: "",
-                    descriptiontwo: "",
-                  },
-                  WhyChooseUs: {
-                    heading: "",
-                    img: undefined as unknown as FileList,
-                    card: [],
-                  },
-                  statics: {
-                    heading: "",
-                    description: "",
-                    img: undefined as unknown as FileList,
-                    card: [],
-                  },
-                  WhatData: {
-                    heading: "",
-                    descriptionone: "",
-                    descriptiontwo: "",
-                    img: undefined as unknown as FileList,
-                  },
-                  WhoData: {
-                    heading: "",
-                    descriptionone: "",
-                    descriptiontwo: "",
-                    img: undefined as unknown as FileList,
-                  },
-                })
-              }
+              onClick={() => append(createEmptyService())}
               className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
               + Add service

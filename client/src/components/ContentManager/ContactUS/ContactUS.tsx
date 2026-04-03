@@ -5,6 +5,11 @@ import type { SavedImages } from "./sections/ConatctUsProps";
 import { useRef, useEffect, useState } from "react";
 import Hero from "./sections/Hero";
 import GetInTouch from "./sections/GetInTouch";
+import {
+  buildContactFormData,
+  mapContactFormDefaults,
+  mapContactSavedImages,
+} from "./contactUS.helpers";
 
 const BACKEND = import.meta.env.VITE_Backend_URL as string;
 
@@ -30,28 +35,8 @@ const ContactUS = () => {
         const c = res.data.content;
         if (!c) return;
 
-        setSavedImages({
-          img: c.img,
-          ...(c.getInTouch ?? []).reduce(
-            (acc: SavedImages, card: { img?: string }, i: number) => {
-              acc[`getInTouchImg_${i}`] = card.img;
-              return acc;
-            },
-            {},
-          ),
-        });
-
-        reset({
-          heading: c.heading ?? "",
-          description: c.description ?? "",
-          getInTouch: (c.getInTouch ?? []).map(
-            (card: { title?: string; description?: string; detail?: string }) => ({
-              title: card.title ?? "",
-              description: card.description ?? "",
-              detail: card.detail ?? "",
-            }),
-          ),
-        });
+        setSavedImages(mapContactSavedImages(c));
+        reset(mapContactFormDefaults(c));
       } catch {
         // silently ignore — form keeps its defaults
       } finally {
@@ -74,33 +59,16 @@ const ContactUS = () => {
     setSaveMessage(null);
     try {
       const token = localStorage.getItem("token");
-      const formData = new FormData();
+      const formData = buildContactFormData(data, savedImages);
 
-      // Hero fields
-      formData.append("heading", data.heading);
-      formData.append("description", data.description);
-      if (data.img && data.img.length > 0) {
-        formData.append("img", data.img[0]);
-      }
-
-      // getInTouch — text as JSON, images as indexed files
-      if (data.getInTouch?.length) {
-        const cardsData = data.getInTouch.map((card) => ({
-          title: card.title,
-          description: card.description,
-          detail: card.detail,
-        }));
-        formData.append("getInTouch", JSON.stringify(cardsData));
-        data.getInTouch.forEach((card, i) => {
-          if (card.img && card.img.length > 0) {
-            formData.append(`getInTouchImg_${i}`, card.img[0]);
-          }
-        });
-      }
-
-      await axios.post(`${BACKEND}/api/content/contact-us`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        `${BACKEND}/api/content/contact-us`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      setSavedImages(mapContactSavedImages(response.data?.content));
       showSaveMessage("Saved successfully!");
     } catch (err: unknown) {
       const message =
@@ -143,8 +111,18 @@ const ContactUS = () => {
             </span>
           )}
         </div>
-        <Hero register={register} errors={errors} control={control} savedImages={savedImages} />
-        <GetInTouch register={register} errors={errors} control={control} savedImages={savedImages} />
+        <Hero
+          register={register}
+          errors={errors}
+          control={control}
+          savedImages={savedImages}
+        />
+        <GetInTouch
+          register={register}
+          errors={errors}
+          control={control}
+          savedImages={savedImages}
+        />
       </form>
     </div>
   );

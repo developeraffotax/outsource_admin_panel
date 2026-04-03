@@ -85,11 +85,19 @@ const Faq = () => {
       formData.append("bookACallDescription", data.bookACall.description);
       if (data.bookACall.img && data.bookACall.img.length > 0) {
         formData.append("bookACallImg", data.bookACall.img[0]);
+      } else if (savedImages.bookACallImg) {
+        formData.append("bookACallImg", savedImages.bookACallImg);
       }
 
-      await axios.post(`${BACKEND}/api/content/faq`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        `${BACKEND}/api/content/faq`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const content = response.data?.content;
+      setSavedImages({ bookACallImg: content?.bookACall?.img });
       showSaveMessage("Saved successfully!");
     } catch (err: unknown) {
       const message =
@@ -134,7 +142,12 @@ const Faq = () => {
         </div>
         <HeroSection register={register} errors={errors} control={control} />
         <GeneralQuiz register={register} errors={errors} control={control} />
-        <BookACall register={register} errors={errors} control={control} savedImages={savedImages} />
+        <BookACall
+          register={register}
+          errors={errors}
+          control={control}
+          savedImages={savedImages}
+        />
       </form>
     </div>
   );

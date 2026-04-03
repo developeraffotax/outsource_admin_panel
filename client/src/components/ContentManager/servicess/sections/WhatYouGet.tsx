@@ -3,15 +3,24 @@ import type { ServiceSectionProps } from "./ServicesProps";
 
 function ImgPreview({ value }: { value: unknown }) {
   if (typeof value !== "string" || !value.startsWith("http")) return null;
-  return <img src={value} alt="Current image" className="mt-2 h-20 rounded object-cover" />;
+  return (
+    <img
+      src={value}
+      alt="Current image"
+      className="mt-2 h-20 rounded object-cover"
+    />
+  );
 }
 
-const WhatYouGet = ({ index, register, errors, control }: ServiceSectionProps) => {
+const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `services.${index}.WhatYouGet.card`,
   });
-  const cardValues = useWatch({ control, name: `services.${index}.WhatYouGet.card` });
+  const cardValues = useWatch({
+    control,
+    name: `services.${index}.WhatYouGet.card`,
+  });
 
   return (
     <section className="space-y-4 rounded-lg border border-slate-200 p-4">
@@ -34,7 +43,10 @@ const WhatYouGet = ({ index, register, errors, control }: ServiceSectionProps) =
         </p>
 
         {fields.map((field, cardIndex) => (
-          <details key={field.id} className="rounded-md border border-slate-200">
+          <details
+            key={field.id}
+            className="rounded-md border border-slate-200"
+          >
             <summary className="flex cursor-pointer items-center justify-between bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
               {`Card ${cardIndex + 1}`}
               <button
@@ -47,29 +59,41 @@ const WhatYouGet = ({ index, register, errors, control }: ServiceSectionProps) =
             </summary>
             <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Image</label>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Image
+                </label>
                 <input
                   type="file"
                   accept="image/*"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`services.${index}.WhatYouGet.card.${cardIndex}.img`)}
+                  {...register(
+                    `services.${index}.WhatYouGet.card.${cardIndex}.img`,
+                  )}
                 />
                 <ImgPreview value={cardValues?.[cardIndex]?.img} />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Title</label>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Title
+                </label>
                 <input
                   type="text"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`services.${index}.WhatYouGet.card.${cardIndex}.title`)}
+                  {...register(
+                    `services.${index}.WhatYouGet.card.${cardIndex}.title`,
+                  )}
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-slate-700">Description</label>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Description
+                </label>
                 <input
                   type="text"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`services.${index}.WhatYouGet.card.${cardIndex}.description`)}
+                  {...register(
+                    `services.${index}.WhatYouGet.card.${cardIndex}.description`,
+                  )}
                 />
               </div>
             </div>
@@ -79,7 +103,13 @@ const WhatYouGet = ({ index, register, errors, control }: ServiceSectionProps) =
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={() => append({ img: undefined as unknown as FileList, title: "", description: "" })}
+            onClick={() =>
+              append({
+                img: undefined as unknown as FileList,
+                title: "",
+                description: "",
+              })
+            }
             className="text-sm font-medium text-slate-700 hover:text-slate-900"
           >
             + Add card

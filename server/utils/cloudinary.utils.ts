@@ -6,7 +6,7 @@ import cloudinary from "../config/cloudinary.config";
 function extractPublicId(url: string): string | null {
   try {
     const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/);
-    return match ? match[1] : null;
+    return match?.[1] ?? null;
   } catch {
     return null;
   }
