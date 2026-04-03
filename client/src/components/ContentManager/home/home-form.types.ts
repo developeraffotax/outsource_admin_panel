@@ -76,6 +76,7 @@ export const cardDropdowns = [
   { id: "serviceCardTwo", title: "Card Dropdown 2" },
   { id: "serviceCardThree", title: "Card Dropdown 3" },
   { id: "serviceCardFour", title: "Card Dropdown 4" },
+  { id: "serviceCardFive", title: "Card Dropdown 5" },
 ];
 
 export const serviceCardDropdowns = Array.from({ length: 6 }, (_, index) => ({
