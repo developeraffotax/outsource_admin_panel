@@ -2,6 +2,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 
 type LoginFormData = {
   email: string;
@@ -10,6 +11,7 @@ type LoginFormData = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const BACKEND = API_BASE_URL;
   const {
     register,
     handleSubmit,
@@ -20,10 +22,7 @@ const Login = () => {
 
   const postData = async (data: LoginFormData) => {
     try {
-      const res = await axios.post(
-        import.meta.env.VITE_Backend_URL + "/api/auth/login",
-        data,
-      );
+      const res = await axios.post(`${BACKEND}/api/auth/login`, data);
       console.log("Login response", res.data);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));

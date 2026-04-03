@@ -6,8 +6,9 @@ import { useRef, useEffect, useState } from "react";
 import HeroSection from "./sections/HeroSection";
 import GeneralQuiz from "./sections/GeneralQuiz";
 import BookACall from "./sections/BookACall";
+import { API_BASE_URL } from "../../../config/api";
 
-const BACKEND = import.meta.env.VITE_Backend_URL as string;
+const BACKEND = API_BASE_URL;
 
 const Faq = () => {
   const {

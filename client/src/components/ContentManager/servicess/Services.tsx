@@ -9,8 +9,9 @@ import {
   createEmptyService,
   type ExistingService,
 } from "./services-form.helpers";
+import { API_BASE_URL } from "../../../config/api";
 
-const BACKEND = import.meta.env.VITE_Backend_URL as string;
+const BACKEND = API_BASE_URL;
 
 const Servicess = () => {
   const {

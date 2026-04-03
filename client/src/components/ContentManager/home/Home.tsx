@@ -10,6 +10,7 @@ import JoinUsSection from "./sections/JoinUsSection";
 import ServiceSection from "./sections/ServiceSection";
 import TopbarSection from "./sections/TopbarSection";
 import WhyOutsourceSection from "./sections/WhyOutsourceSection";
+import { API_BASE_URL } from "../../../config/api";
 import {
   buildHomeFormData,
   createHomeDefaultValues,
@@ -18,7 +19,7 @@ import {
   type BackendContent,
 } from "./home.helpers";
 
-const BACKEND = import.meta.env.VITE_Backend_URL as string;
+const BACKEND = API_BASE_URL;
 
 const Home = () => {
   const [saving, setSaving] = useState(false);

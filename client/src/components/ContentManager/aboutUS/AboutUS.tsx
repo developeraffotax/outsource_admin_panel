@@ -8,13 +8,14 @@ import { useRef } from "react";
 import { useEffect, useState } from "react";
 import OurStory from "./sections/OurStory";
 import OurValue from "./sections/OurValue";
+import { API_BASE_URL } from "../../../config/api";
 import {
   buildAboutUsFormData,
   mapAboutUsFormDefaults,
   mapAboutUsSavedImages,
 } from "./aboutUS.helpers";
 
-const BACKEND = import.meta.env.VITE_Backend_URL as string;
+const BACKEND = API_BASE_URL;
 
 const AboutUS = () => {
   const {

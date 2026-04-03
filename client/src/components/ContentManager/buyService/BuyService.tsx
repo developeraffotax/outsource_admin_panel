@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/api";
 
 type BuyServiceEntry = {
   name: string;
@@ -11,7 +12,7 @@ type BuyServiceFormValues = {
   nameAndPrice: BuyServiceEntry[];
 };
 
-const BACKEND = import.meta.env.VITE_Backend_URL as string;
+const BACKEND = API_BASE_URL;
 
 const defaultEntries: BuyServiceEntry[] = [
   { name: "Company Accounts & Tax Return!", price: "299" },
@@ -73,8 +74,8 @@ const BuyService = () => {
       setSaveMessage("Saved successfully!");
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??
-        "Failed to save. Please try again.";
+        (err as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error ?? "Failed to save. Please try again.";
       setSaveMessage(message);
     } finally {
       setSaving(false);
@@ -164,7 +165,8 @@ const BuyService = () => {
                         required: "Please enter price",
                         pattern: {
                           value: /^\d+(\.\d{1,2})?$/,
-                          message: "Please enter a valid number (e.g. 299 or 299.99)",
+                          message:
+                            "Please enter a valid number (e.g. 299 or 299.99)",
                         },
                       })}
                     />

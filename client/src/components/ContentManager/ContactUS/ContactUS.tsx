@@ -10,8 +10,9 @@ import {
   mapContactFormDefaults,
   mapContactSavedImages,
 } from "./contactUS.helpers";
+import { API_BASE_URL } from "../../../config/api";
 
-const BACKEND = import.meta.env.VITE_Backend_URL as string;
+const BACKEND = API_BASE_URL;
 
 const ContactUS = () => {
   const {
