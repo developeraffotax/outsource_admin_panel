@@ -1,14 +1,10 @@
 {
-   "version": 2,
-   "functions": {
-      "index.ts": {
-         "runtime": "@vercel/node"
-      }
-   },
-   "routes": [
-      {
-         "src": "/(.*)",
-         "dest": "index.ts"
-      }
-   ]
-}
+    "version": 2,
+    "name": "outsource-cms-server",
+    "builds": [
+       { "src": "index.ts", "use": "@vercel/node" }
+    ],
+    "routes": [
+       { "src": "/(.*)", "dest": "/index.ts" }
+    ]
+ }
