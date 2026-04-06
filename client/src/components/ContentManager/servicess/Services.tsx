@@ -116,47 +116,62 @@ const Servicess = () => {
           )}
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-base font-semibold text-slate-900">
-            Service Pages ({fields.length})
-          </h2>
-
-          {fields.map((field, index) => (
-            <details
-              key={field.id}
-              className="rounded-lg border border-slate-200"
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Service pages ({fields.length})</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <summary className="flex cursor-pointer items-center justify-between rounded-lg bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800">
-                {`Service ${index + 1}`}
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="text-xs text-red-500 hover:text-red-700"
-                >
-                  Remove
-                </button>
-              </summary>
-              <div className="p-4">
-                <ServiceItem
-                  index={index}
-                  register={register}
-                  errors={errors}
-                  control={control}
-                />
-              </div>
-            </details>
-          ))}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
 
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={() => append(createEmptyService())}
-              className="cms-btn-secondary"
-            >
-              + Add service
-            </button>
+          <div className="cms-accordion-content space-y-4 border-t border-slate-100 p-3">
+            {fields.map((field, index) => (
+              <details
+                key={field.id}
+                className="cms-accordion group rounded-lg border border-slate-200 bg-white"
+              >
+                <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+                  <span>{`Service ${index + 1}`}</span>
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="text-xs text-red-500 hover:text-red-700"
+                  >
+                    Remove
+                  </button>
+                </summary>
+                <div className="cms-accordion-content border-t border-slate-100 p-4">
+                  <ServiceItem
+                    index={index}
+                    register={register}
+                    errors={errors}
+                    control={control}
+                  />
+                </div>
+              </details>
+            ))}
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => append(createEmptyService())}
+                className="cms-btn-secondary"
+              >
+                + Add service
+              </button>
+            </div>
           </div>
-        </div>
+        </details>
       </form>
     </div>
   );

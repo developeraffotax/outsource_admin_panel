@@ -173,43 +173,193 @@ const Home = () => {
           )}
         </div>
 
-        <HeroSection
-          register={register}
-          errors={errors}
-          control={control}
-          savedImages={savedImages}
-        />
-        <WhyOutsourceSection
-          register={register}
-          errors={errors}
-          control={control}
-          savedImages={savedImages}
-        />
-        <ServiceSection
-          register={register}
-          errors={errors}
-          control={control}
-          savedImages={savedImages}
-        />
-        <HowWeWorkSection
-          register={register}
-          errors={errors}
-          control={control}
-          savedImages={savedImages}
-        />
-        <ClientsTestimonialSection
-          register={register}
-          errors={errors}
-          control={control}
-          savedImages={savedImages}
-        />
-        <TopbarSection register={register} errors={errors} control={control} />
-        <JoinUsSection
-          register={register}
-          errors={errors}
-          control={control}
-          savedImages={savedImages}
-        />
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Hero section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <HeroSection
+              register={register}
+              errors={errors}
+              control={control}
+              savedImages={savedImages}
+            />
+          </div>
+        </details>
+
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Why outsource section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <WhyOutsourceSection
+              register={register}
+              errors={errors}
+              control={control}
+              savedImages={savedImages}
+            />
+          </div>
+        </details>
+
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Service section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <ServiceSection
+              register={register}
+              errors={errors}
+              control={control}
+              savedImages={savedImages}
+            />
+          </div>
+        </details>
+
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>How we work section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <HowWeWorkSection
+              register={register}
+              errors={errors}
+              control={control}
+              savedImages={savedImages}
+            />
+          </div>
+        </details>
+
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Clients testimonial section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <ClientsTestimonialSection
+              register={register}
+              errors={errors}
+              control={control}
+              savedImages={savedImages}
+            />
+          </div>
+        </details>
+
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Topbar section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <TopbarSection
+              register={register}
+              errors={errors}
+              control={control}
+            />
+          </div>
+        </details>
+
+        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+            <span>Join us section</span>
+            <svg
+              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+          <div className="cms-accordion-content border-t border-slate-100 p-3">
+            <JoinUsSection
+              register={register}
+              errors={errors}
+              control={control}
+              savedImages={savedImages}
+            />
+          </div>
+        </details>
       </form>
     </div>
   );
