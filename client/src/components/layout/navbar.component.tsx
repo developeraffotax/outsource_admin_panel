@@ -7,7 +7,7 @@ type NavbarProps = {
 
 const navLinks = [
   { to: "/dashboard", label: "Landing page" },
-  { to: "/buy-service", label: "Buy Service" },
+  { to: "/buy-service", label: "Prices" },
   { to: "/about-us", label: "About Us" },
   { to: "/contact-us", label: "Contact Us" },
   { to: "/faq", label: "FAQ" },

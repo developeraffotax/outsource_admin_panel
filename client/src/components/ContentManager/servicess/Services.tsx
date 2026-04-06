@@ -118,7 +118,7 @@ const Servicess = () => {
 
         <div className="space-y-4">
           <h2 className="text-base font-semibold text-slate-900">
-            Services ({fields.length})
+            Service Pages ({fields.length})
           </h2>
 
           {fields.map((field, index) => (
