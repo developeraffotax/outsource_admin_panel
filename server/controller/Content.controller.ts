@@ -19,6 +19,7 @@ import {
   getServiceContent,
   saveServiceContent,
 } from "../services/Service.service.js";
+import { triggerOutsourceRevalidation } from "../services/Revalidation.service.js";
 
 import { getFaqService, saveFaqService } from "../services/Faq.service.js";
 import { BuyServiceSchemaZod } from "../models/BuyService.model.js";
@@ -62,6 +63,7 @@ export async function saveHomeContentController(
     const oldDoc = await getHomeContent();
     const content = await saveHomeContent(data);
     await cleanupRemovedCloudinaryUrls(oldDoc, content);
+    await triggerOutsourceRevalidation("home");
     res.status(200).json({ content });
   } catch (error) {
     console.error("[saveHomeContent]", error);
@@ -102,6 +104,7 @@ export async function saveAboutUsContentController(
 
     const content = await saveAboutUsService(data);
     await cleanupRemovedCloudinaryUrls(oldDoc, content);
+    await triggerOutsourceRevalidation("about-us");
     res.status(200).json({ content });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -142,6 +145,7 @@ export async function saveBuyServiceContentController(
 
     const validated = BuyServiceSchemaZod.parse({ entries: entriesRaw });
     const content = await saveBuyServiceContent(validated);
+    await triggerOutsourceRevalidation("buy-service");
     res.status(200).json({ content });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -181,6 +185,7 @@ export async function saveContactUsContentController(
 
     const content = await saveContactUsService(data);
     await cleanupRemovedCloudinaryUrls(oldDoc, content);
+    await triggerOutsourceRevalidation("contact-us");
     res.status(200).json({ content });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -219,6 +224,7 @@ export async function saveFaqContentController(
     const validated = faqSchema.parse(data);
     const content = await saveFaqService(validated);
     await cleanupRemovedCloudinaryUrls(oldDoc, content);
+    await triggerOutsourceRevalidation("faq");
     res.status(200).json({ content });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -268,6 +274,7 @@ export async function saveServiceContentController(
     );
 
     await cleanupRemovedCloudinaryUrls(oldDocs, saved);
+    await triggerOutsourceRevalidation("services");
     res.status(200).json({ content: saved });
   } catch (error) {
     if (error instanceof z.ZodError) {

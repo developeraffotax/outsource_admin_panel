@@ -47,6 +47,14 @@ PORT=5000
 MONGO_URI=<your MongoDB connection string>
 JWT_SECRET=<your JWT secret>
 CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+
+# Optional: trigger your outsource website on-demand ISR after CMS saves
+OUTSOURCE_REVALIDATE_ENABLED=true
+OUTSOURCE_REVALIDATE_URL=https://your-outsource-site.com/api/revalidate
+OUTSOURCE_REVALIDATE_SECRET=<your revalidate secret>
+OUTSOURCE_REVALIDATE_TIMEOUT_MS=8000
+
+
 ```
 
 ### Install Dependencies
