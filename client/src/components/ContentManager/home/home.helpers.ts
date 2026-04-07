@@ -151,19 +151,20 @@ export function mapHomeSavedImages(content: BackendContent): SavedImages {
 
 export function mapHomeFormDefaults(content: BackendContent) {
   type HeroCardContent = NonNullable<BackendContent["heroCards"]>[number];
-  type WhyOutsourceCardContent =
-    NonNullable<BackendContent["whyOutsoutcingCards"]>[number];
-  type ServiceCardContent =
-    NonNullable<BackendContent["serviceCards"]>[number];
-  type TestimonialCardContent =
-    NonNullable<BackendContent["testimonialsCard"]>[number];
+  type WhyOutsourceCardContent = NonNullable<
+    BackendContent["whyOutsoutcingCards"]
+  >[number];
+  type ServiceCardContent = NonNullable<BackendContent["serviceCards"]>[number];
+  type TestimonialCardContent = NonNullable<
+    BackendContent["testimonialsCard"]
+  >[number];
 
   const heroCardsSource =
     content.heroCards && content.heroCards.length > 0
       ? content.heroCards
       : Array.from(
           { length: DEFAULT_HERO_CARD_COUNT },
-          () => ({} as HeroCardContent),
+          () => ({}) as HeroCardContent,
         );
 
   const whyOutsourceCardsSource =
@@ -171,7 +172,7 @@ export function mapHomeFormDefaults(content: BackendContent) {
       ? content.whyOutsoutcingCards
       : Array.from(
           { length: DEFAULT_WHY_OUTSOURCE_CARD_COUNT },
-          () => ({} as WhyOutsourceCardContent),
+          () => ({}) as WhyOutsourceCardContent,
         );
 
   const serviceCardsSource =
@@ -179,7 +180,7 @@ export function mapHomeFormDefaults(content: BackendContent) {
       ? content.serviceCards
       : Array.from(
           { length: DEFAULT_SERVICE_CARD_COUNT },
-          () => ({} as ServiceCardContent),
+          () => ({}) as ServiceCardContent,
         );
 
   const testimonialCardsSource =
@@ -187,7 +188,7 @@ export function mapHomeFormDefaults(content: BackendContent) {
       ? content.testimonialsCard
       : Array.from(
           { length: DEFAULT_TESTIMONIAL_CARD_COUNT },
-          () => ({} as TestimonialCardContent),
+          () => ({}) as TestimonialCardContent,
         );
 
   return {
