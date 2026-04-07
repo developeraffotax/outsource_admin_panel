@@ -4,10 +4,41 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../../config/api";
 import loginImage from "../../assets/image.png";
+import { normalizeRole } from "../../utils/auth";
 
 type LoginFormData = {
   email: string;
   password: string;
+};
+
+type LoginResponse = {
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    role?: unknown;
+  };
+};
+
+const extractLoginErrorMessage = (error: unknown): string => {
+  if (axios.isAxiosError(error)) {
+    const responseData = error.response?.data as
+      | {
+          error?: unknown;
+          message?: unknown;
+        }
+      | undefined;
+
+    if (typeof responseData?.error === "string") {
+      return responseData.error;
+    }
+
+    if (typeof responseData?.message === "string") {
+      return responseData.message;
+    }
+  }
+
+  return "Invalid email or password";
 };
 
 const Login = () => {
@@ -25,15 +56,20 @@ const Login = () => {
   const postData = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      const res = await axios.post(`${BACKEND}/api/auth/login`, data);
+      const res = await axios.post<LoginResponse>(
+        `${BACKEND}/api/auth/login`,
+        data,
+      );
       console.log("Login response", res.data);
+      const normalizedUser = {
+        ...res.data.user,
+        role: normalizeRole(res.data.user.role),
+      };
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("user", JSON.stringify(normalizedUser));
       navigate("/dashboard");
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message || "Invalid email or password";
-      setLoginError(message);
+    } catch (error: unknown) {
+      setLoginError(extractLoginErrorMessage(error));
     } finally {
       setLoading(false);
     }

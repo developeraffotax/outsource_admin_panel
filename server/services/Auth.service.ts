@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
-import type { ISafeUser } from "../models/User.model.js";
+import type { ISafeUser, UserRole } from "../models/User.model.js";
 
 async function AuthService(
   email: string,
@@ -21,13 +21,29 @@ async function AuthService(
     throw new Error("Invalid password");
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
-    expiresIn: "1h",
-  });
+  const normalizedEmail = user.email.trim().toLowerCase();
+  const isReservedAdmin = normalizedEmail === "admin@gmail.com";
+  const role: UserRole =
+    user.role === "admin" || isReservedAdmin ? "admin" : "user";
+
+  // Keep legacy records consistent so admin menu/routing works after login.
+  if (isReservedAdmin && user.role !== "admin") {
+    user.role = "admin";
+    await user.save();
+  }
+
+  const token = jwt.sign(
+    { id: user._id.toString(), role },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: "1h",
+    },
+  );
 
   const safeUser: ISafeUser = {
     id: user._id.toString(),
     email: user.email,
+    role,
   };
 
   return {

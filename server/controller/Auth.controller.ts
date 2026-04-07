@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { AuthService } from "../services/Auth.service.js";
-import { validUser } from "../models/User.model.js";
+import { validLoginUser } from "../models/User.model.js";
 import type { Request, Response } from "express";
 
 async function AuthController(req: Request, res: Response): Promise<void> {
   try {
-    const validatedData = validUser(req.body);
+    const validatedData = validLoginUser(req.body);
     const { token, user } = await AuthService(
       validatedData.email,
       validatedData.password,

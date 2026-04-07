@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import faviconWhite from "../../assets/FaviconWhite.svg";
+import { isCurrentUserAdmin } from "../../utils/auth";
 
 type NavbarProps = {
   title: string;
 };
 
-const navLinks = [
+const baseNavLinks = [
   { to: "/dashboard", label: "Landing page" },
   { to: "/buy-service", label: "Prices" },
   { to: "/about-us", label: "About Us" },
@@ -18,6 +19,9 @@ const navLinks = [
 export const Navbar = ({ title = "Dashboard" }: NavbarProps) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navLinks = isCurrentUserAdmin()
+    ? [...baseNavLinks, { to: "/users", label: "Users" }]
+    : baseNavLinks;
 
   const handleLogout = () => {
     localStorage.removeItem("token");

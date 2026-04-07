@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { useEffect, useState, type ReactElement } from "react";
 import LoginPage from "./pages/Login.page";
 import DashboardPage from "./pages/Dashboard.page";
 import BuyServicePage from "./pages/BuyService.page";
@@ -7,7 +7,25 @@ import AboutUs from "./pages/AboutUs.page";
 import ContactUs from "./pages/ContactUs.page";
 import Faq from "./pages/Faq.page";
 import Services from "./pages/Services.page";
+import UsersPage from "./pages/Users.page.tsx";
 import EntryPreloader from "./components/layout/entry-preloader.component";
+import { isAuthenticated, isCurrentUserAdmin } from "./utils/auth";
+
+type AdminOnlyRouteProps = {
+  children: ReactElement;
+};
+
+function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
+  if (!isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!isCurrentUserAdmin()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
 
 function App() {
   const [showEntry, setShowEntry] = useState(true);
@@ -35,6 +53,14 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/services" element={<Services />} />
+          <Route
+            path="/users"
+            element={
+              <AdminOnlyRoute>
+                <UsersPage />
+              </AdminOnlyRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
