@@ -1,5 +1,5 @@
-import { cardDropdowns } from "../home-form.types";
-import { useWatch } from "react-hook-form";
+import { createEmptyWhyOutsourceCard } from "../home-form.types";
+import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
 
 const WhyOutsourceSection = ({
@@ -7,6 +7,11 @@ const WhyOutsourceSection = ({
   control,
   savedImages,
 }: HomeSectionProps) => {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "whyOutsourceCardSections",
+  });
+
   const whyOutsourceCardSections = useWatch({
     control,
     name: "whyOutsourceCardSections",
@@ -21,195 +26,234 @@ const WhyOutsourceSection = ({
         </h2>
       </div>
       <div className="cms-section-body space-y-4 p-5">
-
-      <div>
-        <label
-          htmlFor="whyOutsourcing"
-          className="mb-1 block text-sm font-medium text-slate-700"
-        >
-          Why Outsourcing (label text)
-        </label>
-        <input
-          id="whyOutsourcing"
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register("whyOutsourcing")}
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="headingWhyOutsourcing"
-          className="mb-1 block text-sm font-medium text-slate-700"
-        >
-          Heading
-        </label>
-        <input
-          id="headingWhyOutsourcing"
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register("headingWhyOutsourcing")}
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="descriptionWhyOutsourcing"
-          className="mb-1 block text-sm font-medium text-slate-700"
-        >
-          Description
-        </label>
-        <textarea
-          id="descriptionWhyOutsourcing"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register("descriptionWhyOutsourcing")}
-        />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label
-            htmlFor="imgWhyOutsourcing"
+            htmlFor="whyOutsourcing"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            Main image
+            Why Outsourcing (label text)
           </label>
           <input
-            id="imgWhyOutsourcing"
-            type="file"
-            accept="image/*"
+            id="whyOutsourcing"
+            type="text"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("imgWhyOutsourcing")}
+            {...register("whyOutsourcing")}
           />
-          {savedImages?.imgWhyOutsoutcing && (
-            <img
-              src={savedImages.imgWhyOutsoutcing}
-              alt="Current main image"
-              className="mt-2 h-20 rounded object-cover"
-            />
-          )}
         </div>
 
         <div>
           <label
-            htmlFor="imgTwoWhyOutsourcing"
+            htmlFor="headingWhyOutsourcing"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            Second image
+            Heading
           </label>
           <input
-            id="imgTwoWhyOutsourcing"
-            type="file"
-            accept="image/*"
+            id="headingWhyOutsourcing"
+            type="text"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("imgTwoWhyOutsourcing")}
+            {...register("headingWhyOutsourcing")}
           />
-          {savedImages?.imgtwoWhyOutsoutcing && (
-            <img
-              src={savedImages.imgtwoWhyOutsoutcing}
-              alt="Current second image"
-              className="mt-2 h-20 rounded object-cover"
-            />
-          )}
         </div>
-      </div>
 
-      <div>
-        <label
-          htmlFor="whyOutSourceAccounting"
-          className="mb-1 block text-sm font-medium text-slate-700"
-        >
-          Accounting image
-        </label>
-        <input
-          id="whyOutSourceAccounting"
-          type="file"
-          accept="image/*"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register("whyOutSourceAccounting")}
-        />
-        {savedImages?.whyOutSourceAccounting && (
-          <img
-            src={savedImages.whyOutSourceAccounting}
-            alt="Current accounting image"
-            className="mt-2 h-20 rounded object-cover"
+        <div>
+          <label
+            htmlFor="descriptionWhyOutsourcing"
+            className="mb-1 block text-sm font-medium text-slate-700"
+          >
+            Description
+          </label>
+          <textarea
+            id="descriptionWhyOutsourcing"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            {...register("descriptionWhyOutsourcing")}
           />
-        )}
-      </div>
+        </div>
 
-      <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Card section</h3>
-
-        {cardDropdowns.map((dropdown, index) => {
-          const whyCardSummary =
-            whyOutsourceCardSections?.[
-              index
-            ]?.pointerTextWhyOutsourcing?.trim();
-
-          return (
-            <details
-              key={`why-${dropdown.id}`}
-              className="cms-accordion group rounded-lg border border-slate-200 bg-white"
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label
+              htmlFor="imgWhyOutsourcing"
+              className="mb-1 block text-sm font-medium text-slate-700"
             >
-              <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-                <span>{whyCardSummary || dropdown.title}</span>
-                <svg className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
+              Main image
+            </label>
+            <input
+              id="imgWhyOutsourcing"
+              type="file"
+              accept="image/*"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              {...register("imgWhyOutsourcing")}
+            />
+            {savedImages?.imgWhyOutsoutcing && (
+              <img
+                src={savedImages.imgWhyOutsoutcing}
+                alt="Current main image"
+                className="mt-2 h-20 rounded object-cover"
+              />
+            )}
+          </div>
 
-              <div className="cms-accordion-content space-y-4 border-t border-slate-100 p-4">
-                <div>
-                  <label
-                    htmlFor={`why-${dropdown.id}-image`}
-                    className="mb-1 block text-sm font-medium text-slate-700"
+          <div>
+            <label
+              htmlFor="imgTwoWhyOutsourcing"
+              className="mb-1 block text-sm font-medium text-slate-700"
+            >
+              Second image
+            </label>
+            <input
+              id="imgTwoWhyOutsourcing"
+              type="file"
+              accept="image/*"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              {...register("imgTwoWhyOutsourcing")}
+            />
+            {savedImages?.imgtwoWhyOutsoutcing && (
+              <img
+                src={savedImages.imgtwoWhyOutsoutcing}
+                alt="Current second image"
+                className="mt-2 h-20 rounded object-cover"
+              />
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="whyOutSourceAccounting"
+            className="mb-1 block text-sm font-medium text-slate-700"
+          >
+            Accounting image
+          </label>
+          <input
+            id="whyOutSourceAccounting"
+            type="file"
+            accept="image/*"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            {...register("whyOutSourceAccounting")}
+          />
+          {savedImages?.whyOutSourceAccounting && (
+            <img
+              src={savedImages.whyOutSourceAccounting}
+              alt="Current accounting image"
+              className="mt-2 h-20 rounded object-cover"
+            />
+          )}
+        </div>
+
+        <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Card section
+          </h3>
+
+          {fields.map((field, index) => {
+            const whyCardSummary =
+              whyOutsourceCardSections?.[
+                index
+              ]?.pointerTextWhyOutsourcing?.trim();
+            const existingWhyCardImage =
+              whyOutsourceCardSections?.[index]?.existingWhyCardImage ||
+              savedImages?.[`whyCardImage_${index}`];
+
+            return (
+              <details
+                key={field.id}
+                className="cms-accordion group rounded-lg border border-slate-200 bg-white"
+              >
+                <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+                  <span>{whyCardSummary || `Why card ${index + 1}`}</span>
+                  <button
+                    type="button"
+                    className="rounded px-2 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      remove(index);
+                    }}
                   >
-                    Pointer image
-                  </label>
-                  <input
-                    id={`why-${dropdown.id}-image`}
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register(
-                      `whyOutsourceCardSections.${index}.imgPointerWhyOutsourcing`,
-                    )}
-                  />
-                  {savedImages?.[`whyCardImage_${index}`] && (
-                    <img
-                      src={savedImages[`whyCardImage_${index}`]}
-                      alt="Current pointer image"
-                      className="mt-2 h-20 rounded object-cover"
+                    Remove
+                  </button>
+                  <svg
+                    className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
                     />
-                  )}
-                </div>
+                  </svg>
+                </summary>
 
-                <div>
-                  <label
-                    htmlFor={`why-${dropdown.id}-pointerText`}
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    Pointer text
-                  </label>
-                  <input
-                    id={`why-${dropdown.id}-pointerText`}
-                    type="text"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register(
-                      `whyOutsourceCardSections.${index}.pointerTextWhyOutsourcing`,
+                <div className="cms-accordion-content space-y-4 border-t border-slate-100 p-4">
+                  <div>
+                    <input
+                      type="hidden"
+                      {...register(
+                        `whyOutsourceCardSections.${index}.existingWhyCardImage`,
+                      )}
+                    />
+                    <label
+                      htmlFor={`why-card-${index}-image`}
+                      className="mb-1 block text-sm font-medium text-slate-700"
+                    >
+                      Pointer image
+                    </label>
+                    <input
+                      id={`why-card-${index}-image`}
+                      type="file"
+                      accept="image/*"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      {...register(
+                        `whyOutsourceCardSections.${index}.imgPointerWhyOutsourcing`,
+                      )}
+                    />
+                    {existingWhyCardImage && (
+                      <img
+                        src={existingWhyCardImage}
+                        alt="Current pointer image"
+                        className="mt-2 h-20 rounded object-cover"
+                      />
                     )}
-                  />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`why-card-${index}-pointerText`}
+                      className="mb-1 block text-sm font-medium text-slate-700"
+                    >
+                      Pointer text
+                    </label>
+                    <input
+                      id={`why-card-${index}-pointerText`}
+                      type="text"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      {...register(
+                        `whyOutsourceCardSections.${index}.pointerTextWhyOutsourcing`,
+                      )}
+                    />
+                  </div>
                 </div>
-              </div>
-            </details>
-          );
-        })}
+              </details>
+            );
+          })}
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="cms-btn-secondary"
+              onClick={() => append(createEmptyWhyOutsourceCard())}
+            >
+              + Add why card
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
     </section>
   );
 };
 
 export default WhyOutsourceSection;
-
-

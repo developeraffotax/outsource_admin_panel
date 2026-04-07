@@ -1,8 +1,13 @@
-import { cardDropdowns } from "../home-form.types";
-import { useWatch } from "react-hook-form";
+import { createEmptyHeroCard } from "../home-form.types";
+import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
 
 const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "heroCardSections",
+  });
+
   const heroCardSections = useWatch({
     control,
     name: "heroCardSections",
@@ -184,7 +189,7 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
 
         <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Card section
+            Card section ({fields.length})
           </h3>
 
           <div>
@@ -206,16 +211,30 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
             </select>
           </div>
 
-          {cardDropdowns.map((dropdown, index) => {
+          {fields.map((field, index) => {
             const heroCardSummary = heroCardSections?.[index]?.title?.trim();
+            const existingHeroCardImage =
+              heroCardSections?.[index]?.existingImageUrl ||
+              savedImages?.[`heroCardImg_${index}`];
 
             return (
               <details
-                key={`hero-${dropdown.id}`}
+                key={field.id}
                 className="cms-accordion group rounded-lg border border-slate-200 bg-white"
               >
                 <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-                  <span>{heroCardSummary || dropdown.title}</span>
+                  <span>{heroCardSummary || `Hero card ${index + 1}`}</span>
+                  <button
+                    type="button"
+                    className="rounded px-2 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      remove(index);
+                    }}
+                  >
+                    Remove
+                  </button>
                   <svg
                     className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
                     fill="none"
@@ -233,22 +252,28 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
 
                 <div className="cms-accordion-content space-y-4 border-t border-slate-100 p-4">
                   <div>
+                    <input
+                      type="hidden"
+                      {...register(
+                        `heroCardSections.${index}.existingImageUrl`,
+                      )}
+                    />
                     <label
-                      htmlFor={`hero-${dropdown.id}-image`}
+                      htmlFor={`hero-card-${index}-image`}
                       className="mb-1 block text-sm font-medium text-slate-700"
                     >
                       Image
                     </label>
                     <input
-                      id={`hero-${dropdown.id}-image`}
+                      id={`hero-card-${index}-image`}
                       type="file"
                       accept="image/*"
                       className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                       {...register(`heroCardSections.${index}.image`)}
                     />
-                    {savedImages?.[`heroCardImg_${index}`] && (
+                    {existingHeroCardImage && (
                       <img
-                        src={savedImages[`heroCardImg_${index}`]}
+                        src={existingHeroCardImage}
                         alt="Current card image"
                         className="mt-2 h-20 rounded object-cover"
                       />
@@ -257,13 +282,13 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
 
                   <div>
                     <label
-                      htmlFor={`hero-${dropdown.id}-title`}
+                      htmlFor={`hero-card-${index}-title`}
                       className="mb-1 block text-sm font-medium text-slate-700"
                     >
                       Title
                     </label>
                     <input
-                      id={`hero-${dropdown.id}-title`}
+                      id={`hero-card-${index}-title`}
                       type="text"
                       className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                       {...register(`heroCardSections.${index}.title`)}
@@ -272,13 +297,13 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
 
                   <div>
                     <label
-                      htmlFor={`hero-${dropdown.id}-content`}
+                      htmlFor={`hero-card-${index}-content`}
                       className="mb-1 block text-sm font-medium text-slate-700"
                     >
                       Content
                     </label>
                     <input
-                      id={`hero-${dropdown.id}-content`}
+                      id={`hero-card-${index}-content`}
                       type="text"
                       className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                       {...register(`heroCardSections.${index}.content`)}
@@ -288,6 +313,16 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
               </details>
             );
           })}
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="cms-btn-secondary"
+              onClick={() => append(createEmptyHeroCard())}
+            >
+              + Add hero card
+            </button>
+          </div>
         </div>
       </div>
     </section>

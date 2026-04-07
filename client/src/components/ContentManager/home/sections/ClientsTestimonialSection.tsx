@@ -1,5 +1,5 @@
-import { testimonialCardDropdowns } from "../home-form.types";
-import { useWatch } from "react-hook-form";
+import { createEmptyTestimonialCard } from "../home-form.types";
+import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
 
 const ClientsTestimonialSection = ({
@@ -8,6 +8,11 @@ const ClientsTestimonialSection = ({
   control,
   savedImages,
 }: HomeSectionProps) => {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "clientsTestimonial.testimonialCards",
+  });
+
   const testimonialCards = useWatch({
     control,
     name: "clientsTestimonial.testimonialCards",
@@ -22,217 +27,273 @@ const ClientsTestimonialSection = ({
         </h2>
       </div>
       <div className="cms-section-body space-y-4 p-5">
+        <div>
+          <label
+            htmlFor="clientsTestimonial-heading"
+            className="mb-1 block text-sm font-medium text-slate-700"
+          >
+            Heading
+          </label>
+          <input
+            id="clientsTestimonial-heading"
+            type="text"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            {...register("clientsTestimonial.heading")}
+          />
+          {errors.clientsTestimonial?.heading && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.clientsTestimonial.heading.message as string}
+            </p>
+          )}
+        </div>
 
-      <div>
-        <label
-          htmlFor="clientsTestimonial-heading"
-          className="mb-1 block text-sm font-medium text-slate-700"
-        >
-          Heading
-        </label>
-        <input
-          id="clientsTestimonial-heading"
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register("clientsTestimonial.heading")}
-        />
-        {errors.clientsTestimonial?.heading && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.clientsTestimonial.heading.message as string}
-          </p>
-        )}
-      </div>
+        <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Testimonial cards ({fields.length})
+          </h3>
 
-      <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Testimonial cards (3)
-        </h3>
+          {fields.map((field, index) => {
+            const testimonialCardSummary =
+              testimonialCards?.[index]?.testimonialTitle?.trim();
+            const existingTestimonialBgImg =
+              testimonialCards?.[index]?.existingTestimonialBgImg ||
+              savedImages?.[`testimonialBgImg_${index}`];
+            const existingTestimonialPersonImg =
+              testimonialCards?.[index]?.existingTestimonialPersonImg ||
+              savedImages?.[`testimonialPersonImg_${index}`];
 
-        {testimonialCardDropdowns.map((card, index) => {
-          const testimonialCardSummary =
-            testimonialCards?.[index]?.testimonialTitle?.trim();
-
-          return (
-            <details
-              key={card.id}
-              className="cms-accordion group rounded-lg border border-slate-200 bg-white"
-            >
-              <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-                <span>{testimonialCardSummary || card.title}</span>
-                <svg className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-
-              <div className="cms-accordion-content border-t border-slate-100 p-4 grid gap-4 md:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor={`${card.id}-testimonialBgImg`}
-                    className="mb-1 block text-sm font-medium text-slate-700"
+            return (
+              <details
+                key={field.id}
+                className="cms-accordion group rounded-lg border border-slate-200 bg-white"
+              >
+                <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+                  <span>
+                    {testimonialCardSummary || `Testimonial ${index + 1}`}
+                  </span>
+                  <button
+                    type="button"
+                    className="rounded px-2 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      remove(index);
+                    }}
                   >
-                    Background image
-                  </label>
-                  <input
-                    id={`${card.id}-testimonialBgImg`}
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register(
-                      `clientsTestimonial.testimonialCards.${index}.testimonialBgImg`,
+                    Remove
+                  </button>
+                  <svg
+                    className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </summary>
+
+                <div className="cms-accordion-content border-t border-slate-100 p-4 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <input
+                      type="hidden"
+                      {...register(
+                        `clientsTestimonial.testimonialCards.${index}.existingTestimonialBgImg`,
+                      )}
+                    />
+                    <input
+                      type="hidden"
+                      {...register(
+                        `clientsTestimonial.testimonialCards.${index}.existingTestimonialPersonImg`,
+                      )}
+                    />
+                    <label
+                      htmlFor={`testimonial-card-${index}-testimonialBgImg`}
+                      className="mb-1 block text-sm font-medium text-slate-700"
+                    >
+                      Background image
+                    </label>
+                    <input
+                      id={`testimonial-card-${index}-testimonialBgImg`}
+                      type="file"
+                      accept="image/*"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      {...register(
+                        `clientsTestimonial.testimonialCards.${index}.testimonialBgImg`,
+                      )}
+                    />
+                    {existingTestimonialBgImg && (
+                      <img
+                        src={existingTestimonialBgImg}
+                        alt="Current background"
+                        className="mt-2 h-20 rounded object-cover"
+                      />
                     )}
-                  />
-                  {savedImages?.[`testimonialBgImg_${index}`] && (
-                    <img src={savedImages[`testimonialBgImg_${index}`]} alt="Current background" className="mt-2 h-20 rounded object-cover" />
-                  )}
-                  {(
-                    errors.clientsTestimonial?.testimonialCards?.[index]
-                      ?.testimonialBgImg as { message?: string }
-                  )?.message && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {
-                        (
-                          errors.clientsTestimonial?.testimonialCards?.[index]
-                            ?.testimonialBgImg as { message?: string }
-                        ).message
-                      }
-                    </p>
-                  )}
+                    {(
+                      errors.clientsTestimonial?.testimonialCards?.[index]
+                        ?.testimonialBgImg as { message?: string }
+                    )?.message && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {
+                          (
+                            errors.clientsTestimonial?.testimonialCards?.[index]
+                              ?.testimonialBgImg as { message?: string }
+                          ).message
+                        }
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`testimonial-card-${index}-testimonialPersonImg`}
+                      className="mb-1 block text-sm font-medium text-slate-700"
+                    >
+                      Person image
+                    </label>
+                    <input
+                      id={`testimonial-card-${index}-testimonialPersonImg`}
+                      type="file"
+                      accept="image/*"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      {...register(
+                        `clientsTestimonial.testimonialCards.${index}.testimonialPersonImg`,
+                      )}
+                    />
+                    {existingTestimonialPersonImg && (
+                      <img
+                        src={existingTestimonialPersonImg}
+                        alt="Current person image"
+                        className="mt-2 h-20 rounded object-cover"
+                      />
+                    )}
+                    {(
+                      errors.clientsTestimonial?.testimonialCards?.[index]
+                        ?.testimonialPersonImg as { message?: string }
+                    )?.message && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {
+                          (
+                            errors.clientsTestimonial?.testimonialCards?.[index]
+                              ?.testimonialPersonImg as { message?: string }
+                          ).message
+                        }
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <label
-                    htmlFor={`${card.id}-testimonialPersonImg`}
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    Person image
-                  </label>
-                  <input
-                    id={`${card.id}-testimonialPersonImg`}
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register(
-                      `clientsTestimonial.testimonialCards.${index}.testimonialPersonImg`,
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor={`testimonial-card-${index}-testimonialTitle`}
+                      className="mb-1 block text-sm font-medium text-slate-700"
+                    >
+                      Title
+                    </label>
+                    <input
+                      id={`testimonial-card-${index}-testimonialTitle`}
+                      type="text"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      {...register(
+                        `clientsTestimonial.testimonialCards.${index}.testimonialTitle`,
+                      )}
+                    />
+                    {(
+                      errors.clientsTestimonial?.testimonialCards?.[index]
+                        ?.testimonialTitle as { message?: string }
+                    )?.message && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {
+                          (
+                            errors.clientsTestimonial?.testimonialCards?.[index]
+                              ?.testimonialTitle as { message?: string }
+                          ).message
+                        }
+                      </p>
                     )}
-                  />
-                  {savedImages?.[`testimonialPersonImg_${index}`] && (
-                    <img src={savedImages[`testimonialPersonImg_${index}`]} alt="Current person image" className="mt-2 h-20 rounded object-cover" />
-                  )}
-                  {(
-                    errors.clientsTestimonial?.testimonialCards?.[index]
-                      ?.testimonialPersonImg as { message?: string }
-                  )?.message && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {
-                        (
-                          errors.clientsTestimonial?.testimonialCards?.[index]
-                            ?.testimonialPersonImg as { message?: string }
-                        ).message
-                      }
-                    </p>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <div>
+                  <div>
+                    <label
+                      htmlFor={`testimonial-card-${index}-testimonialDescription`}
+                      className="mb-1 block text-sm font-medium text-slate-700"
+                    >
+                      Description
+                    </label>
+                    <textarea
+                      id={`testimonial-card-${index}-testimonialDescription`}
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      {...register(
+                        `clientsTestimonial.testimonialCards.${index}.testimonialDescription`,
+                      )}
+                    />
+                    {(
+                      errors.clientsTestimonial?.testimonialCards?.[index]
+                        ?.testimonialDescription as { message?: string }
+                    )?.message && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {
+                          (
+                            errors.clientsTestimonial?.testimonialCards?.[index]
+                              ?.testimonialDescription as { message?: string }
+                          ).message
+                        }
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-4">
                   <label
-                    htmlFor={`${card.id}-testimonialTitle`}
+                    htmlFor={`testimonial-card-${index}-testimonialPersonName`}
                     className="mb-1 block text-sm font-medium text-slate-700"
                   >
-                    Title
+                    Person name
                   </label>
                   <input
-                    id={`${card.id}-testimonialTitle`}
+                    id={`testimonial-card-${index}-testimonialPersonName`}
                     type="text"
                     className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                     {...register(
-                      `clientsTestimonial.testimonialCards.${index}.testimonialTitle`,
+                      `clientsTestimonial.testimonialCards.${index}.testimonialPersonName`,
                     )}
                   />
                   {(
                     errors.clientsTestimonial?.testimonialCards?.[index]
-                      ?.testimonialTitle as { message?: string }
+                      ?.testimonialPersonName as { message?: string }
                   )?.message && (
                     <p className="mt-1 text-sm text-red-600">
                       {
                         (
                           errors.clientsTestimonial?.testimonialCards?.[index]
-                            ?.testimonialTitle as { message?: string }
+                            ?.testimonialPersonName as { message?: string }
                         ).message
                       }
                     </p>
                   )}
                 </div>
+              </details>
+            );
+          })}
 
-                <div>
-                  <label
-                    htmlFor={`${card.id}-testimonialDescription`}
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id={`${card.id}-testimonialDescription`}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register(
-                      `clientsTestimonial.testimonialCards.${index}.testimonialDescription`,
-                    )}
-                  />
-                  {(
-                    errors.clientsTestimonial?.testimonialCards?.[index]
-                      ?.testimonialDescription as { message?: string }
-                  )?.message && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {
-                        (
-                          errors.clientsTestimonial?.testimonialCards?.[index]
-                            ?.testimonialDescription as { message?: string }
-                        ).message
-                      }
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label
-                  htmlFor={`${card.id}-testimonialPersonName`}
-                  className="mb-1 block text-sm font-medium text-slate-700"
-                >
-                  Person name
-                </label>
-                <input
-                  id={`${card.id}-testimonialPersonName`}
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `clientsTestimonial.testimonialCards.${index}.testimonialPersonName`,
-                  )}
-                />
-                {(
-                  errors.clientsTestimonial?.testimonialCards?.[index]
-                    ?.testimonialPersonName as { message?: string }
-                )?.message && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {
-                      (
-                        errors.clientsTestimonial?.testimonialCards?.[index]
-                          ?.testimonialPersonName as { message?: string }
-                      ).message
-                    }
-                  </p>
-                )}
-              </div>
-            </details>
-          );
-        })}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="cms-btn-secondary"
+              onClick={() => append(createEmptyTestimonialCard())}
+            >
+              + Add testimonial card
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
     </section>
   );
 };
 
 export default ClientsTestimonialSection;
-
-

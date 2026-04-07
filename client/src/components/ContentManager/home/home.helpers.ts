@@ -1,8 +1,13 @@
 import type { FormValues } from "./home-form.types";
 import {
-  cardDropdowns,
-  serviceCardDropdowns,
-  testimonialCardDropdowns,
+  createEmptyHeroCard,
+  createEmptyServiceCard,
+  createEmptyTestimonialCard,
+  createEmptyWhyOutsourceCard,
+  DEFAULT_HERO_CARD_COUNT,
+  DEFAULT_SERVICE_CARD_COUNT,
+  DEFAULT_TESTIMONIAL_CARD_COUNT,
+  DEFAULT_WHY_OUTSOURCE_CARD_COUNT,
 } from "./home-form.types";
 import type { SavedImages } from "./sections/section-props.types";
 
@@ -68,16 +73,16 @@ export type BackendContent = {
 
 export function createHomeDefaultValues() {
   return {
-    heroCardSections: cardDropdowns.map(() => ({ title: "", content: "" })),
-    whyOutsourceCardSections: cardDropdowns.map(() => ({
-      pointerTextWhyOutsourcing: "",
-    })),
-    serviceCards: serviceCardDropdowns.map(() => ({
-      titleServiceCard: "",
-      descriptionServiceCard: "",
-      buttontxtServiceCard: "",
-      pglink: "",
-    })),
+    heroCardSections: Array.from({ length: DEFAULT_HERO_CARD_COUNT }, () =>
+      createEmptyHeroCard(),
+    ),
+    whyOutsourceCardSections: Array.from(
+      { length: DEFAULT_WHY_OUTSOURCE_CARD_COUNT },
+      () => createEmptyWhyOutsourceCard(),
+    ),
+    serviceCards: Array.from({ length: DEFAULT_SERVICE_CARD_COUNT }, () =>
+      createEmptyServiceCard(),
+    ),
     howWeWork: {
       heading: "",
       one: "",
@@ -92,11 +97,10 @@ export function createHomeDefaultValues() {
     },
     clientsTestimonial: {
       heading: "",
-      testimonialCards: testimonialCardDropdowns.map(() => ({
-        testimonialTitle: "",
-        testimonialDescription: "",
-        testimonialPersonName: "",
-      })),
+      testimonialCards: Array.from(
+        { length: DEFAULT_TESTIMONIAL_CARD_COUNT },
+        () => createEmptyTestimonialCard(),
+      ),
     },
     topbar: {
       email: "",
@@ -110,40 +114,82 @@ export function createHomeDefaultValues() {
 }
 
 export function mapHomeSavedImages(content: BackendContent): SavedImages {
-  return {
+  const mappedImages: SavedImages = {
     bgImage: content.bgImage,
     ukFlag: content.ukFlag,
-    heroCardImg_0: content.heroCards?.[0]?.heroCardImg,
-    heroCardImg_1: content.heroCards?.[1]?.heroCardImg,
-    heroCardImg_2: content.heroCards?.[2]?.heroCardImg,
     imgWhyOutsoutcing: content.imgWhyOutsoutcing,
     imgtwoWhyOutsoutcing: content.imgtwoWhyOutsoutcing,
     whyOutSourceAccounting: content.whyOutSourceAccounting,
-    whyCardImage_0: content.whyOutsoutcingCards?.[0]?.whyCardImage,
-    whyCardImage_1: content.whyOutsoutcingCards?.[1]?.whyCardImage,
-    whyCardImage_2: content.whyOutsoutcingCards?.[2]?.whyCardImage,
-    imgServiceCard_0: content.serviceCards?.[0]?.imgServiceCard,
-    imgServiceCard_1: content.serviceCards?.[1]?.imgServiceCard,
-    imgServiceCard_2: content.serviceCards?.[2]?.imgServiceCard,
-    imgServiceCard_3: content.serviceCards?.[3]?.imgServiceCard,
-    imgServiceCard_4: content.serviceCards?.[4]?.imgServiceCard,
-    imgServiceCard_5: content.serviceCards?.[5]?.imgServiceCard,
-    howWeWorkIcon_0: content.howWeWorkSteps?.[0]?.howWeWorkIcon,
-    howWeWorkIcon_1: content.howWeWorkSteps?.[1]?.howWeWorkIcon,
-    howWeWorkIcon_2: content.howWeWorkSteps?.[2]?.howWeWorkIcon,
     lineOne: content.lineOne,
     lineTwo: content.lineTwo,
-    testimonialBgImg_0: content.testimonialsCard?.[0]?.testimonialBgImg,
-    testimonialBgImg_1: content.testimonialsCard?.[1]?.testimonialBgImg,
-    testimonialBgImg_2: content.testimonialsCard?.[2]?.testimonialBgImg,
-    testimonialPersonImg_0: content.testimonialsCard?.[0]?.testimonialPersonImg,
-    testimonialPersonImg_1: content.testimonialsCard?.[1]?.testimonialPersonImg,
-    testimonialPersonImg_2: content.testimonialsCard?.[2]?.testimonialPersonImg,
     joinUsBgImage: content.joinUsBgImage,
   };
+
+  (content.heroCards ?? []).forEach((card, index) => {
+    mappedImages[`heroCardImg_${index}`] = card.heroCardImg;
+  });
+
+  (content.whyOutsoutcingCards ?? []).forEach((card, index) => {
+    mappedImages[`whyCardImage_${index}`] = card.whyCardImage;
+  });
+
+  (content.serviceCards ?? []).forEach((card, index) => {
+    mappedImages[`imgServiceCard_${index}`] = card.imgServiceCard;
+  });
+
+  (content.howWeWorkSteps ?? []).forEach((step, index) => {
+    mappedImages[`howWeWorkIcon_${index}`] = step.howWeWorkIcon;
+  });
+
+  (content.testimonialsCard ?? []).forEach((card, index) => {
+    mappedImages[`testimonialBgImg_${index}`] = card.testimonialBgImg;
+    mappedImages[`testimonialPersonImg_${index}`] = card.testimonialPersonImg;
+  });
+
+  return mappedImages;
 }
 
 export function mapHomeFormDefaults(content: BackendContent) {
+  type HeroCardContent = NonNullable<BackendContent["heroCards"]>[number];
+  type WhyOutsourceCardContent =
+    NonNullable<BackendContent["whyOutsoutcingCards"]>[number];
+  type ServiceCardContent =
+    NonNullable<BackendContent["serviceCards"]>[number];
+  type TestimonialCardContent =
+    NonNullable<BackendContent["testimonialsCard"]>[number];
+
+  const heroCardsSource =
+    content.heroCards && content.heroCards.length > 0
+      ? content.heroCards
+      : Array.from(
+          { length: DEFAULT_HERO_CARD_COUNT },
+          () => ({} as HeroCardContent),
+        );
+
+  const whyOutsourceCardsSource =
+    content.whyOutsoutcingCards && content.whyOutsoutcingCards.length > 0
+      ? content.whyOutsoutcingCards
+      : Array.from(
+          { length: DEFAULT_WHY_OUTSOURCE_CARD_COUNT },
+          () => ({} as WhyOutsourceCardContent),
+        );
+
+  const serviceCardsSource =
+    content.serviceCards && content.serviceCards.length > 0
+      ? content.serviceCards
+      : Array.from(
+          { length: DEFAULT_SERVICE_CARD_COUNT },
+          () => ({} as ServiceCardContent),
+        );
+
+  const testimonialCardsSource =
+    content.testimonialsCard && content.testimonialsCard.length > 0
+      ? content.testimonialsCard
+      : Array.from(
+          { length: DEFAULT_TESTIMONIAL_CARD_COUNT },
+          () => ({} as TestimonialCardContent),
+        );
+
   return {
     title: content.title ?? "",
     headingFirstText: content.headingTextFirst ?? "",
@@ -153,26 +199,26 @@ export function mapHomeFormDefaults(content: BackendContent) {
     descriptionHeroHomePageTwo: content.description2 ?? "",
     freeConsultation: content.freeConsultation ?? "",
     heroCardName: content.cardSelector ?? "",
-    heroCardSections: cardDropdowns.map((_, index) => ({
-      title: content.heroCards?.[index]?.heroCardTitle ?? "",
-      content: content.heroCards?.[index]?.heroCardContent ?? "",
+    heroCardSections: heroCardsSource.map((card) => ({
+      title: card.heroCardTitle ?? "",
+      content: card.heroCardContent ?? "",
+      existingImageUrl: card.heroCardImg ?? "",
     })),
     whyOutsourcing: content.whyOutsoutcing ?? "",
     headingWhyOutsourcing: content.headingWhyOutsoutcing ?? "",
     descriptionWhyOutsourcing: content.descriptionWhyOutsoutcing ?? "",
-    whyOutsourceCardSections: cardDropdowns.map((_, index) => ({
-      pointerTextWhyOutsourcing:
-        content.whyOutsoutcingCards?.[index]?.whyCardPointerText ?? "",
+    whyOutsourceCardSections: whyOutsourceCardsSource.map((card) => ({
+      pointerTextWhyOutsourcing: card.whyCardPointerText ?? "",
+      existingWhyCardImage: card.whyCardImage ?? "",
     })),
     headingService: content.headingServiceSection ?? "",
     descriptionService: content.descriptionServiceSection ?? "",
-    serviceCards: serviceCardDropdowns.map((_, index) => ({
-      titleServiceCard: content.serviceCards?.[index]?.titleServiceCard ?? "",
-      descriptionServiceCard:
-        content.serviceCards?.[index]?.descriptionServiceCard ?? "",
-      buttontxtServiceCard:
-        content.serviceCards?.[index]?.buttontxtServiceCard ?? "",
-      pglink: content.serviceCards?.[index]?.pglink ?? "",
+    serviceCards: serviceCardsSource.map((card) => ({
+      titleServiceCard: card.titleServiceCard ?? "",
+      descriptionServiceCard: card.descriptionServiceCard ?? "",
+      buttontxtServiceCard: card.buttontxtServiceCard ?? "",
+      pglink: card.pglink ?? "",
+      existingServiceCardImage: card.imgServiceCard ?? "",
     })),
     howWeWork: {
       heading: content.headingHowWeWork ?? "",
@@ -188,13 +234,12 @@ export function mapHomeFormDefaults(content: BackendContent) {
     },
     clientsTestimonial: {
       heading: content.headingClientsTestimonial ?? "",
-      testimonialCards: testimonialCardDropdowns.map((_, index) => ({
-        testimonialTitle:
-          content.testimonialsCard?.[index]?.testimonialTitle ?? "",
-        testimonialDescription:
-          content.testimonialsCard?.[index]?.testimonialDescription ?? "",
-        testimonialPersonName:
-          content.testimonialsCard?.[index]?.testimonialPersonName ?? "",
+      testimonialCards: testimonialCardsSource.map((card) => ({
+        testimonialTitle: card.testimonialTitle ?? "",
+        testimonialDescription: card.testimonialDescription ?? "",
+        testimonialPersonName: card.testimonialPersonName ?? "",
+        existingTestimonialBgImg: card.testimonialBgImg ?? "",
+        existingTestimonialPersonImg: card.testimonialPersonImg ?? "",
       })),
     },
     topbar: {
@@ -269,7 +314,8 @@ export function buildHomeFormData(
     "heroCards",
     JSON.stringify(
       (data.heroCardSections ?? []).map((card, i) => ({
-        heroCardImg: ec.heroCards?.[i]?.heroCardImg ?? "",
+        heroCardImg:
+          card.existingImageUrl ?? ec.heroCards?.[i]?.heroCardImg ?? "",
         heroCardTitle: card.title ?? "",
         heroCardContent: card.content ?? "",
       })),
@@ -284,7 +330,10 @@ export function buildHomeFormData(
     "whyOutsoutcingCards",
     JSON.stringify(
       (data.whyOutsourceCardSections ?? []).map((card, i) => ({
-        whyCardImage: ec.whyOutsoutcingCards?.[i]?.whyCardImage ?? "",
+        whyCardImage:
+          card.existingWhyCardImage ??
+          ec.whyOutsoutcingCards?.[i]?.whyCardImage ??
+          "",
         whyCardPointerText: card.pointerTextWhyOutsourcing ?? "",
       })),
     ),
@@ -300,7 +349,10 @@ export function buildHomeFormData(
     "serviceCards",
     JSON.stringify(
       (data.serviceCards ?? []).map((card, i) => ({
-        imgServiceCard: ec.serviceCards?.[i]?.imgServiceCard ?? "",
+        imgServiceCard:
+          card.existingServiceCardImage ??
+          ec.serviceCards?.[i]?.imgServiceCard ??
+          "",
         titleServiceCard: card.titleServiceCard ?? "",
         descriptionServiceCard: card.descriptionServiceCard ?? "",
         buttontxtServiceCard: card.buttontxtServiceCard ?? "",
@@ -353,9 +405,14 @@ export function buildHomeFormData(
     "testimonialsCard",
     JSON.stringify(
       (data.clientsTestimonial?.testimonialCards ?? []).map((card, i) => ({
-        testimonialBgImg: ec.testimonialsCard?.[i]?.testimonialBgImg ?? "",
+        testimonialBgImg:
+          card.existingTestimonialBgImg ??
+          ec.testimonialsCard?.[i]?.testimonialBgImg ??
+          "",
         testimonialPersonImg:
-          ec.testimonialsCard?.[i]?.testimonialPersonImg ?? "",
+          card.existingTestimonialPersonImg ??
+          ec.testimonialsCard?.[i]?.testimonialPersonImg ??
+          "",
         testimonialTitle: card.testimonialTitle ?? "",
         testimonialDescription: card.testimonialDescription ?? "",
         testimonialPersonName: card.testimonialPersonName ?? "",

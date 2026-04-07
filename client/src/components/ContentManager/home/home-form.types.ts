@@ -1,64 +1,77 @@
+export type HeroCardForm = {
+  image?: FileList;
+  title: string;
+  content: string;
+  existingImageUrl?: string;
+};
+
+export type WhyOutsourceCardForm = {
+  imgPointerWhyOutsourcing?: FileList;
+  pointerTextWhyOutsourcing: string;
+  existingWhyCardImage?: string;
+};
+
+export type ServiceCardForm = {
+  imgServiceCard?: FileList;
+  titleServiceCard: string;
+  descriptionServiceCard: string;
+  buttontxtServiceCard: string;
+  pglink: string;
+  existingServiceCardImage?: string;
+};
+
+export type TestimonialCardForm = {
+  testimonialBgImg?: FileList;
+  testimonialPersonImg?: FileList;
+  testimonialTitle: string;
+  testimonialDescription: string;
+  testimonialPersonName: string;
+  existingTestimonialBgImg?: string;
+  existingTestimonialPersonImg?: string;
+};
+
 export type FormValues = {
-  bgImage: FileList;
+  bgImage?: FileList;
   title: string;
   headingFirstText: string;
   headingMiddleText: string;
   headingEndText: string;
-  ukFlag: FileList;
+  ukFlag?: FileList;
   descriptionHeroHomepage: string;
   descriptionHeroHomePageTwo: string;
   freeConsultation: string;
   whyOutsourcing: string;
   headingWhyOutsourcing: string;
   descriptionWhyOutsourcing: string;
-  imgWhyOutsourcing: FileList;
-  imgTwoWhyOutsourcing: FileList;
-  whyOutSourceAccounting: FileList;
+  imgWhyOutsourcing?: FileList;
+  imgTwoWhyOutsourcing?: FileList;
+  whyOutSourceAccounting?: FileList;
   headingService: string;
   descriptionService: string;
   heroCardName: string;
-  heroCardSections: {
-    image: FileList;
-    title: string;
-    content: string;
-  }[];
-  whyOutsourceCardSections: {
-    imgPointerWhyOutsourcing: FileList;
-    pointerTextWhyOutsourcing: string;
-  }[];
-  serviceCards: {
-    imgServiceCard: FileList;
-    titleServiceCard: string;
-    descriptionServiceCard: string;
-    buttontxtServiceCard: string;
-    pglink: string;
-  }[];
+  heroCardSections: HeroCardForm[];
+  whyOutsourceCardSections: WhyOutsourceCardForm[];
+  serviceCards: ServiceCardForm[];
   howWeWork: {
     heading: string;
     one: string;
-    oneIcon: FileList;
+    oneIcon?: FileList;
     title: string;
     description: string;
     two: string;
-    twoIcon: FileList;
+    twoIcon?: FileList;
     titleTwo: string;
     descriptionTwo: string;
     three: string;
-    threeIcon: FileList;
+    threeIcon?: FileList;
     threeTitle: string;
     threeDescription: string;
-    lineOne: FileList;
-    lineTwo: FileList;
+    lineOne?: FileList;
+    lineTwo?: FileList;
   };
   clientsTestimonial: {
     heading: string;
-    testimonialCards: {
-      testimonialBgImg: FileList;
-      testimonialPersonImg: FileList;
-      testimonialTitle: string;
-      testimonialDescription: string;
-      testimonialPersonName: string;
-    }[];
+    testimonialCards: TestimonialCardForm[];
   };
   topbar: {
     email: string;
@@ -67,25 +80,38 @@ export type FormValues = {
   };
   joinUs: {
     heading: string;
-    bgimg: FileList;
+    bgimg?: FileList;
   };
 };
 
-export const cardDropdowns = [
-  { id: "serviceCardOne", title: "Card Dropdown 1" },
-  { id: "serviceCardTwo", title: "Card Dropdown 2" },
-  { id: "serviceCardThree", title: "Card Dropdown 3" },
-  { id: "serviceCardFour", title: "Card Dropdown 4" },
-  { id: "serviceCardFive", title: "Card Dropdown 5" },
-];
+export const DEFAULT_HERO_CARD_COUNT = 5;
+export const DEFAULT_WHY_OUTSOURCE_CARD_COUNT = 5;
+export const DEFAULT_SERVICE_CARD_COUNT = 6;
+export const DEFAULT_TESTIMONIAL_CARD_COUNT = 3;
 
-export const serviceCardDropdowns = Array.from({ length: 6 }, (_, index) => ({
-  id: `serviceSectionCard${index + 1}`,
-  title: `Service Card ${index + 1}`,
-}));
+export const createEmptyHeroCard = (): HeroCardForm => ({
+  title: "",
+  content: "",
+  existingImageUrl: "",
+});
 
-export const testimonialCardDropdowns = [
-  { id: "testimonialFounder", title: "Founder" },
-  { id: "testimonialCEO", title: "CEO" },
-  { id: "testimonialCoFounder", title: "Co-Founder" },
-];
+export const createEmptyWhyOutsourceCard = (): WhyOutsourceCardForm => ({
+  pointerTextWhyOutsourcing: "",
+  existingWhyCardImage: "",
+});
+
+export const createEmptyServiceCard = (): ServiceCardForm => ({
+  titleServiceCard: "",
+  descriptionServiceCard: "",
+  buttontxtServiceCard: "",
+  pglink: "",
+  existingServiceCardImage: "",
+});
+
+export const createEmptyTestimonialCard = (): TestimonialCardForm => ({
+  testimonialTitle: "",
+  testimonialDescription: "",
+  testimonialPersonName: "",
+  existingTestimonialBgImg: "",
+  existingTestimonialPersonImg: "",
+});
