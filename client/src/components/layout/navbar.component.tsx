@@ -20,7 +20,7 @@ export const Navbar = ({ title = "Dashboard" }: NavbarProps) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const navLinks = isCurrentUserAdmin()
-    ? [...baseNavLinks, { to: "/users", label: "Users" }]
+    ? [{ to: "/users", label: "Users" }, ...baseNavLinks]
     : baseNavLinks;
 
   const handleLogout = () => {
