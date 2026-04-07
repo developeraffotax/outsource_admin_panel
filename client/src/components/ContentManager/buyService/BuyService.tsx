@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config/api";
+import { CmsSaveBar } from "../shared/CmsSaveBar";
 
 type BuyServiceEntry = {
   name: string;
@@ -23,6 +24,7 @@ const defaultEntries: BuyServiceEntry[] = [
 const BuyService = () => {
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const saveMessageTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
     control,
@@ -60,6 +62,18 @@ const BuyService = () => {
     loadContent();
   }, [reset]);
 
+  const showSaveMessage = (msg: string) => {
+    setSaveMessage(msg);
+    if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
+    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), 4000);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
+    };
+  }, []);
+
   const onSubmit = async (data: BuyServiceFormValues) => {
     setSaving(true);
     setSaveMessage(null);
@@ -71,12 +85,12 @@ const BuyService = () => {
         { entries: data.nameAndPrice },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      setSaveMessage("Saved successfully!");
+      showSaveMessage("Saved successfully!");
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { error?: string } } })?.response?.data
           ?.error ?? "Failed to save. Please try again.";
-      setSaveMessage(message);
+      showSaveMessage(message);
     } finally {
       setSaving(false);
     }
@@ -91,18 +105,7 @@ const BuyService = () => {
         action="post"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex items-center gap-4">
-          <button type="submit" disabled={saving} className="cms-btn-primary">
-            {saving ? "Saving..." : "Save"}
-          </button>
-          {saveMessage && (
-            <span
-              className={`cms-status ${saveMessage === "Saved successfully!" ? "cms-status-success" : "cms-status-error"}`}
-            >
-              {saveMessage}
-            </span>
-          )}
-        </div>
+        <CmsSaveBar saving={saving} saveMessage={saveMessage} />
 
         <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
           <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">

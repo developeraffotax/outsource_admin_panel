@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import faviconWhite from "../../assets/FaviconWhite.svg";
 
 type NavbarProps = {
   title: string;
@@ -32,21 +33,12 @@ export const Navbar = ({ title = "Dashboard" }: NavbarProps) => {
       <div className="cms-navbar-inner">
         {/* Brand */}
         <div className="cms-navbar-brand">
-          <div className="cms-navbar-brand-icon">
-            <svg
-              className="h-4 w-4 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </div>
+          <img
+            src={faviconWhite}
+            alt="CMS logo"
+            className="h-6 w-6 object-contain"
+          />
+
           <span className="cms-navbar-title">{title}</span>
         </div>
 
