@@ -36,7 +36,7 @@ async function AuthService(
     { id: user._id.toString(), role },
     process.env.JWT_SECRET!,
     {
-      expiresIn: "1h",
+      expiresIn: "8h",
     },
   );
 
