@@ -13,7 +13,9 @@ import {
   getFaqContentController,
   saveFaqContentController,
   getServiceContentController,
+  getServicePricingController,
   saveServiceContentController,
+  saveServicePricingController,
 } from "../controller/Content.controller.js";
 
 const router = express.Router();
@@ -170,8 +172,30 @@ router.put(
 // Service routes
 // upload.any() is used here because image field names are dynamic (2D indexed:
 // serviceIndex + cardIndex), making it impractical to enumerate them statically.
+router.get("/services/:slug/pricing", getServicePricingController);
+router.post(
+  "/services/:slug/pricing",
+  AuthMiddleware,
+  saveServicePricingController,
+);
+router.put(
+  "/services/:slug/pricing",
+  AuthMiddleware,
+  saveServicePricingController,
+);
+
 router.get("/services", getServiceContentController);
-router.post("/services", AuthMiddleware, upload.any(), saveServiceContentController);
-router.put("/services", AuthMiddleware, upload.any(), saveServiceContentController);
+router.post(
+  "/services",
+  AuthMiddleware,
+  upload.any(),
+  saveServiceContentController,
+);
+router.put(
+  "/services",
+  AuthMiddleware,
+  upload.any(),
+  saveServiceContentController,
+);
 
 export default router;

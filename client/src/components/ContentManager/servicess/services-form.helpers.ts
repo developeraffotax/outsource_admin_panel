@@ -1,4 +1,9 @@
 import type { ServicesForm } from "./sections/ServicesProps";
+import type {
+  PricingConfig,
+  PricingFeature,
+  PricingPlan,
+} from "./Services.type";
 
 export type ExistingService = {
   slug?: string;
@@ -41,7 +46,57 @@ export type ExistingService = {
     descriptiontwo?: string;
     img?: string;
   };
+  Pricing?: {
+    config?: Partial<PricingConfig>;
+    plans?: Array<
+      Omit<Partial<PricingPlan>, "features"> & {
+        features?: Array<Partial<PricingFeature>>;
+      }
+    >;
+  };
 };
+
+export function parseOptionalNumber(value: unknown): number | undefined {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
+}
+
+export function createEmptyPricingFeature(): PricingFeature {
+  return {
+    text: "",
+    included: true,
+  };
+}
+
+export function createEmptyPricingPlan(): PricingPlan {
+  return {
+    id: "",
+    name: "",
+    checkoutName: "",
+    price: undefined,
+    currency: "£",
+    description: "",
+    billingCycle: "",
+    isPopular: false,
+    features: [],
+  };
+}
+
+export function createEmptyPricingConfig(): PricingConfig {
+  return {
+    eyebrow: "",
+    title: "",
+    description: "",
+  };
+}
 
 export function buildServicesTextData(
   data: ServicesForm,
@@ -110,6 +165,27 @@ export function buildServicesTextData(
         descriptionone: svc.WhoData?.descriptionone,
         descriptiontwo: svc.WhoData?.descriptiontwo,
         img: existing?.WhoData?.img,
+      },
+      Pricing: {
+        config: {
+          eyebrow: svc.Pricing?.config?.eyebrow,
+          title: svc.Pricing?.config?.title,
+          description: svc.Pricing?.config?.description,
+        },
+        plans: svc.Pricing?.plans?.map((plan) => ({
+          id: plan.id,
+          name: plan.name,
+          checkoutName: plan.checkoutName,
+          price: parseOptionalNumber(plan.price),
+          currency: plan.currency,
+          description: plan.description,
+          billingCycle: plan.billingCycle,
+          isPopular: plan.isPopular,
+          features: plan.features?.map((feature) => ({
+            text: feature.text,
+            included: feature.included,
+          })),
+        })),
       },
     };
   });
@@ -202,6 +278,10 @@ export function createEmptyService(): ServicesForm["services"][number] {
       descriptionone: "",
       descriptiontwo: "",
       img: undefined as unknown as FileList,
+    },
+    Pricing: {
+      config: createEmptyPricingConfig(),
+      plans: [],
     },
   };
 }

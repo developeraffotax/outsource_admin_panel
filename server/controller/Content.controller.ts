@@ -17,7 +17,9 @@ import {
 } from "../services/ContactUs.service.js";
 import {
   getServiceContent,
+  getServicePricingBySlug,
   saveServiceContent,
+  saveServicePricingBySlug,
 } from "../services/Service.service.js";
 import { triggerOutsourceRevalidation } from "../services/Revalidation.service.js";
 
@@ -26,6 +28,7 @@ import { BuyServiceSchemaZod } from "../models/BuyService.model.js";
 import { AboutUsSchemaZod } from "../models/AboutUs.model.js";
 import { contactUsSchema } from "../models/ContactUs.model.js";
 import { faqSchema } from "../models/Faq.model.js";
+import { pricingSchemaZod } from "../models/Service.model.js";
 import { z } from "zod";
 import {
   buildAboutUsContentData,
@@ -50,6 +53,31 @@ export async function getHomeContentController(
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+}
+
+function parsePricingPayload(value: unknown): unknown {
+  const source =
+    typeof value === "object" && value !== null && "pricing" in value
+      ? (value as Record<string, unknown>).pricing
+      : value;
+
+  if (typeof source === "string") {
+    try {
+      return JSON.parse(source);
+    } catch {
+      throw new Error("Invalid pricing payload JSON.");
+    }
+  }
+
+  return source;
+}
+
+function normalizeSlugParam(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) {
+    return value[0]?.trim() ?? "";
+  }
+
+  return value?.trim() ?? "";
 }
 // POST/PUT /api/content/home — saves home content including image files
 export async function saveHomeContentController(
@@ -252,6 +280,26 @@ export async function getServiceContentController(
   }
 }
 
+// GET /api/content/services/:slug/pricing — returns pricing for one service slug
+export async function getServicePricingController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const slug = normalizeSlugParam(req.params.slug);
+    if (!slug) {
+      res.status(400).json({ error: "Service slug is required" });
+      return;
+    }
+
+    const content = await getServicePricingBySlug(slug);
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({ content: content ?? {} });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 // POST/PUT /api/content/services — saves an array of services with images
 export async function saveServiceContentController(
   req: Request,
@@ -276,6 +324,34 @@ export async function saveServiceContentController(
     await cleanupRemovedCloudinaryUrls(oldDocs, saved);
     await triggerOutsourceRevalidation("services");
     res.status(200).json({ content: saved });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
+
+// POST/PUT /api/content/services/:slug/pricing — saves pricing only for one service slug
+export async function saveServicePricingController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const slug = normalizeSlugParam(req.params.slug);
+    if (!slug) {
+      res.status(400).json({ error: "Service slug is required" });
+      return;
+    }
+
+    const pricing = pricingSchemaZod.parse(parsePricingPayload(req.body));
+    const saved = await saveServicePricingBySlug(slug, pricing);
+
+    await triggerOutsourceRevalidation("services");
+    res.status(200).json({ content: saved.Pricing ?? {} });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: error.issues });

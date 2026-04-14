@@ -5,6 +5,7 @@ import WhatYouGet from "./WhatYouGet";
 import ServiceProcess from "./ServiceProcess";
 import WhyChooseUs from "./WhyChooseUs";
 import Statics from "./Statics";
+import Pricing from "./Pricing";
 
 // Show a saved Cloudinary URL as a small preview (only when value is a string, not a FileList)
 function ImgPreview({ value }: { value: unknown }) {
@@ -216,7 +217,32 @@ const ServiceItem = ({
           </div>
         </div>
       </details>
-
+      <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
+        <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+          <span>Pricing</span>
+          <svg
+            className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </summary>
+        <div className="cms-accordion-content border-t border-slate-100 p-4">
+          <Pricing
+            index={index}
+            register={register}
+            errors={errors}
+            control={control}
+          />
+        </div>
+      </details>
       <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
         <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
           <span>What You Get</span>

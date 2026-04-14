@@ -345,7 +345,41 @@ export type ServiceRaw = {
     descriptiontwo?: string;
     img?: string;
   };
+  Pricing?: {
+    config?: {
+      eyebrow?: string;
+      title?: string;
+      description?: string;
+    };
+    plans?: {
+      id?: string;
+      name?: string;
+      checkoutName?: string;
+      price?: number | string;
+      currency?: string;
+      description?: string;
+      billingCycle?: string;
+      isPopular?: boolean;
+      features?: {
+        text?: string;
+        included?: boolean;
+      }[];
+    }[];
+  };
 };
+
+function normalizeOptionalNumber(value: unknown): number | undefined {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
+}
 
 export function parseServiceRows(value: unknown): ServiceRaw[] {
   return parseJsonField<ServiceRaw>(value);
@@ -446,6 +480,23 @@ export function buildServiceContentData(
     svc.WhoData?.img,
   );
 
+  const pricingPlans = (svc.Pricing?.plans ?? oldSvc?.Pricing?.plans ?? []).map(
+    (plan) => ({
+      id: plan?.id,
+      name: plan?.name,
+      checkoutName: plan?.checkoutName,
+      price: normalizeOptionalNumber(plan?.price),
+      currency: plan?.currency,
+      description: plan?.description,
+      billingCycle: plan?.billingCycle,
+      isPopular: plan?.isPopular,
+      features: (plan?.features ?? []).map((feature) => ({
+        text: feature?.text,
+        included: feature?.included,
+      })),
+    }),
+  );
+
   return serviceSchemaZod.parse({
     slug: svc.slug,
     title: svc.title,
@@ -484,6 +535,17 @@ export function buildServiceContentData(
     WhoData: {
       ...svc.WhoData,
       ...(whoDataImg && { img: whoDataImg }),
+    },
+    Pricing: {
+      config: {
+        eyebrow:
+          svc.Pricing?.config?.eyebrow ?? oldSvc?.Pricing?.config?.eyebrow,
+        title: svc.Pricing?.config?.title ?? oldSvc?.Pricing?.config?.title,
+        description:
+          svc.Pricing?.config?.description ??
+          oldSvc?.Pricing?.config?.description,
+      },
+      plans: pricingPlans,
     },
   });
 }

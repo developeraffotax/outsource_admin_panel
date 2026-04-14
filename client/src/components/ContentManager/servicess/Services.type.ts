@@ -1,3 +1,31 @@
+export type PricingFeature = {
+  text: string;
+  included: boolean;
+};
+
+export type PricingPlan = {
+  id: string;
+  name: string;
+  checkoutName: string;
+  price?: number;
+  currency: string;
+  description: string;
+  billingCycle: string;
+  isPopular: boolean;
+  features: PricingFeature[];
+};
+
+export type PricingConfig = {
+  eyebrow: string;
+  title: string;
+  description: string;
+};
+
+export type PricingSection = {
+  config: PricingConfig;
+  plans: PricingPlan[];
+};
+
 export type FormValues = {
   slug: string;
   title: string;
@@ -62,4 +90,5 @@ export type FormValues = {
     descriptiontwo: string;
     img: FileList;
   };
+  Pricing: PricingSection;
 }[];
