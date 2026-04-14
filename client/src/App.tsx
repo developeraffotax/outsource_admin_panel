@@ -15,9 +15,29 @@ type AdminOnlyRouteProps = {
   children: ReactElement;
 };
 
+type GuestOnlyRouteProps = {
+  children: ReactElement;
+};
+
+function AuthLandingRoute() {
+  return isAuthenticated() ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
+
+function GuestOnlyRoute({ children }: GuestOnlyRouteProps) {
+  if (isAuthenticated()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
 function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
   if (!isAuthenticated()) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (!isCurrentUserAdmin()) {
@@ -46,7 +66,15 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<AuthLandingRoute />} />
+          <Route
+            path="/login"
+            element={
+              <GuestOnlyRoute>
+                <LoginPage />
+              </GuestOnlyRoute>
+            }
+          />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/buy-service" element={<BuyServicePage />} />
           <Route path="/about-us" element={<AboutUs />} />
