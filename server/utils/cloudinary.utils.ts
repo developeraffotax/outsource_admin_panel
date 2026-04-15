@@ -57,29 +57,8 @@ export async function buildUrlMap(
   return map;
 }
 
-// Delete a list of Cloudinary URLs (silently ignores failures so a bad URL never crashes the request)
-export async function deleteCloudinaryImages(urls: string[]): Promise<void> {
-  if (urls.length === 0) return;
-
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
-
-  await Promise.all(
-    urls.map(async (url) => {
-      const publicId = extractPublicId(url);
-      if (!publicId) {
-        console.warn(`[cloudinary] Could not extract public_id from: ${url}`);
-        return;
-      }
-      try {
-        const result = await cloudinary.uploader.destroy(publicId);
-        console.log(`[cloudinary] Deleted ${publicId}:`, result);
-      } catch (err) {
-        console.warn(`[cloudinary] Failed to delete ${publicId}:`, err);
-      }
-    }),
-  );
+// Keep image assets in Cloudinary to avoid cross-environment breakage.
+// Local and live deployments may use different MongoDB databases but the same Cloudinary account.
+export async function deleteCloudinaryImages(_urls: string[]): Promise<void> {
+  return;
 }
