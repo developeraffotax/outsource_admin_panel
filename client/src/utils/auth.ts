@@ -61,3 +61,11 @@ export const isAuthenticated = (): boolean => Boolean(getAuthToken());
 
 export const isCurrentUserAdmin = (): boolean =>
   isAuthenticated() && getCurrentUserRole() === "admin";
+
+export const buildAuthConfig = (): {
+  headers: { Authorization: string };
+} | null => {
+  const token = getAuthToken();
+  if (!token) return null;
+  return { headers: { Authorization: `Bearer ${token}` } };
+};

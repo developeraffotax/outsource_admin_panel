@@ -5,19 +5,21 @@ type EntryPreloaderProps = {
   minimumDurationMs?: number;
 };
 
-const entryHeadline = "Content Control Studio";
+const ENTRY_HEADLINE = "Content Control Studio";
+const MIN_EXIT_DELAY_MS = 900;
+const EXIT_ANIMATION_LEAD_MS = 420;
 
 const EntryPreloader = ({
   onComplete,
   minimumDurationMs = 1400,
 }: EntryPreloaderProps) => {
   const [isExiting, setIsExiting] = useState(false);
-  const words = useMemo(() => entryHeadline.split(" "), []);
+  const words = useMemo(() => ENTRY_HEADLINE.split(" "), []);
 
   useEffect(() => {
     const exitTimer = window.setTimeout(
       () => setIsExiting(true),
-      Math.max(900, minimumDurationMs - 420),
+      Math.max(MIN_EXIT_DELAY_MS, minimumDurationMs - EXIT_ANIMATION_LEAD_MS),
     );
     const doneTimer = window.setTimeout(() => onComplete(), minimumDurationMs);
 

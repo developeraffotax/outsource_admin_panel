@@ -7,9 +7,12 @@ import AboutUs from "./pages/AboutUs.page";
 import ContactUs from "./pages/ContactUs.page";
 import Faq from "./pages/Faq.page";
 import Services from "./pages/Services.page";
+import OrdersPage from "./pages/Orders.page";
 import UsersPage from "./pages/Users.page.tsx";
 import EntryPreloader from "./components/layout/entry-preloader.component";
 import { isAuthenticated, isCurrentUserAdmin } from "./utils/auth";
+
+const SESSION_KEY_ENTRY_ANIMATION = "cms_seen_entry_animation";
 
 type AdminOnlyRouteProps = {
   children: ReactElement;
@@ -51,13 +54,13 @@ function App() {
   const [showEntry, setShowEntry] = useState(true);
 
   useEffect(() => {
-    const hasSeenEntry = sessionStorage.getItem("cms_seen_entry_animation");
+    const hasSeenEntry = sessionStorage.getItem(SESSION_KEY_ENTRY_ANIMATION);
     if (hasSeenEntry) {
       setShowEntry(false);
       return;
     }
 
-    sessionStorage.setItem("cms_seen_entry_animation", "1");
+    sessionStorage.setItem(SESSION_KEY_ENTRY_ANIMATION, "1");
   }, []);
 
   return (
@@ -81,6 +84,14 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/services" element={<Services />} />
+          <Route
+            path="/orders"
+            element={
+              <AdminOnlyRoute>
+                <OrdersPage />
+              </AdminOnlyRoute>
+            }
+          />
           <Route
             path="/users"
             element={

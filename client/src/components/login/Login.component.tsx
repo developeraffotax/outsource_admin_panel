@@ -43,7 +43,6 @@ const extractLoginErrorMessage = (error: unknown): string => {
 
 const Login = () => {
   const navigate = useNavigate();
-  const BACKEND = API_BASE_URL;
   const {
     register,
     handleSubmit,
@@ -53,14 +52,13 @@ const Login = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const postData = async (data: LoginFormData) => {
+  const handleLoginSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
       const res = await axios.post<LoginResponse>(
-        `${BACKEND}/api/auth/login`,
+        `${API_BASE_URL}/api/auth/login`,
         data,
       );
-      console.log("Login response", res.data);
       const normalizedUser = {
         ...res.data.user,
         role: normalizeRole(res.data.user.role),
@@ -76,8 +74,7 @@ const Login = () => {
   };
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    console.log("Login data", data);
-    postData(data);
+    handleLoginSubmit(data);
   };
 
   return (

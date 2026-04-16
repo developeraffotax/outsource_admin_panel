@@ -7,7 +7,7 @@ type NavbarProps = {
   title: string;
 };
 
-const baseNavLinks = [
+const BASE_NAV_LINKS = [
   { to: "/dashboard", label: "Landing page" },
   { to: "/buy-service", label: "Prices" },
   { to: "/about-us", label: "About Us" },
@@ -20,8 +20,12 @@ export const Navbar = ({ title = "Dashboard" }: NavbarProps) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const navLinks = isCurrentUserAdmin()
-    ? [{ to: "/users", label: "Users" }, ...baseNavLinks]
-    : baseNavLinks;
+    ? [
+        { to: "/orders", label: "Orders" },
+        { to: "/users", label: "Users" },
+        ...BASE_NAV_LINKS,
+      ]
+    : BASE_NAV_LINKS;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -64,7 +68,7 @@ export const Navbar = ({ title = "Dashboard" }: NavbarProps) => {
           {/* Mobile hamburger */}
           <button
             className="cms-mobile-toggle"
-            onClick={() => setMenuOpen((o) => !o)}
+            onClick={() => setMenuOpen((isOpen) => !isOpen)}
             aria-label="Toggle menu"
           >
             {menuOpen ? (

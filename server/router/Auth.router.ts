@@ -8,6 +8,10 @@ import {
   listUsersController,
   updateUserPasswordController,
 } from "../controller/User.controller.js";
+import {
+  getOrderByIdController,
+  listOrdersController,
+} from "../controller/Order.controller.js";
 const router = express.Router();
 
 router.post("/login", AuthController);
@@ -38,6 +42,19 @@ router.delete(
   AuthMiddleware,
   RequireAdminMiddleware,
   deleteUserController,
+);
+
+router.get(
+  "/orders",
+  AuthMiddleware,
+  RequireAdminMiddleware,
+  listOrdersController,
+);
+router.get(
+  "/orders/:id",
+  AuthMiddleware,
+  RequireAdminMiddleware,
+  getOrderByIdController,
 );
 
 export default router;

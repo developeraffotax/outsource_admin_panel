@@ -1,0 +1,5 @@
+# Ignore agents folder
+.agents/
+
+# Ignore skills lock file
+skills-lock.json

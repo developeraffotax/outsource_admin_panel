@@ -3,10 +3,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { API_BASE_URL } from "../../../config/api";
 import {
-  getAuthToken,
+  buildAuthConfig,
   getCurrentUser,
   normalizeRole,
 } from "../../../utils/auth";
+import { extractErrorMessage } from "../../../utils/http";
+
+const MIN_PASSWORD_LENGTH = 8;
 
 type ManagedUser = {
   id: string;
@@ -24,8 +27,6 @@ type FeedbackState = {
   message: string;
 };
 
-const BACKEND = API_BASE_URL;
-
 const normalizeManagedUser = (user: {
   id?: unknown;
   email?: unknown;
@@ -39,34 +40,6 @@ const normalizeManagedUser = (user: {
 const sortUsersByEmail = (users: ManagedUser[]): ManagedUser[] =>
   [...users].sort((a, b) => a.email.localeCompare(b.email));
 
-const extractErrorMessage = (error: unknown, fallback: string): string => {
-  if (axios.isAxiosError(error)) {
-    const responseData = error.response?.data as
-      | {
-          error?: unknown;
-        }
-      | undefined;
-
-    if (typeof responseData?.error === "string") {
-      return responseData.error;
-    }
-
-    if (Array.isArray(responseData?.error)) {
-      const firstIssue = responseData.error[0] as
-        | { message?: unknown }
-        | undefined;
-      if (typeof firstIssue?.message === "string") {
-        return firstIssue.message;
-      }
-    }
-  }
-
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-
-  return fallback;
-};
 
 const Users = () => {
   const {
@@ -97,21 +70,8 @@ const Users = () => {
   >({});
   const [deletingById, setDeletingById] = useState<Record<string, boolean>>({});
 
-  const getAuthConfig = useCallback(() => {
-    const token = getAuthToken();
-    if (!token) {
-      return null;
-    }
-
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }, []);
-
   const loadUsers = useCallback(async () => {
-    const config = getAuthConfig();
+    const config = buildAuthConfig();
     if (!config) {
       setLoading(false);
       setFeedback({
@@ -123,7 +83,7 @@ const Users = () => {
 
     try {
       const response = await axios.get<{ users?: unknown[] }>(
-        `${BACKEND}/api/auth/users`,
+        `${API_BASE_URL}/api/auth/users`,
         config,
       );
 
@@ -150,14 +110,14 @@ const Users = () => {
     } finally {
       setLoading(false);
     }
-  }, [getAuthConfig]);
+  }, []);
 
   useEffect(() => {
     loadUsers();
   }, [loadUsers]);
 
   const onCreateUser: SubmitHandler<CreateUserForm> = async (data) => {
-    const config = getAuthConfig();
+    const config = buildAuthConfig();
     if (!config) {
       setFeedback({
         type: "error",
@@ -171,7 +131,7 @@ const Users = () => {
 
     try {
       const response = await axios.post<{ user?: unknown }>(
-        `${BACKEND}/api/auth/users`,
+        `${API_BASE_URL}/api/auth/users`,
         data,
         config,
       );
@@ -225,15 +185,15 @@ const Users = () => {
 
   const savePassword = async (userId: string) => {
     const draftPassword = (passwordDrafts[userId] ?? "").trim();
-    if (draftPassword.length < 8) {
+    if (draftPassword.length < MIN_PASSWORD_LENGTH) {
       setFeedback({
         type: "error",
-        message: "Password must be at least 8 characters.",
+        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
       });
       return;
     }
 
-    const config = getAuthConfig();
+    const config = buildAuthConfig();
     if (!config) {
       setFeedback({
         type: "error",
@@ -247,7 +207,7 @@ const Users = () => {
 
     try {
       await axios.patch(
-        `${BACKEND}/api/auth/users/${userId}/password`,
+        `${API_BASE_URL}/api/auth/users/${userId}/password`,
         { password: draftPassword },
         config,
       );
@@ -281,7 +241,7 @@ const Users = () => {
       return;
     }
 
-    const config = getAuthConfig();
+    const config = buildAuthConfig();
     if (!config) {
       setFeedback({
         type: "error",
@@ -294,7 +254,7 @@ const Users = () => {
     setFeedback(null);
 
     try {
-      await axios.delete(`${BACKEND}/api/auth/users/${user.id}`, config);
+      await axios.delete(`${API_BASE_URL}/api/auth/users/${user.id}`, config);
       setUsers((currentUsers) =>
         currentUsers.filter((existingUser) => existingUser.id !== user.id),
       );
@@ -383,8 +343,8 @@ const Users = () => {
               {...register("password", {
                 required: "Password is required",
                 minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
+                  value: MIN_PASSWORD_LENGTH,
+                  message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
                 },
               })}
             />
