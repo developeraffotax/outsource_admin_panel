@@ -9,7 +9,7 @@ import BookACall from "./sections/BookACall";
 import { API_BASE_URL } from "../../../config/api";
 import { CmsSaveBar } from "../shared/CmsSaveBar";
 
-const BACKEND = API_BASE_URL;
+const SAVE_MESSAGE_TIMEOUT_MS = 4000;
 
 const Faq = () => {
   const {
@@ -29,7 +29,7 @@ const Faq = () => {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await axios.get(`${BACKEND}/api/content/faq`);
+        const res = await axios.get(`${API_BASE_URL}/api/content/faq`);
         const c = res.data.content;
         if (!c) return;
         setSavedImages({ bookACallImg: c.bookACall?.img });
@@ -48,8 +48,9 @@ const Faq = () => {
             description: c.bookACall?.description ?? "",
           },
         });
-      } catch {
-        // silently ignore — form keeps its defaults
+      } catch (err) {
+        console.warn("Failed to load content:", err);
+        setSaveMessage("Could not load saved content. Showing defaults.");
       } finally {
         setLoading(false);
       }
@@ -62,7 +63,7 @@ const Faq = () => {
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
     saveMessageTimer.current = setTimeout(() => {
       setSaveMessage(null);
-    }, 4000);
+    }, SAVE_MESSAGE_TIMEOUT_MS);
   };
 
   useEffect(() => {
@@ -98,7 +99,7 @@ const Faq = () => {
       }
 
       const response = await axios.post(
-        `${BACKEND}/api/content/faq`,
+        `${API_BASE_URL}/api/content/faq`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },

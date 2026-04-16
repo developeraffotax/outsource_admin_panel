@@ -16,7 +16,7 @@ import {
   mapAboutUsSavedImages,
 } from "./aboutUS.helpers";
 
-const BACKEND = API_BASE_URL;
+const SAVE_MESSAGE_TIMEOUT_MS = 4000;
 
 const AboutUS = () => {
   const {
@@ -36,14 +36,15 @@ const AboutUS = () => {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await axios.get(`${BACKEND}/api/content/about-us`);
+        const res = await axios.get(`${API_BASE_URL}/api/content/about-us`);
         const c = res.data.content;
         if (!c) return;
 
         setSavedImages(mapAboutUsSavedImages(c));
         reset(mapAboutUsFormDefaults(c));
-      } catch {
-        // silently ignore — form keeps its defaults
+      } catch (err) {
+        console.warn("Failed to load content:", err);
+        setSaveMessage("Could not load saved content. Showing defaults.");
       } finally {
         setLoading(false);
       }
@@ -56,7 +57,7 @@ const AboutUS = () => {
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
     saveMessageTimer.current = setTimeout(() => {
       setSaveMessage(null);
-    }, 4000);
+    }, SAVE_MESSAGE_TIMEOUT_MS);
   };
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const AboutUS = () => {
       const formData = buildAboutUsFormData(data, savedImages);
 
       const response = await axios.post(
-        `${BACKEND}/api/content/about-us`,
+        `${API_BASE_URL}/api/content/about-us`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },

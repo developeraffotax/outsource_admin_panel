@@ -1,4 +1,119 @@
-import type { HomeSectionProps } from "./section-props.types";
+import type { Path } from "react-hook-form";
+import type { FormValues } from "../home-form.types";
+import type { HomeSectionProps, SavedImages } from "./section-props.types";
+
+type StepCardProps = {
+  stepIndex: number;
+  stepLabel: string;
+  stepNumberField: Path<FormValues>;
+  iconField: Path<FormValues>;
+  titleField: Path<FormValues>;
+  descriptionField: Path<FormValues>;
+  imageKey: string;
+  iconErrorMessage?: string;
+  titleErrorMessage?: string;
+  descriptionErrorMessage?: string;
+  savedImages: SavedImages | undefined;
+  register: HomeSectionProps["register"];
+};
+
+const StepCard = ({
+  stepIndex,
+  stepLabel,
+  stepNumberField,
+  iconField,
+  titleField,
+  descriptionField,
+  imageKey,
+  iconErrorMessage,
+  titleErrorMessage,
+  descriptionErrorMessage,
+  savedImages,
+  register,
+}: StepCardProps) => {
+  const stepNumber = stepIndex + 1;
+  const iconInputId = `howWeWork-icon-${stepNumber}`;
+  const titleInputId = `howWeWork-title-${stepNumber}`;
+  const descriptionInputId = `howWeWork-description-${stepNumber}`;
+  const stepNumberInputId = `howWeWork-stepNumber-${stepNumber}`;
+  const savedIconUrl = savedImages?.[imageKey];
+
+  return (
+    <div className="relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-sm">
+      <div className="absolute -left-2 -top-2 rounded-full border border-slate-300 bg-white px-2 py-0.5 shadow-sm">
+        <input
+          id={stepNumberInputId}
+          type="text"
+          className="w-8 border-none bg-transparent p-0 text-center text-xs font-semibold text-slate-700"
+          {...register(stepNumberField)}
+        />
+      </div>
+
+      <div className="mx-auto mb-3 grid h-24 w-24 place-items-center rounded-full border border-slate-600 bg-white p-3 shadow-lg md:h-28 md:w-28">
+        {savedIconUrl ? (
+          <img
+            src={savedIconUrl}
+            alt={`${stepLabel} icon`}
+            className="h-full w-full rounded-full object-contain"
+          />
+        ) : (
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Icon {stepNumber}
+          </span>
+        )}
+      </div>
+
+      <label
+        htmlFor={iconInputId}
+        className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-600"
+      >
+        {stepLabel} icon
+      </label>
+      <input
+        id={iconInputId}
+        type="file"
+        accept="image/*"
+        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+        {...register(iconField)}
+      />
+      {iconErrorMessage && (
+        <p className="mt-1 text-sm text-red-600">{iconErrorMessage}</p>
+      )}
+
+      <label
+        htmlFor={titleInputId}
+        className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
+      >
+        {stepLabel} title
+      </label>
+      <input
+        id={titleInputId}
+        type="text"
+        className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-base font-semibold text-slate-800"
+        {...register(titleField)}
+      />
+      {titleErrorMessage && (
+        <p className="mt-1 text-sm text-red-600">{titleErrorMessage}</p>
+      )}
+
+      <label
+        htmlFor={descriptionInputId}
+        className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
+      >
+        {stepLabel} description
+      </label>
+      <textarea
+        id={descriptionInputId}
+        rows={3}
+        className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-sm text-slate-600"
+        {...register(descriptionField)}
+      />
+      {descriptionErrorMessage && (
+        <p className="mt-1 text-sm text-red-600">{descriptionErrorMessage}</p>
+      )}
+    </div>
+  );
+};
 
 const HowWeWorkSection = ({
   register,
@@ -41,85 +156,20 @@ const HowWeWorkSection = ({
               </div>
 
               <div className="grid grid-cols-1 items-start gap-y-3 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:gap-x-2">
-                <div className="relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-sm">
-                  <div className="absolute -left-2 -top-2 rounded-full border border-slate-300 bg-white px-2 py-0.5 shadow-sm">
-                    <input
-                      id="howWeWork-one"
-                      type="text"
-                      className="w-8 border-none bg-transparent p-0 text-center text-xs font-semibold text-slate-700"
-                      {...register("howWeWork.one")}
-                    />
-                  </div>
-
-                  <div className="mx-auto mb-3 grid h-24 w-24 place-items-center rounded-full border border-slate-600 bg-white p-3 shadow-lg md:h-28 md:w-28">
-                    {savedImages?.howWeWorkIcon_0 ? (
-                      <img
-                        src={savedImages.howWeWorkIcon_0}
-                        alt="Step 1 icon"
-                        className="h-full w-full rounded-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        Icon 1
-                      </span>
-                    )}
-                  </div>
-
-                  <label
-                    htmlFor="howWeWork-oneIcon"
-                    className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 1 icon
-                  </label>
-                  <input
-                    id="howWeWork-oneIcon"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("howWeWork.oneIcon")}
-                  />
-                  {errors.howWeWork?.oneIcon && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.oneIcon.message as string}
-                    </p>
-                  )}
-
-                  <label
-                    htmlFor="howWeWork-title"
-                    className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 1 title
-                  </label>
-                  <input
-                    id="howWeWork-title"
-                    type="text"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-base font-semibold text-slate-800"
-                    {...register("howWeWork.title")}
-                  />
-                  {errors.howWeWork?.title && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.title.message as string}
-                    </p>
-                  )}
-
-                  <label
-                    htmlFor="howWeWork-description"
-                    className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 1 description
-                  </label>
-                  <textarea
-                    id="howWeWork-description"
-                    rows={3}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-sm text-slate-600"
-                    {...register("howWeWork.description")}
-                  />
-                  {errors.howWeWork?.description && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.description.message as string}
-                    </p>
-                  )}
-                </div>
+                <StepCard
+                  stepIndex={0}
+                  stepLabel="Step 1"
+                  stepNumberField="howWeWork.one"
+                  iconField="howWeWork.oneIcon"
+                  titleField="howWeWork.title"
+                  descriptionField="howWeWork.description"
+                  imageKey="howWeWorkIcon_0"
+                  iconErrorMessage={errors.howWeWork?.oneIcon?.message as string | undefined}
+                  titleErrorMessage={errors.howWeWork?.title?.message as string | undefined}
+                  descriptionErrorMessage={errors.howWeWork?.description?.message as string | undefined}
+                  savedImages={savedImages}
+                  register={register}
+                />
 
                 <div className="hidden h-full items-center justify-center md:flex">
                   {savedImages?.lineOne ? (
@@ -133,85 +183,20 @@ const HowWeWorkSection = ({
                   )}
                 </div>
 
-                <div className="relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-sm">
-                  <div className="absolute -left-2 -top-2 rounded-full border border-slate-300 bg-white px-2 py-0.5 shadow-sm">
-                    <input
-                      id="howWeWork-two"
-                      type="text"
-                      className="w-8 border-none bg-transparent p-0 text-center text-xs font-semibold text-slate-700"
-                      {...register("howWeWork.two")}
-                    />
-                  </div>
-
-                  <div className="mx-auto mb-3 grid h-24 w-24 place-items-center rounded-full border border-slate-600 bg-white p-3 shadow-lg md:h-28 md:w-28">
-                    {savedImages?.howWeWorkIcon_1 ? (
-                      <img
-                        src={savedImages.howWeWorkIcon_1}
-                        alt="Step 2 icon"
-                        className="h-full w-full rounded-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        Icon 2
-                      </span>
-                    )}
-                  </div>
-
-                  <label
-                    htmlFor="howWeWork-twoIcon"
-                    className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 2 icon
-                  </label>
-                  <input
-                    id="howWeWork-twoIcon"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("howWeWork.twoIcon")}
-                  />
-                  {errors.howWeWork?.twoIcon && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.twoIcon.message as string}
-                    </p>
-                  )}
-
-                  <label
-                    htmlFor="howWeWork-titleTwo"
-                    className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 2 title
-                  </label>
-                  <input
-                    id="howWeWork-titleTwo"
-                    type="text"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-base font-semibold text-slate-800"
-                    {...register("howWeWork.titleTwo")}
-                  />
-                  {errors.howWeWork?.titleTwo && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.titleTwo.message as string}
-                    </p>
-                  )}
-
-                  <label
-                    htmlFor="howWeWork-descriptionTwo"
-                    className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 2 description
-                  </label>
-                  <textarea
-                    id="howWeWork-descriptionTwo"
-                    rows={3}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-sm text-slate-600"
-                    {...register("howWeWork.descriptionTwo")}
-                  />
-                  {errors.howWeWork?.descriptionTwo && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.descriptionTwo.message as string}
-                    </p>
-                  )}
-                </div>
+                <StepCard
+                  stepIndex={1}
+                  stepLabel="Step 2"
+                  stepNumberField="howWeWork.two"
+                  iconField="howWeWork.twoIcon"
+                  titleField="howWeWork.titleTwo"
+                  descriptionField="howWeWork.descriptionTwo"
+                  imageKey="howWeWorkIcon_1"
+                  iconErrorMessage={errors.howWeWork?.twoIcon?.message as string | undefined}
+                  titleErrorMessage={errors.howWeWork?.titleTwo?.message as string | undefined}
+                  descriptionErrorMessage={errors.howWeWork?.descriptionTwo?.message as string | undefined}
+                  savedImages={savedImages}
+                  register={register}
+                />
 
                 <div className="hidden h-full items-center justify-center md:flex">
                   {savedImages?.lineTwo ? (
@@ -225,85 +210,20 @@ const HowWeWorkSection = ({
                   )}
                 </div>
 
-                <div className="relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-sm">
-                  <div className="absolute -left-2 -top-2 rounded-full border border-slate-300 bg-white px-2 py-0.5 shadow-sm">
-                    <input
-                      id="howWeWork-three"
-                      type="text"
-                      className="w-8 border-none bg-transparent p-0 text-center text-xs font-semibold text-slate-700"
-                      {...register("howWeWork.three")}
-                    />
-                  </div>
-
-                  <div className="mx-auto mb-3 grid h-24 w-24 place-items-center rounded-full border border-slate-600 bg-white p-3 shadow-lg md:h-28 md:w-28">
-                    {savedImages?.howWeWorkIcon_2 ? (
-                      <img
-                        src={savedImages.howWeWorkIcon_2}
-                        alt="Step 3 icon"
-                        className="h-full w-full rounded-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        Icon 3
-                      </span>
-                    )}
-                  </div>
-
-                  <label
-                    htmlFor="howWeWork-threeIcon"
-                    className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 3 icon
-                  </label>
-                  <input
-                    id="howWeWork-threeIcon"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("howWeWork.threeIcon")}
-                  />
-                  {errors.howWeWork?.threeIcon && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.threeIcon.message as string}
-                    </p>
-                  )}
-
-                  <label
-                    htmlFor="howWeWork-threeTitle"
-                    className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 3 title
-                  </label>
-                  <input
-                    id="howWeWork-threeTitle"
-                    type="text"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-base font-semibold text-slate-800"
-                    {...register("howWeWork.threeTitle")}
-                  />
-                  {errors.howWeWork?.threeTitle && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.threeTitle.message as string}
-                    </p>
-                  )}
-
-                  <label
-                    htmlFor="howWeWork-threeDescription"
-                    className="mb-1 mt-3 block text-xs font-medium uppercase tracking-wide text-slate-600"
-                  >
-                    Step 3 description
-                  </label>
-                  <textarea
-                    id="howWeWork-threeDescription"
-                    rows={3}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-center text-sm text-slate-600"
-                    {...register("howWeWork.threeDescription")}
-                  />
-                  {errors.howWeWork?.threeDescription && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.threeDescription.message as string}
-                    </p>
-                  )}
-                </div>
+                <StepCard
+                  stepIndex={2}
+                  stepLabel="Step 3"
+                  stepNumberField="howWeWork.three"
+                  iconField="howWeWork.threeIcon"
+                  titleField="howWeWork.threeTitle"
+                  descriptionField="howWeWork.threeDescription"
+                  imageKey="howWeWorkIcon_2"
+                  iconErrorMessage={errors.howWeWork?.threeIcon?.message as string | undefined}
+                  titleErrorMessage={errors.howWeWork?.threeTitle?.message as string | undefined}
+                  descriptionErrorMessage={errors.howWeWork?.threeDescription?.message as string | undefined}
+                  savedImages={savedImages}
+                  register={register}
+                />
               </div>
 
               <div className="grid gap-3 md:grid-cols-2">

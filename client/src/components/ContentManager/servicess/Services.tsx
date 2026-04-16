@@ -12,7 +12,7 @@ import {
 import { API_BASE_URL } from "../../../config/api";
 import { CmsSaveBar } from "../shared/CmsSaveBar";
 
-const BACKEND = API_BASE_URL;
+const SAVE_MESSAGE_TIMEOUT_MS = 4000;
 
 const Servicess = () => {
   const {
@@ -37,13 +37,14 @@ const Servicess = () => {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await axios.get(`${BACKEND}/api/content/services`);
+        const res = await axios.get(`${API_BASE_URL}/api/content/services`);
         const services = res.data.content;
         if (!Array.isArray(services) || services.length === 0) return;
         setSavedServices(services as ExistingService[]);
         reset({ services });
-      } catch {
-        // silently ignore — form keeps its defaults
+      } catch (err) {
+        console.warn("Failed to load content:", err);
+        setSaveMessage("Could not load saved content. Showing defaults.");
       } finally {
         setLoading(false);
       }
@@ -54,7 +55,7 @@ const Servicess = () => {
   const showSaveMessage = (msg: string) => {
     setSaveMessage(msg);
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
-    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), 4000);
+    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), SAVE_MESSAGE_TIMEOUT_MS);
   };
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const Servicess = () => {
       appendServicesImages(formData, data);
 
       const response = await axios.post(
-        `${BACKEND}/api/content/services`,
+        `${API_BASE_URL}/api/content/services`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },

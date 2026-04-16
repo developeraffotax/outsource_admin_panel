@@ -13,7 +13,7 @@ import {
 import { API_BASE_URL } from "../../../config/api";
 import { CmsSaveBar } from "../shared/CmsSaveBar";
 
-const BACKEND = API_BASE_URL;
+const SAVE_MESSAGE_TIMEOUT_MS = 4000;
 
 const ContactUS = () => {
   const {
@@ -33,14 +33,15 @@ const ContactUS = () => {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await axios.get(`${BACKEND}/api/content/contact-us`);
+        const res = await axios.get(`${API_BASE_URL}/api/content/contact-us`);
         const c = res.data.content;
         if (!c) return;
 
         setSavedImages(mapContactSavedImages(c));
         reset(mapContactFormDefaults(c));
-      } catch {
-        // silently ignore — form keeps its defaults
+      } catch (err) {
+        console.warn("Failed to load content:", err);
+        setSaveMessage("Could not load saved content. Showing defaults.");
       } finally {
         setLoading(false);
       }
@@ -53,7 +54,7 @@ const ContactUS = () => {
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
     saveMessageTimer.current = setTimeout(() => {
       setSaveMessage(null);
-    }, 4000);
+    }, SAVE_MESSAGE_TIMEOUT_MS);
   };
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const ContactUS = () => {
       const formData = buildContactFormData(data, savedImages);
 
       const response = await axios.post(
-        `${BACKEND}/api/content/contact-us`,
+        `${API_BASE_URL}/api/content/contact-us`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },

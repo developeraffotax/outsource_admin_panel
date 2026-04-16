@@ -27,11 +27,19 @@ type FeedbackState = {
   message: string;
 };
 
-const normalizeManagedUser = (user: {
-  id?: unknown;
-  email?: unknown;
-  role?: unknown;
-}): ManagedUser => ({
+type RawApiUser = { id?: unknown; email?: unknown; role?: unknown };
+
+const getAuthConfigOrFeedback = (
+  setFeedback: (s: FeedbackState) => void,
+): ReturnType<typeof buildAuthConfig> => {
+  const config = buildAuthConfig();
+  if (!config) {
+    setFeedback({ type: "error", message: "Missing session token. Please sign in again." });
+  }
+  return config;
+};
+
+const normalizeManagedUser = (user: RawApiUser): ManagedUser => ({
   id: typeof user.id === "string" ? user.id : "",
   email: typeof user.email === "string" ? user.email : "",
   role: normalizeRole(user.role),
@@ -71,13 +79,9 @@ const Users = () => {
   const [deletingById, setDeletingById] = useState<Record<string, boolean>>({});
 
   const loadUsers = useCallback(async () => {
-    const config = buildAuthConfig();
+    const config = getAuthConfigOrFeedback(setFeedback);
     if (!config) {
       setLoading(false);
-      setFeedback({
-        type: "error",
-        message: "Missing session token. Please sign in again.",
-      });
       return;
     }
 
@@ -89,15 +93,7 @@ const Users = () => {
 
       const normalizedUsers = Array.isArray(response.data.users)
         ? response.data.users
-            .map((user) =>
-              normalizeManagedUser(
-                (user ?? {}) as {
-                  id?: unknown;
-                  email?: unknown;
-                  role?: unknown;
-                },
-              ),
-            )
+            .map((user) => normalizeManagedUser((user ?? {}) as RawApiUser))
             .filter((user) => user.id && user.email)
         : [];
 
@@ -117,14 +113,8 @@ const Users = () => {
   }, [loadUsers]);
 
   const onCreateUser: SubmitHandler<CreateUserForm> = async (data) => {
-    const config = buildAuthConfig();
-    if (!config) {
-      setFeedback({
-        type: "error",
-        message: "Missing session token. Please sign in again.",
-      });
-      return;
-    }
+    const config = getAuthConfigOrFeedback(setFeedback);
+    if (!config) return;
 
     setAdding(true);
     setFeedback(null);
@@ -136,13 +126,7 @@ const Users = () => {
         config,
       );
 
-      const createdUser = normalizeManagedUser(
-        (response.data.user ?? {}) as {
-          id?: unknown;
-          email?: unknown;
-          role?: unknown;
-        },
-      );
+      const createdUser = normalizeManagedUser((response.data.user ?? {}) as RawApiUser);
 
       if (!createdUser.id || !createdUser.email) {
         throw new Error("Invalid user response from server");
@@ -193,14 +177,8 @@ const Users = () => {
       return;
     }
 
-    const config = buildAuthConfig();
-    if (!config) {
-      setFeedback({
-        type: "error",
-        message: "Missing session token. Please sign in again.",
-      });
-      return;
-    }
+    const config = getAuthConfigOrFeedback(setFeedback);
+    if (!config) return;
 
     setSavingPasswordById((current) => ({ ...current, [userId]: true }));
     setFeedback(null);
@@ -241,14 +219,8 @@ const Users = () => {
       return;
     }
 
-    const config = buildAuthConfig();
-    if (!config) {
-      setFeedback({
-        type: "error",
-        message: "Missing session token. Please sign in again.",
-      });
-      return;
-    }
+    const config = getAuthConfigOrFeedback(setFeedback);
+    if (!config) return;
 
     setDeletingById((current) => ({ ...current, [user.id]: true }));
     setFeedback(null);

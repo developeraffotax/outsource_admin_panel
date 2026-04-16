@@ -9,19 +9,18 @@ import type {
   OrderDetails,
   OrderListItem,
   OrdersFeedbackState,
-  OrderStats,
   SortBy,
   SortDirection,
 } from "./Orders.types";
 import {
-  FAILED_STATUSES,
-  PAID_STATUSES,
+  calculateOrderStats,
   formatAmount,
   formatDate,
   formatStatusLabel,
   getStatusBadgeClass,
   parseOrderDetails,
   parseOrderItem,
+  sortOrders,
 } from "./Orders.utils";
 
 // ── Column definitions ────────────────────────────────────────────────────
@@ -208,31 +207,7 @@ const Orders = () => {
 
   // ── Derived data ────────────────────────────────────────────────────
 
-  const stats = useMemo((): OrderStats => {
-    let revenue = 0;
-    let paidCount = 0;
-    let issueCount = 0;
-    const currencyTally: Record<string, number> = {};
-
-    for (const order of orders) {
-      const s = order.paymentStatus.trim().toLowerCase();
-      if (PAID_STATUSES.includes(s)) {
-        paidCount++;
-        revenue += order.amountTotal ?? 0;
-        if (order.currency) {
-          currencyTally[order.currency] =
-            (currencyTally[order.currency] ?? 0) + 1;
-        }
-      } else if (FAILED_STATUSES.includes(s)) {
-        issueCount++;
-      }
-    }
-
-    const topCurrency =
-      Object.entries(currencyTally).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-
-    return { revenue, paidCount, issueCount, topCurrency };
-  }, [orders]);
+  const stats = useMemo(() => calculateOrderStats(orders), [orders]);
 
   const statusOptions = useMemo(() => {
     const statuses = new Set<string>();
@@ -263,23 +238,7 @@ const Orders = () => {
         .includes(q);
     });
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "createdAt") {
-        const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return sortDirection === "asc" ? at - bt : bt - at;
-      }
-      if (sortBy === "amountTotal") {
-        const av = a.amountTotal ?? Number.NEGATIVE_INFINITY;
-        const bv = b.amountTotal ?? Number.NEGATIVE_INFINITY;
-        return sortDirection === "asc" ? av - bv : bv - av;
-      }
-      const av = ((a[sortBy] as string | null) ?? "").toLowerCase();
-      const bv = ((b[sortBy] as string | null) ?? "").toLowerCase();
-      return sortDirection === "asc"
-        ? av.localeCompare(bv)
-        : bv.localeCompare(av);
-    });
+    return sortOrders(filtered, sortBy, sortDirection);
   }, [orders, query, sortBy, sortDirection, statusFilter]);
 
   const hasActiveFilters = query.trim().length > 0 || statusFilter !== "all";

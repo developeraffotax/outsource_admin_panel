@@ -1,4 +1,4 @@
-import type { OrderDetails, OrderListItem } from "./Orders.types";
+import type { OrderDetails, OrderListItem, OrderStats, SortBy, SortDirection } from "./Orders.types";
 
 const getString = (val: unknown, fallback: string): string =>
   typeof val === "string" ? val : fallback;
@@ -111,6 +111,9 @@ export const getRawNumber = (
   return typeof v === "number" && Number.isFinite(v) ? v : null;
 };
 
+const isNonEmptyString = (val: unknown): val is string =>
+  typeof val === "string" && val.trim().length > 0;
+
 export const formatBillingAddress = (
   raw: Record<string, unknown>,
 ): string | null => {
@@ -118,6 +121,55 @@ export const formatBillingAddress = (
   if (typeof addr !== "object" || addr === null) return null;
   const a = addr as Record<string, unknown>;
   const parts = [a.line1, a.line2, a.city, a.state, a.postal_code, a.country]
-    .filter((p): p is string => typeof p === "string" && p.trim().length > 0);
+    .filter(isNonEmptyString);
   return parts.length > 0 ? parts.join(", ") : null;
 };
+
+// ── Derived-data helpers ──────────────────────────────────────────────────
+
+export const calculateOrderStats = (orders: OrderListItem[]): OrderStats => {
+  let revenue = 0;
+  let paidCount = 0;
+  let issueCount = 0;
+  const currencyTally: Record<string, number> = {};
+
+  for (const order of orders) {
+    const s = order.paymentStatus.trim().toLowerCase();
+    if (PAID_STATUSES.includes(s)) {
+      paidCount++;
+      revenue += order.amountTotal ?? 0;
+      if (order.currency) {
+        currencyTally[order.currency] =
+          (currencyTally[order.currency] ?? 0) + 1;
+      }
+    } else if (FAILED_STATUSES.includes(s)) {
+      issueCount++;
+    }
+  }
+
+  const topCurrency =
+    Object.entries(currencyTally).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+
+  return { revenue, paidCount, issueCount, topCurrency };
+};
+
+export const sortOrders = (
+  orders: OrderListItem[],
+  sortBy: SortBy,
+  direction: SortDirection,
+): OrderListItem[] =>
+  [...orders].sort((a, b) => {
+    if (sortBy === "createdAt") {
+      const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return direction === "asc" ? at - bt : bt - at;
+    }
+    if (sortBy === "amountTotal") {
+      const av = a.amountTotal ?? Number.NEGATIVE_INFINITY;
+      const bv = b.amountTotal ?? Number.NEGATIVE_INFINITY;
+      return direction === "asc" ? av - bv : bv - av;
+    }
+    const av = ((a[sortBy] as string | null) ?? "").toLowerCase();
+    const bv = ((b[sortBy] as string | null) ?? "").toLowerCase();
+    return direction === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+  });

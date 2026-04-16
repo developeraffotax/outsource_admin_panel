@@ -13,7 +13,7 @@ type BuyServiceFormValues = {
   nameAndPrice: BuyServiceEntry[];
 };
 
-const BACKEND = API_BASE_URL;
+const SAVE_MESSAGE_TIMEOUT_MS = 4000;
 
 const defaultEntries: BuyServiceEntry[] = [
   { name: "Company Accounts & Tax Return!", price: "299" },
@@ -50,13 +50,14 @@ const BuyService = () => {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await axios.get(`${BACKEND}/api/content/buy-service`);
+        const res = await axios.get(`${API_BASE_URL}/api/content/buy-service`);
         const c = res.data.content;
         if (!c?.entries?.length) return;
         // Map backend "entries" array back to frontend "nameAndPrice"
         reset({ nameAndPrice: c.entries });
-      } catch {
-        // silently ignore — form keeps its defaults
+      } catch (err) {
+        console.warn("Failed to load content:", err);
+        setSaveMessage("Could not load saved content. Showing defaults.");
       }
     };
     loadContent();
@@ -65,7 +66,7 @@ const BuyService = () => {
   const showSaveMessage = (msg: string) => {
     setSaveMessage(msg);
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
-    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), 4000);
+    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), SAVE_MESSAGE_TIMEOUT_MS);
   };
 
   useEffect(() => {
@@ -81,7 +82,7 @@ const BuyService = () => {
       const token = localStorage.getItem("token");
       // Send as regular JSON — no files in this form
       await axios.post(
-        `${BACKEND}/api/content/buy-service`,
+        `${API_BASE_URL}/api/content/buy-service`,
         { entries: data.nameAndPrice },
         { headers: { Authorization: `Bearer ${token}` } },
       );

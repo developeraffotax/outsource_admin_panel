@@ -20,7 +20,7 @@ import {
   type BackendContent,
 } from "./home.helpers";
 
-const BACKEND = API_BASE_URL;
+const SAVE_MESSAGE_TIMEOUT_MS = 4000;
 
 const Home = () => {
   const [saving, setSaving] = useState(false);
@@ -42,7 +42,7 @@ const Home = () => {
 
   const loadContent = async () => {
     try {
-      const res = await axios.get(`${BACKEND}/api/content/home`);
+      const res = await axios.get(`${API_BASE_URL}/api/content/home`);
       const c: BackendContent = res.data.content;
       if (!c || Object.keys(c).length === 0) return;
 
@@ -66,7 +66,7 @@ const Home = () => {
   const showSaveMessage = (msg: string) => {
     setSaveMessage(msg);
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
-    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), 4000);
+    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), SAVE_MESSAGE_TIMEOUT_MS);
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -77,7 +77,7 @@ const Home = () => {
       const ec = existingContent.current;
       const formData = buildHomeFormData(data, ec);
 
-      await axios.post(`${BACKEND}/api/content/home`, formData, {
+      await axios.post(`${API_BASE_URL}/api/content/home`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
