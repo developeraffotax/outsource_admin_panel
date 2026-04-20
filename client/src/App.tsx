@@ -22,6 +22,10 @@ type GuestOnlyRouteProps = {
   children: ReactElement;
 };
 
+type AuthenticatedRouteProps = {
+  children: ReactElement;
+};
+
 function AuthLandingRoute() {
   return isAuthenticated() ? (
     <Navigate to="/dashboard" replace />
@@ -33,6 +37,14 @@ function AuthLandingRoute() {
 function GuestOnlyRoute({ children }: GuestOnlyRouteProps) {
   if (isAuthenticated()) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
+function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -78,12 +90,54 @@ function App() {
               </GuestOnlyRoute>
             }
           />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/buy-service" element={<BuyServicePage />} />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/services" element={<Services />} />
+          <Route
+            path="/dashboard"
+            element={
+              <AuthenticatedRoute>
+                <DashboardPage />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/buy-service"
+            element={
+              <AuthenticatedRoute>
+                <BuyServicePage />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/about-us"
+            element={
+              <AuthenticatedRoute>
+                <AboutUs />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/contact-us"
+            element={
+              <AuthenticatedRoute>
+                <ContactUs />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/faq"
+            element={
+              <AuthenticatedRoute>
+                <Faq />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="/services"
+            element={
+              <AuthenticatedRoute>
+                <Services />
+              </AuthenticatedRoute>
+            }
+          />
           <Route
             path="/orders"
             element={
@@ -100,6 +154,7 @@ function App() {
               </AdminOnlyRoute>
             }
           />
+          <Route path="*" element={<AuthLandingRoute />} />
         </Routes>
       </BrowserRouter>
     </>
