@@ -4,6 +4,7 @@ import type { HomeSectionProps } from "./section-props.types";
 
 const WhyOutsourceSection = ({
   register,
+  errors,
   control,
   savedImages,
 }: HomeSectionProps) => {
@@ -39,6 +40,11 @@ const WhyOutsourceSection = ({
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             {...register("whyOutsourcing")}
           />
+          {errors.whyOutsourcing?.message && (
+            <p className="mt-1 text-sm text-red-600">
+              {String(errors.whyOutsourcing.message)}
+            </p>
+          )}
         </div>
 
         <div>
@@ -54,6 +60,11 @@ const WhyOutsourceSection = ({
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             {...register("headingWhyOutsourcing")}
           />
+          {errors.headingWhyOutsourcing?.message && (
+            <p className="mt-1 text-sm text-red-600">
+              {String(errors.headingWhyOutsourcing.message)}
+            </p>
+          )}
         </div>
 
         <div>
@@ -68,6 +79,11 @@ const WhyOutsourceSection = ({
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             {...register("descriptionWhyOutsourcing")}
           />
+          {errors.descriptionWhyOutsourcing?.message && (
+            <p className="mt-1 text-sm text-red-600">
+              {String(errors.descriptionWhyOutsourcing.message)}
+            </p>
+          )}
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">

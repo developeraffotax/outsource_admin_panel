@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedImages } from "./sections/section-props.types";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -12,6 +12,7 @@ import TopbarSection from "./sections/TopbarSection";
 import WhyOutsourceSection from "./sections/WhyOutsourceSection";
 import { API_BASE_URL } from "../../../config/api";
 import { CmsSaveBar } from "../shared/CmsSaveBar";
+import SectionAccordion from "../servicess/sections/SectionAccordion";
 import {
   buildHomeFormData,
   createHomeDefaultValues,
@@ -40,40 +41,64 @@ const Home = () => {
     defaultValues: createHomeDefaultValues(),
   });
 
-  const loadContent = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/content/home`);
-      const c: BackendContent = res.data.content;
-      if (!c || Object.keys(c).length === 0) return;
-
-      // Store the raw backend content so we can fall back to existing image URLs on save
-      existingContent.current = c;
-      setSavedImages(mapHomeSavedImages(c));
-      reset(mapHomeFormDefaults(c));
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { error?: string } } })?.response?.data
-          ?.error ?? "Failed to load content. Is the server running?";
-      showSaveMessage(message);
-    }
-  };
-
-  useEffect(() => {
-    loadContent();
-  }, [reset]);
-
   // Clear the save message after 4 seconds
-  const showSaveMessage = (msg: string) => {
+  const showSaveMessage = useCallback((msg: string) => {
     setSaveMessage(msg);
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
-    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), SAVE_MESSAGE_TIMEOUT_MS);
-  };
+    saveMessageTimer.current = setTimeout(
+      () => setSaveMessage(null),
+      SAVE_MESSAGE_TIMEOUT_MS,
+    );
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadContent = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/content/home`);
+        if (!isMounted) return;
+
+        const c: BackendContent = res.data.content;
+        if (!c || Object.keys(c).length === 0) return;
+
+        // Preserve existing image URLs so unchanged assets survive saves.
+        existingContent.current = c;
+        setSavedImages(mapHomeSavedImages(c));
+        reset(mapHomeFormDefaults(c));
+      } catch (err: unknown) {
+        if (!isMounted) return;
+        const message =
+          (err as { response?: { data?: { error?: string } } })?.response?.data
+            ?.error ?? "Failed to load content. Is the server running?";
+        showSaveMessage(message);
+      }
+    };
+
+    void loadContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [reset, showSaveMessage]);
+
+  useEffect(() => {
+    return () => {
+      if (saveMessageTimer.current) {
+        clearTimeout(saveMessageTimer.current);
+      }
+    };
+  }, []);
 
   const onSubmit = async (data: FormValues) => {
     setSaving(true);
     setSaveMessage(null);
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        showSaveMessage("You are not authenticated. Please log in again.");
+        return;
+      }
       const ec = existingContent.current;
       const formData = buildHomeFormData(data, ec);
 
@@ -95,6 +120,89 @@ const Home = () => {
     }
   };
 
+  const sectionPanels = useMemo(
+    () => [
+      {
+        key: "hero",
+        title: "Hero section",
+        content: (
+          <HeroSection
+            register={register}
+            errors={errors}
+            control={control}
+            savedImages={savedImages}
+          />
+        ),
+      },
+      {
+        key: "why-outsource",
+        title: "Why outsource section",
+        content: (
+          <WhyOutsourceSection
+            register={register}
+            errors={errors}
+            control={control}
+            savedImages={savedImages}
+          />
+        ),
+      },
+      {
+        key: "service",
+        title: "Service section",
+        content: (
+          <ServiceSection
+            register={register}
+            errors={errors}
+            control={control}
+            savedImages={savedImages}
+          />
+        ),
+      },
+      {
+        key: "how-we-work",
+        title: "How we work section",
+        content: (
+          <HowWeWorkSection
+            register={register}
+            errors={errors}
+            control={control}
+            savedImages={savedImages}
+          />
+        ),
+      },
+      {
+        key: "clients-testimonial",
+        title: "Clients testimonial section",
+        content: (
+          <ClientsTestimonialSection
+            register={register}
+            errors={errors}
+            control={control}
+            savedImages={savedImages}
+          />
+        ),
+      },
+      {
+        key: "topbar",
+        title: "Topbar section",
+        content: <TopbarSection register={register} errors={errors} control={control} />,
+      },
+      {
+        key: "join-us",
+        title: "Join us section",
+        content: (
+          <JoinUsSection
+            register={register}
+            errors={errors}
+            control={control}
+            savedImages={savedImages}
+          />
+        ),
+      },
+    ],
+    [control, errors, register, savedImages],
+  );
+
   return (
     <div className="cms-form-shell mx-auto w-full max-w-5xl">
       {/* Page header */}
@@ -113,193 +221,11 @@ const Home = () => {
         {/* Sticky save bar */}
         <CmsSaveBar saving={saving} saveMessage={saveMessage} />
 
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>Hero section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <HeroSection
-              register={register}
-              errors={errors}
-              control={control}
-              savedImages={savedImages}
-            />
-          </div>
-        </details>
-
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>Why outsource section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <WhyOutsourceSection
-              register={register}
-              errors={errors}
-              control={control}
-              savedImages={savedImages}
-            />
-          </div>
-        </details>
-
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>Service section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <ServiceSection
-              register={register}
-              errors={errors}
-              control={control}
-              savedImages={savedImages}
-            />
-          </div>
-        </details>
-
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>How we work section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <HowWeWorkSection
-              register={register}
-              errors={errors}
-              control={control}
-              savedImages={savedImages}
-            />
-          </div>
-        </details>
-
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>Clients testimonial section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <ClientsTestimonialSection
-              register={register}
-              errors={errors}
-              control={control}
-              savedImages={savedImages}
-            />
-          </div>
-        </details>
-
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>Topbar section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <TopbarSection
-              register={register}
-              errors={errors}
-              control={control}
-            />
-          </div>
-        </details>
-
-        <details className="cms-accordion group overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
-            <span>Join us section</span>
-            <svg
-              className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </summary>
-          <div className="cms-accordion-content border-t border-slate-100 p-3">
-            <JoinUsSection
-              register={register}
-              errors={errors}
-              control={control}
-              savedImages={savedImages}
-            />
-          </div>
-        </details>
+        {sectionPanels.map((sectionPanel) => (
+          <SectionAccordion key={sectionPanel.key} title={sectionPanel.title}>
+            {sectionPanel.content}
+          </SectionAccordion>
+        ))}
       </form>
     </div>
   );

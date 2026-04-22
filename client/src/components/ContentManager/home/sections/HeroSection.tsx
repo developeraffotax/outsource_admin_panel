@@ -2,7 +2,12 @@ import { createEmptyHeroCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
 
-const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
+const HeroSection = ({
+  register,
+  errors,
+  control,
+  savedImages,
+}: HomeSectionProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "heroCardSections",
@@ -49,6 +54,9 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                   className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800"
                   {...register("title")}
                 />
+                {errors.title?.message && (
+                  <p className="mt-1 text-xs text-red-200">{String(errors.title.message)}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -63,6 +71,11 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                     className="rounded-md border border-white/35 bg-white/94 px-3 py-2 text-sm text-slate-900"
                     {...register("headingFirstText")}
                   />
+                  {errors.headingFirstText?.message && (
+                    <p className="text-xs text-red-200">
+                      {String(errors.headingFirstText.message)}
+                    </p>
+                  )}
                   <input
                     id="headingMiddleText"
                     type="text"
@@ -70,6 +83,11 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                     className="rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900"
                     {...register("headingMiddleText")}
                   />
+                  {errors.headingMiddleText?.message && (
+                    <p className="text-xs text-red-200">
+                      {String(errors.headingMiddleText.message)}
+                    </p>
+                  )}
                   <input
                     id="headingEndText"
                     type="text"
@@ -77,6 +95,9 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                     className="rounded-md border border-white/35 bg-white/94 px-3 py-2 text-sm text-slate-900"
                     {...register("headingEndText")}
                   />
+                  {errors.headingEndText?.message && (
+                    <p className="text-xs text-red-200">{String(errors.headingEndText.message)}</p>
+                  )}
                 </div>
               </div>
 
@@ -94,6 +115,11 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                     className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
                     {...register("descriptionHeroHomepage")}
                   />
+                  {errors.descriptionHeroHomepage?.message && (
+                    <p className="mt-1 text-xs text-red-200">
+                      {String(errors.descriptionHeroHomepage.message)}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -109,6 +135,11 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                     className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
                     {...register("descriptionHeroHomePageTwo")}
                   />
+                  {errors.descriptionHeroHomePageTwo?.message && (
+                    <p className="mt-1 text-xs text-red-200">
+                      {String(errors.descriptionHeroHomePageTwo.message)}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -125,6 +156,11 @@ const HeroSection = ({ register, control, savedImages }: HomeSectionProps) => {
                   className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
                   {...register("freeConsultation")}
                 />
+                {errors.freeConsultation?.message && (
+                  <p className="mt-1 text-xs text-red-200">
+                    {String(errors.freeConsultation.message)}
+                  </p>
+                )}
               </div>
             </div>
 
