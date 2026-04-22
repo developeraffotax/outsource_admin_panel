@@ -1,4 +1,5 @@
 import { useFieldArray, useWatch } from "react-hook-form";
+import FormFieldError from "./FormFieldError";
 import type { ServiceSectionProps } from "./ServicesProps";
 import type { PricingPlan } from "../Services.type";
 import {
@@ -12,6 +13,7 @@ type PricingPlanEditorProps = {
   planIndex: number;
   register: ServiceSectionProps["register"];
   control: ServiceSectionProps["control"];
+  errors: ServiceSectionProps["errors"];
   onRemovePlan: (index: number) => void;
 };
 
@@ -20,6 +22,7 @@ const PricingPlanEditor = ({
   planIndex,
   register,
   control,
+  errors,
   onRemovePlan,
 }: PricingPlanEditorProps) => {
   const basePath =
@@ -59,24 +62,28 @@ const PricingPlanEditor = ({
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xl font-semibold text-gray-900 outline-none focus:border-blue-200 focus:bg-blue-50"
           {...register(`${basePath}.name` as const)}
         />
+        <FormFieldError errors={errors} path={`${basePath}.name`} />
         <input
           type="text"
           placeholder="Plan description"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-sm text-gray-600 outline-none focus:border-blue-200 focus:bg-blue-50"
           {...register(`${basePath}.description` as const)}
         />
+        <FormFieldError errors={errors} path={`${basePath}.description`} />
         <input
           type="text"
           placeholder="Checkout name"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xs text-gray-500 outline-none focus:border-blue-200 focus:bg-blue-50"
           {...register(`${basePath}.checkoutName` as const)}
         />
+        <FormFieldError errors={errors} path={`${basePath}.checkoutName`} />
         <input
           type="text"
           placeholder="Billing cycle"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xs font-medium uppercase tracking-wide text-blue-800 outline-none focus:border-blue-200 focus:bg-blue-50"
           {...register(`${basePath}.billingCycle` as const)}
         />
+        <FormFieldError errors={errors} path={`${basePath}.billingCycle`} />
       </div>
 
       <div className="mt-4 flex items-end gap-2">
@@ -96,6 +103,8 @@ const PricingPlanEditor = ({
           })}
         />
       </div>
+      <FormFieldError errors={errors} path={`${basePath}.currency`} />
+      <FormFieldError errors={errors} path={`${basePath}.price`} />
 
       <ul className="mt-6 flex flex-1 flex-col gap-2">
         {featureFields.map((featureField, featureIndex) => {
@@ -124,6 +133,10 @@ const PricingPlanEditor = ({
                   `${basePath}.features.${featureIndex}.text` as const,
                 )}
               />
+              <FormFieldError
+                errors={errors}
+                path={`${basePath}.features.${featureIndex}.text`}
+              />
               <button
                 type="button"
                 onClick={() => removeFeature(featureIndex)}
@@ -148,6 +161,7 @@ const PricingPlanEditor = ({
               className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm"
               {...register(`${basePath}.id` as const)}
             />
+            <FormFieldError errors={errors} path={`${basePath}.id`} />
           </div>
 
           <label className="mt-6 flex items-center gap-2 text-sm font-medium text-gray-700 md:mt-0 md:self-end">
@@ -182,7 +196,7 @@ const PricingPlanEditor = ({
   );
 };
 
-const Pricing = ({ index, register, control }: ServiceSectionProps) => {
+const Pricing = ({ index, register, control, errors }: ServiceSectionProps) => {
   const {
     fields: planFields,
     append: appendPlan,
@@ -205,6 +219,10 @@ const Pricing = ({ index, register, control }: ServiceSectionProps) => {
             className="mx-auto block w-full max-w-sm rounded-md border border-transparent bg-transparent px-2 py-1 text-center text-sm font-semibold uppercase tracking-wide text-blue-800 outline-none focus:border-blue-200 focus:bg-white"
             {...register(`services.${index}.Pricing.config.eyebrow`)}
           />
+          <FormFieldError
+            errors={errors}
+            path={`services.${index}.Pricing.config.eyebrow`}
+          />
 
           <input
             type="text"
@@ -212,12 +230,20 @@ const Pricing = ({ index, register, control }: ServiceSectionProps) => {
             className="mx-auto mt-2 block w-full max-w-2xl rounded-md border border-transparent bg-transparent px-2 py-1 text-center text-2xl font-semibold text-gray-900 outline-none focus:border-blue-200 focus:bg-white md:text-4xl"
             {...register(`services.${index}.Pricing.config.title`)}
           />
+          <FormFieldError
+            errors={errors}
+            path={`services.${index}.Pricing.config.title`}
+          />
 
           <textarea
             rows={2}
             placeholder="Choose the right annual accounts package for your company size and filing needs."
             className="mx-auto mt-3 block w-full max-w-3xl resize-none rounded-md border border-transparent bg-transparent px-2 py-1 text-center text-sm text-gray-600 outline-none focus:border-blue-200 focus:bg-white md:text-base"
             {...register(`services.${index}.Pricing.config.description`)}
+          />
+          <FormFieldError
+            errors={errors}
+            path={`services.${index}.Pricing.config.description`}
           />
         </div>
 
@@ -230,6 +256,7 @@ const Pricing = ({ index, register, control }: ServiceSectionProps) => {
                 planIndex={planIndex}
                 register={register}
                 control={control}
+                errors={errors}
                 onRemovePlan={removePlan}
               />
             ))}

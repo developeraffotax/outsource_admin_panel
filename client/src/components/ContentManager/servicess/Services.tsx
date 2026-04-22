@@ -1,6 +1,6 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import axios from "axios";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, type MouseEvent } from "react";
 import type { ServicesForm } from "./sections/ServicesProps";
 import ServiceItem from "./sections/ServiceItem";
 import {
@@ -55,7 +55,10 @@ const Servicess = () => {
   const showSaveMessage = (msg: string) => {
     setSaveMessage(msg);
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
-    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), SAVE_MESSAGE_TIMEOUT_MS);
+    saveMessageTimer.current = setTimeout(
+      () => setSaveMessage(null),
+      SAVE_MESSAGE_TIMEOUT_MS,
+    );
   };
 
   useEffect(() => {
@@ -63,6 +66,15 @@ const Servicess = () => {
       if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
     };
   }, []);
+
+  const handleRemoveService = (
+    event: MouseEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    remove(index);
+  };
 
   const onSubmit = async (data: ServicesForm) => {
     setSaving(true);
@@ -141,7 +153,7 @@ const Servicess = () => {
                   <span>{`Service ${index + 1}`}</span>
                   <button
                     type="button"
-                    onClick={() => remove(index)}
+                    onClick={(event) => handleRemoveService(event, index)}
                     className="text-xs text-red-500 hover:text-red-700"
                   >
                     Remove

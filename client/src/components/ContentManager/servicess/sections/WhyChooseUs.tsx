@@ -1,18 +1,36 @@
+import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
+import FormFieldError from "./FormFieldError";
+import ImagePreview from "./ImagePreview";
 import type { ServiceSectionProps } from "./ServicesProps";
 
-function ImgPreview({ value }: { value: unknown }) {
-  if (typeof value !== "string" || !value.startsWith("http")) return null;
-  return <img src={value} alt="Current image" className="mt-2 h-20 rounded object-cover" />;
-}
-
-const WhyChooseUs = ({ index, register, control }: ServiceSectionProps) => {
+const WhyChooseUs = ({
+  index,
+  register,
+  control,
+  errors,
+}: ServiceSectionProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `services.${index}.WhyChooseUs.card`,
   });
-  const sectionImgVal = useWatch({ control, name: `services.${index}.WhyChooseUs.img` });
-  const cardValues = useWatch({ control, name: `services.${index}.WhyChooseUs.card` });
+  const sectionImgVal = useWatch({
+    control,
+    name: `services.${index}.WhyChooseUs.img`,
+  });
+  const cardValues = useWatch({
+    control,
+    name: `services.${index}.WhyChooseUs.card`,
+  });
+
+  const handleRemoveCard = (
+    event: MouseEvent<HTMLButtonElement>,
+    cardIndex: number,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    remove(cardIndex);
+  };
 
   return (
     <section className="cms-subsection-card space-y-4 rounded-lg border border-slate-200 p-4">
@@ -20,35 +38,52 @@ const WhyChooseUs = ({ index, register, control }: ServiceSectionProps) => {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Heading</label>
+          <label className="mb-1 block text-sm font-medium text-slate-700">
+            Heading
+          </label>
           <input
             type="text"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             {...register(`services.${index}.WhyChooseUs.heading`)}
           />
+          <FormFieldError
+            errors={errors}
+            path={`services.${index}.WhyChooseUs.heading`}
+          />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Image</label>
+          <label className="mb-1 block text-sm font-medium text-slate-700">
+            Image
+          </label>
           <input
             type="file"
             accept="image/*"
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             {...register(`services.${index}.WhyChooseUs.img`)}
           />
-          <ImgPreview value={sectionImgVal} />
+          <ImagePreview value={sectionImgVal} />
+          <FormFieldError
+            errors={errors}
+            path={`services.${index}.WhyChooseUs.img`}
+          />
         </div>
       </div>
 
       <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-700">Cards ({fields.length})</p>
+        <p className="text-sm font-medium text-slate-700">
+          Cards ({fields.length})
+        </p>
 
         {fields.map((field, cardIndex) => (
-          <details key={field.id} className="rounded-md border border-slate-200">
+          <details
+            key={field.id}
+            className="rounded-md border border-slate-200"
+          >
             <summary className="flex cursor-pointer items-center justify-between bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
               {`Card ${cardIndex + 1}`}
               <button
                 type="button"
-                onClick={() => remove(cardIndex)}
+                onClick={(event) => handleRemoveCard(event, cardIndex)}
                 className="text-xs text-red-500 hover:text-red-700"
               >
                 Remove
@@ -56,29 +91,53 @@ const WhyChooseUs = ({ index, register, control }: ServiceSectionProps) => {
             </summary>
             <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Image</label>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Image
+                </label>
                 <input
                   type="file"
                   accept="image/*"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`services.${index}.WhyChooseUs.card.${cardIndex}.img`)}
+                  {...register(
+                    `services.${index}.WhyChooseUs.card.${cardIndex}.img`,
+                  )}
                 />
-                <ImgPreview value={cardValues?.[cardIndex]?.img} />
+                <ImagePreview value={cardValues?.[cardIndex]?.img} />
+                <FormFieldError
+                  errors={errors}
+                  path={`services.${index}.WhyChooseUs.card.${cardIndex}.img`}
+                />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Title</label>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Title
+                </label>
                 <input
                   type="text"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`services.${index}.WhyChooseUs.card.${cardIndex}.title`)}
+                  {...register(
+                    `services.${index}.WhyChooseUs.card.${cardIndex}.title`,
+                  )}
+                />
+                <FormFieldError
+                  errors={errors}
+                  path={`services.${index}.WhyChooseUs.card.${cardIndex}.title`}
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-slate-700">Description</label>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Description
+                </label>
                 <input
                   type="text"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`services.${index}.WhyChooseUs.card.${cardIndex}.description`)}
+                  {...register(
+                    `services.${index}.WhyChooseUs.card.${cardIndex}.description`,
+                  )}
+                />
+                <FormFieldError
+                  errors={errors}
+                  path={`services.${index}.WhyChooseUs.card.${cardIndex}.description`}
                 />
               </div>
             </div>
@@ -88,7 +147,9 @@ const WhyChooseUs = ({ index, register, control }: ServiceSectionProps) => {
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={() => append({ img: undefined as unknown as FileList, title: "", description: "" })}
+            onClick={() =>
+              append({ img: undefined, title: "", description: "" })
+            }
             className="text-sm font-medium text-slate-700 hover:text-slate-900"
           >
             + Add card
@@ -100,4 +161,3 @@ const WhyChooseUs = ({ index, register, control }: ServiceSectionProps) => {
 };
 
 export default WhyChooseUs;
-

@@ -71,8 +71,26 @@ export type BackendContent = {
   joinUsBgImage?: string;
 };
 
-export function createHomeDefaultValues() {
+export function createHomeDefaultValues(): FormValues {
   return {
+    bgImage: undefined,
+    title: "",
+    headingFirstText: "",
+    headingMiddleText: "",
+    headingEndText: "",
+    ukFlag: undefined,
+    descriptionHeroHomepage: "",
+    descriptionHeroHomePageTwo: "",
+    freeConsultation: "",
+    whyOutsourcing: "",
+    headingWhyOutsourcing: "",
+    descriptionWhyOutsourcing: "",
+    imgWhyOutsourcing: undefined,
+    imgTwoWhyOutsourcing: undefined,
+    whyOutSourceAccounting: undefined,
+    headingService: "",
+    descriptionService: "",
+    heroCardName: "",
     heroCardSections: Array.from({ length: DEFAULT_HERO_CARD_COUNT }, () =>
       createEmptyHeroCard(),
     ),
@@ -86,14 +104,19 @@ export function createHomeDefaultValues() {
     howWeWork: {
       heading: "",
       one: "",
+      oneIcon: undefined,
       title: "",
       description: "",
       two: "",
+      twoIcon: undefined,
       titleTwo: "",
       descriptionTwo: "",
       three: "",
+      threeIcon: undefined,
       threeTitle: "",
       threeDescription: "",
+      lineOne: undefined,
+      lineTwo: undefined,
     },
     clientsTestimonial: {
       heading: "",
@@ -109,6 +132,7 @@ export function createHomeDefaultValues() {
     },
     joinUs: {
       heading: "",
+      bgimg: undefined,
     },
   };
 }

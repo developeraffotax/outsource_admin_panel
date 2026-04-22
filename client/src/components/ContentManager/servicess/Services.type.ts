@@ -34,12 +34,12 @@ export type FormValues = {
   description: string;
   descriptiontwo: string;
   buttonText: string;
-  img: FileList;
-  bgimg: FileList;
+  img?: FileList;
+  bgimg?: FileList;
   WhatYouGet: {
     heading: string;
     card: {
-      img: FileList;
+      img?: FileList;
       title: string;
       description: string;
     }[];
@@ -48,7 +48,7 @@ export type FormValues = {
     heading: string;
     highlightheading: string;
     stepCard: {
-      imgSrc: FileList;
+      imgSrc?: FileList;
       title: string;
       description: string;
     }[];
@@ -60,9 +60,9 @@ export type FormValues = {
   };
   WhyChooseUs: {
     heading: string;
-    img: FileList;
+    img?: FileList;
     card: {
-      img: FileList;
+      img?: FileList;
       title: string;
       description: string;
     }[];
@@ -71,9 +71,9 @@ export type FormValues = {
   statics: {
     heading: string;
     description: string;
-    img: FileList;
+    img?: FileList;
     card: {
-      img: FileList;
+      img?: FileList;
       title: string;
       description: string;
     }[];
@@ -82,13 +82,13 @@ export type FormValues = {
     heading: string;
     descriptionone: string;
     descriptiontwo: string;
-    img: FileList;
+    img?: FileList;
   };
   WhoData: {
     heading: string;
     descriptionone: string;
     descriptiontwo: string;
-    img: FileList;
+    img?: FileList;
   };
   Pricing: PricingSection;
 }[];

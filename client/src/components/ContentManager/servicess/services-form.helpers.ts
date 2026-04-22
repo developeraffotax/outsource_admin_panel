@@ -243,8 +243,8 @@ export function createEmptyService(): ServicesForm["services"][number] {
     description: "",
     descriptiontwo: "",
     buttonText: "",
-    img: undefined as unknown as FileList,
-    bgimg: undefined as unknown as FileList,
+    img: undefined,
+    bgimg: undefined,
     WhatYouGet: { heading: "", card: [] },
     ServiceProcess: {
       heading: "",
@@ -258,26 +258,26 @@ export function createEmptyService(): ServicesForm["services"][number] {
     },
     WhyChooseUs: {
       heading: "",
-      img: undefined as unknown as FileList,
+      img: undefined,
       card: [],
     },
     statics: {
       heading: "",
       description: "",
-      img: undefined as unknown as FileList,
+      img: undefined,
       card: [],
     },
     WhatData: {
       heading: "",
       descriptionone: "",
       descriptiontwo: "",
-      img: undefined as unknown as FileList,
+      img: undefined,
     },
     WhoData: {
       heading: "",
       descriptionone: "",
       descriptiontwo: "",
-      img: undefined as unknown as FileList,
+      img: undefined,
     },
     Pricing: {
       config: createEmptyPricingConfig(),

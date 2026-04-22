@@ -1,18 +1,15 @@
+import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
+import FormFieldError from "./FormFieldError";
+import ImagePreview from "./ImagePreview";
 import type { ServiceSectionProps } from "./ServicesProps";
 
-function ImgPreview({ value }: { value: unknown }) {
-  if (typeof value !== "string" || !value.startsWith("http")) return null;
-  return (
-    <img
-      src={value}
-      alt="Current image"
-      className="mt-2 h-20 rounded object-cover"
-    />
-  );
-}
-
-const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
+const WhatYouGet = ({
+  index,
+  register,
+  control,
+  errors,
+}: ServiceSectionProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `services.${index}.WhatYouGet.card`,
@@ -21,6 +18,15 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
     control,
     name: `services.${index}.WhatYouGet.card`,
   });
+
+  const handleRemoveCard = (
+    event: MouseEvent<HTMLButtonElement>,
+    cardIndex: number,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    remove(cardIndex);
+  };
 
   return (
     <section className="cms-subsection-card space-y-4 rounded-lg border border-slate-200 p-4">
@@ -34,6 +40,10 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
           type="text"
           className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
           {...register(`services.${index}.WhatYouGet.heading`)}
+        />
+        <FormFieldError
+          errors={errors}
+          path={`services.${index}.WhatYouGet.heading`}
         />
       </div>
 
@@ -51,7 +61,7 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
               {`Card ${cardIndex + 1}`}
               <button
                 type="button"
-                onClick={() => remove(cardIndex)}
+                onClick={(event) => handleRemoveCard(event, cardIndex)}
                 className="text-xs text-red-500 hover:text-red-700"
               >
                 Remove
@@ -70,7 +80,11 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
                     `services.${index}.WhatYouGet.card.${cardIndex}.img`,
                   )}
                 />
-                <ImgPreview value={cardValues?.[cardIndex]?.img} />
+                <ImagePreview value={cardValues?.[cardIndex]?.img} />
+                <FormFieldError
+                  errors={errors}
+                  path={`services.${index}.WhatYouGet.card.${cardIndex}.img`}
+                />
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-slate-700">
@@ -82,6 +96,10 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
                   {...register(
                     `services.${index}.WhatYouGet.card.${cardIndex}.title`,
                   )}
+                />
+                <FormFieldError
+                  errors={errors}
+                  path={`services.${index}.WhatYouGet.card.${cardIndex}.title`}
                 />
               </div>
               <div className="md:col-span-2">
@@ -95,6 +113,10 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
                     `services.${index}.WhatYouGet.card.${cardIndex}.description`,
                   )}
                 />
+                <FormFieldError
+                  errors={errors}
+                  path={`services.${index}.WhatYouGet.card.${cardIndex}.description`}
+                />
               </div>
             </div>
           </details>
@@ -105,7 +127,7 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
             type="button"
             onClick={() =>
               append({
-                img: undefined as unknown as FileList,
+                img: undefined,
                 title: "",
                 description: "",
               })
@@ -121,4 +143,3 @@ const WhatYouGet = ({ index, register, control }: ServiceSectionProps) => {
 };
 
 export default WhatYouGet;
-
