@@ -145,7 +145,7 @@ const OurStory = ({
             type="button"
             onClick={() =>
               append({
-                imgStatment: undefined as unknown as FileList,
+                imgStatment: undefined,
                 headingStatment: "",
                 descriptionStatement: "",
               })

@@ -95,7 +95,7 @@ const GetInTouch = ({
           type="button"
           onClick={() =>
             append({
-              img: undefined as unknown as FileList,
+              img: undefined,
               title: "",
               description: "",
               detail: "",

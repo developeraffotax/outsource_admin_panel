@@ -80,7 +80,7 @@ const OurValue = ({
           type="button"
           onClick={() =>
             append({
-              imgValue: undefined as unknown as FileList,
+              imgValue: undefined,
               headingValue: "",
               descriptionValue: "",
             })

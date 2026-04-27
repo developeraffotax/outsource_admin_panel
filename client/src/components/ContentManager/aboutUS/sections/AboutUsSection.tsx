@@ -4,10 +4,8 @@ import RhfImageUploadField from "../../shared/RhfImageUploadField";
 const AboutUsSection = ({
   register,
   errors,
-  control,
   savedImages,
 }: AboutUsSectionProps) => {
-  void control;
   return (
     <section className="cms-subsection-card space-y-4 rounded-lg border border-slate-200 p-4">
       <h2 className="text-base font-semibold text-slate-900">

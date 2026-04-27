@@ -55,20 +55,20 @@ export function mapAboutUsFormDefaults(
     heading: content.heading ?? "",
     subHeading: content.subHeading ?? "",
     OurStory: {
-      imgOurStory: undefined as unknown as FileList,
+      imgOurStory: undefined,
       headingOurStory: content.OurStory?.headingOurStory ?? "",
       descriptionOurStory: content.OurStory?.descriptionOurStory ?? "",
       descriptiontwoOurStory: content.OurStory?.descriptiontwoOurStory ?? "",
       missionStatmentCards: (content.OurStory?.missionStatmentCards ?? []).map(
         (card) => ({
-          imgStatment: undefined as unknown as FileList,
+          imgStatment: undefined,
           headingStatment: card.headingStatment ?? "",
           descriptionStatement: card.descriptionStatement ?? "",
         }),
       ),
     },
     OurValue: (content.OurValue ?? []).map((card) => ({
-      imgValue: undefined as unknown as FileList,
+      imgValue: undefined,
       headingValue: card.headingValue ?? "",
       descriptionValue: card.descriptionValue ?? "",
     })),

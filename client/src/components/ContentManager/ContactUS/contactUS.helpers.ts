@@ -37,7 +37,7 @@ export function mapContactFormDefaults(
     heading: content.heading ?? "",
     description: content.description ?? "",
     getInTouch: (content.getInTouch ?? []).map((card) => ({
-      img: undefined as unknown as FileList,
+      img: undefined,
       title: card.title ?? "",
       description: card.description ?? "",
       detail: card.detail ?? "",

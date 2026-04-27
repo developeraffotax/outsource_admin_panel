@@ -5,7 +5,7 @@ import SectionAccordion from "./SectionAccordion";
 import ServiceProcess from "./ServiceProcess";
 import Statics from "./Statics";
 import type { ServiceSectionProps } from "./ServicesProps";
-import { useImagePreview } from "./useImagePreview";
+import { useImagePreview } from "../../shared/useImagePreview";
 import WhatYouGet from "./WhatYouGet";
 import WhyChooseUs from "./WhyChooseUs";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";

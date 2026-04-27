@@ -1,10 +1,10 @@
 export type FormValues = {
   heading: string;
   description: string;
-  img: FileList;
+  img?: FileList;
 
   getInTouch: {
-    img: FileList;
+    img?: FileList;
     title: string;
     description: string;
     detail: string;
