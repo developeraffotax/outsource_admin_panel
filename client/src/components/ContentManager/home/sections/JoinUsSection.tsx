@@ -1,4 +1,5 @@
 import type { HomeSectionProps } from "./section-props.types";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const JoinUsSection = ({ register, errors, savedImages }: HomeSectionProps) => {
   return (
@@ -49,31 +50,17 @@ const JoinUsSection = ({ register, errors, savedImages }: HomeSectionProps) => {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white/90 p-3">
-          <label
-            htmlFor="joinUs-bgimg"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Background image
-          </label>
-          <input
+          <RhfImageUploadField
             id="joinUs-bgimg"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("joinUs.bgimg")}
+            label="Background image"
+            path="joinUs.bgimg"
+            register={register}
+            errors={errors}
+            previewValue={savedImages?.joinUsBgImage}
+            previewAlt="Current background"
+            previewClassName="mt-2 h-24 w-full rounded object-cover"
+            errorClassName="mt-1 text-sm text-red-600"
           />
-          {savedImages?.joinUsBgImage && (
-            <img
-              src={savedImages.joinUsBgImage}
-              alt="Current background"
-              className="mt-2 h-24 w-full rounded object-cover"
-            />
-          )}
-          {errors.joinUs?.bgimg && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.joinUs.bgimg.message as string}
-            </p>
-          )}
         </div>
       </div>
     </section>

@@ -1,8 +1,8 @@
 import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 import FormFieldError from "./FormFieldError";
-import ImagePreview from "./ImagePreview";
 import type { ServiceSectionProps } from "./ServicesProps";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const WhatYouGet = ({
   index,
@@ -68,24 +68,15 @@ const WhatYouGet = ({
               </button>
             </summary>
             <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.WhatYouGet.card.${cardIndex}.img`,
-                  )}
-                />
-                <ImagePreview value={cardValues?.[cardIndex]?.img} />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.WhatYouGet.card.${cardIndex}.img`}
-                />
-              </div>
+              <RhfImageUploadField
+                id={`what-you-get-card-${cardIndex}-img`}
+                label="Image"
+                path={`services.${index}.WhatYouGet.card.${cardIndex}.img`}
+                register={register}
+                errors={errors}
+                previewValue={cardValues?.[cardIndex]?.img}
+                allowFileListPreview
+              />
               <div>
                 <label className="mb-1 block text-sm font-medium text-slate-700">
                   Title

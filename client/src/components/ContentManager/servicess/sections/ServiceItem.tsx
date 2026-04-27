@@ -1,6 +1,5 @@
 import { useWatch } from "react-hook-form";
 import FormFieldError from "./FormFieldError";
-import ImagePreview from "./ImagePreview";
 import Pricing from "./Pricing";
 import SectionAccordion from "./SectionAccordion";
 import ServiceProcess from "./ServiceProcess";
@@ -9,6 +8,7 @@ import type { ServiceSectionProps } from "./ServicesProps";
 import { useImagePreview } from "./useImagePreview";
 import WhatYouGet from "./WhatYouGet";
 import WhyChooseUs from "./WhyChooseUs";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 type CommonSectionProps = Pick<
   ServiceSectionProps,
@@ -170,33 +170,25 @@ const HeroSection = ({
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`${servicePath}.img`)}
-                />
-                <ImagePreview value={heroImageValue} />
-                <FormFieldError errors={errors} path={`${servicePath}.img`} />
-              </div>
+              <RhfImageUploadField
+                id={`${servicePath}-img`}
+                label="Image"
+                path={`${servicePath}.img`}
+                register={register}
+                errors={errors}
+                previewValue={heroImageValue}
+                allowFileListPreview
+              />
 
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Background image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`${servicePath}.bgimg`)}
-                />
-                <ImagePreview value={heroBackgroundValue} />
-                <FormFieldError errors={errors} path={`${servicePath}.bgimg`} />
-              </div>
+              <RhfImageUploadField
+                id={`${servicePath}-bgimg`}
+                label="Background image"
+                path={`${servicePath}.bgimg`}
+                register={register}
+                errors={errors}
+                previewValue={heroBackgroundValue}
+                allowFileListPreview
+              />
             </div>
           </div>
         </div>
@@ -288,17 +280,15 @@ const DataSection = ({
           <FormFieldError errors={errors} path={`${fieldPath}.heading`} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${fieldPath}.img`)}
+          <RhfImageUploadField
+            id={`${fieldPath}-img`}
+            label="Image"
+            path={`${fieldPath}.img`}
+            register={register}
+            errors={errors}
+            previewValue={imageValue}
+            allowFileListPreview
           />
-          <ImagePreview value={imageValue} />
-          <FormFieldError errors={errors} path={`${fieldPath}.img`} />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">

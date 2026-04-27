@@ -1,7 +1,14 @@
 import { useFieldArray } from "react-hook-form";
 import type { AboutUsSectionProps } from "./AboutUsProp";
+import RhfFieldError from "../../shared/RhfFieldError";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
-const OurValue = ({ register, errors, control, savedImages }: AboutUsSectionProps) => {
+const OurValue = ({
+  register,
+  errors,
+  control,
+  savedImages,
+}: AboutUsSectionProps) => {
   const { fields, append } = useFieldArray({
     control,
     name: "OurValue",
@@ -14,33 +21,21 @@ const OurValue = ({ register, errors, control, savedImages }: AboutUsSectionProp
       </h2>
 
       {fields.map((field, index) => (
-        <details
-          key={field.id}
-          className="rounded-md border border-slate-200"
-        >
+        <details key={field.id} className="rounded-md border border-slate-200">
           <summary className="cursor-pointer bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
             {`Card ${index + 1}`}
           </summary>
 
           <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor={`imgValue-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Image
-              </label>
-              <input
-                id={`imgValue-${index}`}
-                type="file"
-                accept="image/*"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`OurValue.${index}.imgValue`)}
-              />
-              {savedImages?.[`imgValue_${index}`] && (
-                <img src={savedImages[`imgValue_${index}`]} alt="Current value image" className="mt-2 h-20 rounded object-cover" />
-              )}
-            </div>
+            <RhfImageUploadField
+              id={`imgValue-${index}`}
+              label="Image"
+              path={`OurValue.${index}.imgValue`}
+              register={register}
+              errors={errors}
+              previewValue={savedImages?.[`imgValue_${index}`]}
+              previewAlt="Current value image"
+            />
 
             <div>
               <label
@@ -55,11 +50,11 @@ const OurValue = ({ register, errors, control, savedImages }: AboutUsSectionProp
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                 {...register(`OurValue.${index}.headingValue`)}
               />
-              {errors.OurValue?.[index]?.headingValue && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.OurValue[index]?.headingValue?.message as string}
-                </p>
-              )}
+              <RhfFieldError
+                errors={errors}
+                path={`OurValue.${index}.headingValue`}
+                className="mt-1 text-sm text-red-600"
+              />
             </div>
 
             <div className="md:col-span-2">
@@ -100,4 +95,3 @@ const OurValue = ({ register, errors, control, savedImages }: AboutUsSectionProp
 };
 
 export default OurValue;
-

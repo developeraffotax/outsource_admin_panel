@@ -1,7 +1,14 @@
 import { useFieldArray } from "react-hook-form";
 import type { AboutUsSectionProps } from "./ConatctUsProps";
+import RhfFieldError from "../../shared/RhfFieldError";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
-const GetInTouch = ({ register, errors, control, savedImages }: AboutUsSectionProps) => {
+const GetInTouch = ({
+  register,
+  errors,
+  control,
+  savedImages,
+}: AboutUsSectionProps) => {
   const { fields, append } = useFieldArray({
     control,
     name: "getInTouch",
@@ -14,33 +21,21 @@ const GetInTouch = ({ register, errors, control, savedImages }: AboutUsSectionPr
       </h2>
 
       {fields.map((field, index) => (
-        <details
-          key={field.id}
-          className="rounded-md border border-slate-200"
-        >
+        <details key={field.id} className="rounded-md border border-slate-200">
           <summary className="cursor-pointer bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
             {`Card ${index + 1}`}
           </summary>
 
           <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor={`getInTouch-img-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Image
-              </label>
-              <input
-                id={`getInTouch-img-${index}`}
-                type="file"
-                accept="image/*"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`getInTouch.${index}.img`)}
-              />
-              {savedImages?.[`getInTouchImg_${index}`] && (
-                <img src={savedImages[`getInTouchImg_${index}`]} alt="Current card image" className="mt-2 h-20 rounded object-cover" />
-              )}
-            </div>
+            <RhfImageUploadField
+              id={`getInTouch-img-${index}`}
+              label="Image"
+              path={`getInTouch.${index}.img`}
+              register={register}
+              errors={errors}
+              previewValue={savedImages?.[`getInTouchImg_${index}`]}
+              previewAlt="Current card image"
+            />
 
             <div>
               <label
@@ -55,11 +50,11 @@ const GetInTouch = ({ register, errors, control, savedImages }: AboutUsSectionPr
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                 {...register(`getInTouch.${index}.title`)}
               />
-              {errors.getInTouch?.[index]?.title && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.getInTouch[index]?.title?.message as string}
-                </p>
-              )}
+              <RhfFieldError
+                errors={errors}
+                path={`getInTouch.${index}.title`}
+                className="mt-1 text-sm text-red-600"
+              />
             </div>
 
             <div>
@@ -116,4 +111,3 @@ const GetInTouch = ({ register, errors, control, savedImages }: AboutUsSectionPr
 };
 
 export default GetInTouch;
-

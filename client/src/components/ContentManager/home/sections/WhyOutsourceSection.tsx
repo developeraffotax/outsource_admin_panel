@@ -1,6 +1,7 @@
 import { createEmptyWhyOutsourceCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const WhyOutsourceSection = ({
   register,
@@ -87,75 +88,39 @@ const WhyOutsourceSection = ({
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <label
-              htmlFor="imgWhyOutsourcing"
-              className="mb-1 block text-sm font-medium text-slate-700"
-            >
-              Main image
-            </label>
-            <input
-              id="imgWhyOutsourcing"
-              type="file"
-              accept="image/*"
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              {...register("imgWhyOutsourcing")}
-            />
-            {savedImages?.imgWhyOutsoutcing && (
-              <img
-                src={savedImages.imgWhyOutsoutcing}
-                alt="Current main image"
-                className="mt-2 h-20 rounded object-cover"
-              />
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="imgTwoWhyOutsourcing"
-              className="mb-1 block text-sm font-medium text-slate-700"
-            >
-              Second image
-            </label>
-            <input
-              id="imgTwoWhyOutsourcing"
-              type="file"
-              accept="image/*"
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              {...register("imgTwoWhyOutsourcing")}
-            />
-            {savedImages?.imgtwoWhyOutsoutcing && (
-              <img
-                src={savedImages.imgtwoWhyOutsoutcing}
-                alt="Current second image"
-                className="mt-2 h-20 rounded object-cover"
-              />
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="whyOutSourceAccounting"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Accounting image
-          </label>
-          <input
-            id="whyOutSourceAccounting"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("whyOutSourceAccounting")}
+          <RhfImageUploadField
+            id="imgWhyOutsourcing"
+            label="Main image"
+            path="imgWhyOutsourcing"
+            register={register}
+            errors={errors}
+            previewValue={savedImages?.imgWhyOutsoutcing}
+            previewAlt="Current main image"
+            errorClassName="mt-1 text-sm text-red-600"
           />
-          {savedImages?.whyOutSourceAccounting && (
-            <img
-              src={savedImages.whyOutSourceAccounting}
-              alt="Current accounting image"
-              className="mt-2 h-20 rounded object-cover"
-            />
-          )}
+
+          <RhfImageUploadField
+            id="imgTwoWhyOutsourcing"
+            label="Second image"
+            path="imgTwoWhyOutsourcing"
+            register={register}
+            errors={errors}
+            previewValue={savedImages?.imgtwoWhyOutsoutcing}
+            previewAlt="Current second image"
+            errorClassName="mt-1 text-sm text-red-600"
+          />
         </div>
+
+        <RhfImageUploadField
+          id="whyOutSourceAccounting"
+          label="Accounting image"
+          path="whyOutSourceAccounting"
+          register={register}
+          errors={errors}
+          previewValue={savedImages?.whyOutSourceAccounting}
+          previewAlt="Current accounting image"
+          errorClassName="mt-1 text-sm text-red-600"
+        />
 
         <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -212,28 +177,16 @@ const WhyOutsourceSection = ({
                         `whyOutsourceCardSections.${index}.existingWhyCardImage`,
                       )}
                     />
-                    <label
-                      htmlFor={`why-card-${index}-image`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Pointer image
-                    </label>
-                    <input
+                    <RhfImageUploadField
                       id={`why-card-${index}-image`}
-                      type="file"
-                      accept="image/*"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(
-                        `whyOutsourceCardSections.${index}.imgPointerWhyOutsourcing`,
-                      )}
+                      label="Pointer image"
+                      path={`whyOutsourceCardSections.${index}.imgPointerWhyOutsourcing`}
+                      register={register}
+                      errors={errors}
+                      previewValue={existingWhyCardImage}
+                      previewAlt="Current pointer image"
+                      errorClassName="mt-1 text-sm text-red-600"
                     />
-                    {existingWhyCardImage && (
-                      <img
-                        src={existingWhyCardImage}
-                        alt="Current pointer image"
-                        className="mt-2 h-20 rounded object-cover"
-                      />
-                    )}
                   </div>
 
                   <div>

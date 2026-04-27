@@ -1,4 +1,5 @@
 import type { AboutUsSectionProps } from "./ConatctUsProps";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const Hero = ({ register, savedImages }: AboutUsSectionProps) => {
   return (
@@ -36,28 +37,17 @@ const Hero = ({ register, savedImages }: AboutUsSectionProps) => {
           />
         </div>
 
-        <div>
-          <label
-            htmlFor="img"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Image
-          </label>
-          <input
-            id="img"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("img")}
-          />
-          {savedImages?.img && (
-            <img src={savedImages.img} alt="Current hero" className="mt-2 h-20 rounded object-cover" />
-          )}
-        </div>
+        <RhfImageUploadField
+          id="img"
+          label="Image"
+          path="img"
+          register={register}
+          previewValue={savedImages?.img}
+          previewAlt="Current hero"
+        />
       </div>
     </section>
   );
 };
 
 export default Hero;
-

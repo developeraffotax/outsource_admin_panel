@@ -1,7 +1,14 @@
 import { useFieldArray } from "react-hook-form";
 import type { AboutUsSectionProps } from "./AboutUsProp";
+import RhfFieldError from "../../shared/RhfFieldError";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
-const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProps) => {
+const OurStory = ({
+  register,
+  errors,
+  control,
+  savedImages,
+}: AboutUsSectionProps) => {
   const { fields, append } = useFieldArray({
     control,
     name: "OurStory.missionStatmentCards",
@@ -12,22 +19,15 @@ const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProp
       <h2 className="text-base font-semibold text-slate-900">Our Story</h2>
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label
-            htmlFor="imgOurStory"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            imgOurStory
-          </label>
-          <input
+          <RhfImageUploadField
             id="imgOurStory"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("OurStory.imgOurStory")}
+            label="imgOurStory"
+            path="OurStory.imgOurStory"
+            register={register}
+            errors={errors}
+            previewValue={savedImages?.imgOurStory}
+            previewAlt="Current Our Story"
           />
-          {savedImages?.imgOurStory && (
-            <img src={savedImages.imgOurStory} alt="Current Our Story" className="mt-2 h-20 rounded object-cover" />
-          )}
         </div>
         <div>
           <label
@@ -88,24 +88,15 @@ const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProp
             </summary>
 
             <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
-              <div>
-                <label
-                  htmlFor={`imgStatment-${index}`}
-                  className="mb-1 block text-sm font-medium text-slate-700"
-                >
-                  Image
-                </label>
-                <input
-                  id={`imgStatment-${index}`}
-                  type="file"
-                  accept="image/*"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`OurStory.missionStatmentCards.${index}.imgStatment`)}
-                />
-                {savedImages?.[`imgStatment_${index}`] && (
-                  <img src={savedImages[`imgStatment_${index}`]} alt="Current card image" className="mt-2 h-20 rounded object-cover" />
-                )}
-              </div>
+              <RhfImageUploadField
+                id={`imgStatment-${index}`}
+                label="Image"
+                path={`OurStory.missionStatmentCards.${index}.imgStatment`}
+                register={register}
+                errors={errors}
+                previewValue={savedImages?.[`imgStatment_${index}`]}
+                previewAlt="Current card image"
+              />
 
               <div>
                 <label
@@ -118,13 +109,15 @@ const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProp
                   id={`headingStatment-${index}`}
                   type="text"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`OurStory.missionStatmentCards.${index}.headingStatment`)}
+                  {...register(
+                    `OurStory.missionStatmentCards.${index}.headingStatment`,
+                  )}
                 />
-                {errors.OurStory?.missionStatmentCards?.[index]?.headingStatment && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.OurStory.missionStatmentCards[index]?.headingStatment?.message as string}
-                  </p>
-                )}
+                <RhfFieldError
+                  errors={errors}
+                  path={`OurStory.missionStatmentCards.${index}.headingStatment`}
+                  className="mt-1 text-sm text-red-600"
+                />
               </div>
 
               <div className="md:col-span-2">
@@ -138,7 +131,9 @@ const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProp
                   id={`descriptionStatement-${index}`}
                   type="text"
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(`OurStory.missionStatmentCards.${index}.descriptionStatement`)}
+                  {...register(
+                    `OurStory.missionStatmentCards.${index}.descriptionStatement`,
+                  )}
                 />
               </div>
             </div>
@@ -148,7 +143,13 @@ const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProp
         <div className="flex items-center justify-end">
           <button
             type="button"
-            onClick={() => append({ imgStatment: undefined as unknown as FileList, headingStatment: "", descriptionStatement: "" })}
+            onClick={() =>
+              append({
+                imgStatment: undefined as unknown as FileList,
+                headingStatment: "",
+                descriptionStatement: "",
+              })
+            }
             className="text-sm font-medium text-slate-700 hover:text-slate-900"
           >
             + Add a card
@@ -160,4 +161,3 @@ const OurStory = ({ register, errors, control, savedImages }: AboutUsSectionProp
 };
 
 export default OurStory;
-

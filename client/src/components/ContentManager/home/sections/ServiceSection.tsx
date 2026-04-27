@@ -1,6 +1,7 @@
 import { createEmptyServiceCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const ServiceSection = ({
   register,
@@ -121,41 +122,16 @@ const ServiceSection = ({
                         `serviceCards.${index}.existingServiceCardImage`,
                       )}
                     />
-                    <label
-                      htmlFor={`service-card-${index}-imgServiceCard`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Card image
-                    </label>
-                    <input
+                    <RhfImageUploadField
                       id={`service-card-${index}-imgServiceCard`}
-                      type="file"
-                      accept="image/*"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(`serviceCards.${index}.imgServiceCard`)}
+                      label="Card image"
+                      path={`serviceCards.${index}.imgServiceCard`}
+                      register={register}
+                      errors={errors}
+                      previewValue={existingServiceCardImage}
+                      previewAlt="Current card image"
+                      errorClassName="mt-1 text-sm text-red-600"
                     />
-                    {existingServiceCardImage && (
-                      <img
-                        src={existingServiceCardImage}
-                        alt="Current card image"
-                        className="mt-2 h-20 rounded object-cover"
-                      />
-                    )}
-                    {(
-                      errors.serviceCards?.[index]?.imgServiceCard as {
-                        message?: string;
-                      }
-                    )?.message && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {
-                          (
-                            errors.serviceCards?.[index]?.imgServiceCard as {
-                              message?: string;
-                            }
-                          ).message
-                        }
-                      </p>
-                    )}
                   </div>
 
                   <div>

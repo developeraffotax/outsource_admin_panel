@@ -1,8 +1,8 @@
 import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 import FormFieldError from "./FormFieldError";
-import ImagePreview from "./ImagePreview";
 import type { ServiceSectionProps } from "./ServicesProps";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const Statics = ({ index, register, control, errors }: ServiceSectionProps) => {
   const { fields, append, remove } = useFieldArray({
@@ -46,22 +46,15 @@ const Statics = ({ index, register, control, errors }: ServiceSectionProps) => {
             path={`services.${index}.statics.heading`}
           />
         </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`services.${index}.statics.img`)}
-          />
-          <ImagePreview value={sectionImgVal} />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.statics.img`}
-          />
-        </div>
+        <RhfImageUploadField
+          id={`statics-${index}-img`}
+          label="Image"
+          path={`services.${index}.statics.img`}
+          register={register}
+          errors={errors}
+          previewValue={sectionImgVal}
+          allowFileListPreview
+        />
         <div className="md:col-span-2">
           <label className="mb-1 block text-sm font-medium text-slate-700">
             Description
@@ -99,24 +92,15 @@ const Statics = ({ index, register, control, errors }: ServiceSectionProps) => {
               </button>
             </summary>
             <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.statics.card.${cardIndex}.img`,
-                  )}
-                />
-                <ImagePreview value={cardValues?.[cardIndex]?.img} />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.statics.card.${cardIndex}.img`}
-                />
-              </div>
+              <RhfImageUploadField
+                id={`statics-card-${cardIndex}-img`}
+                label="Image"
+                path={`services.${index}.statics.card.${cardIndex}.img`}
+                register={register}
+                errors={errors}
+                previewValue={cardValues?.[cardIndex]?.img}
+                allowFileListPreview
+              />
               <div>
                 <label className="mb-1 block text-sm font-medium text-slate-700">
                   Title

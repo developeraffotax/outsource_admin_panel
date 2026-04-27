@@ -1,7 +1,13 @@
 import type { AboutUsSectionProps } from "./AboutUsProp";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
-const AboutUsSection = ({ register, errors, control, savedImages }: AboutUsSectionProps) => {
-  void errors; void control;
+const AboutUsSection = ({
+  register,
+  errors,
+  control,
+  savedImages,
+}: AboutUsSectionProps) => {
+  void control;
   return (
     <section className="cms-subsection-card space-y-4 rounded-lg border border-slate-200 p-4">
       <h2 className="text-base font-semibold text-slate-900">
@@ -37,28 +43,18 @@ const AboutUsSection = ({ register, errors, control, savedImages }: AboutUsSecti
             {...register("subHeading")}
           />
         </div>
-        <div>
-          <label
-            htmlFor="bgImage"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Background image
-          </label>
-          <input
-            id="imgHero"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("imgHero")}
-          />
-          {savedImages?.imgHero && (
-            <img src={savedImages.imgHero} alt="Current hero" className="mt-2 h-20 rounded object-cover" />
-          )}
-        </div>
+        <RhfImageUploadField
+          id="imgHero"
+          label="Background image"
+          path="imgHero"
+          register={register}
+          errors={errors}
+          previewValue={savedImages?.imgHero}
+          previewAlt="Current hero"
+        />
       </div>
     </section>
   );
 };
 
 export default AboutUsSection;
-

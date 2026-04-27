@@ -1,6 +1,7 @@
 import { createEmptyHeroCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const HeroSection = ({
   register,
@@ -55,7 +56,9 @@ const HeroSection = ({
                   {...register("title")}
                 />
                 {errors.title?.message && (
-                  <p className="mt-1 text-xs text-red-200">{String(errors.title.message)}</p>
+                  <p className="mt-1 text-xs text-red-200">
+                    {String(errors.title.message)}
+                  </p>
                 )}
               </div>
 
@@ -96,7 +99,9 @@ const HeroSection = ({
                     {...register("headingEndText")}
                   />
                   {errors.headingEndText?.message && (
-                    <p className="text-xs text-red-200">{String(errors.headingEndText.message)}</p>
+                    <p className="text-xs text-red-200">
+                      {String(errors.headingEndText.message)}
+                    </p>
                   )}
                 </div>
               </div>
@@ -173,51 +178,29 @@ const HeroSection = ({
               </p>
 
               <div className="mt-4 space-y-4">
-                <div>
-                  <label
-                    htmlFor="bgImage"
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    Background image
-                  </label>
-                  <input
-                    id="bgImage"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("bgImage")}
-                  />
-                  {savedImages?.bgImage && (
-                    <img
-                      src={savedImages.bgImage}
-                      alt="Current background"
-                      className="mt-2 h-28 w-full rounded object-cover"
-                    />
-                  )}
-                </div>
+                <RhfImageUploadField
+                  id="bgImage"
+                  label="Background image"
+                  path="bgImage"
+                  register={register}
+                  errors={errors}
+                  previewValue={savedImages?.bgImage}
+                  previewAlt="Current background"
+                  previewClassName="mt-2 h-28 w-full rounded object-cover"
+                  errorClassName="mt-1 text-sm text-red-600"
+                />
 
-                <div>
-                  <label
-                    htmlFor="ukFlag"
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    UK flag image
-                  </label>
-                  <input
-                    id="ukFlag"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("ukFlag")}
-                  />
-                  {savedImages?.ukFlag && (
-                    <img
-                      src={savedImages.ukFlag}
-                      alt="Current UK flag"
-                      className="mt-2 h-20 w-40 rounded object-cover"
-                    />
-                  )}
-                </div>
+                <RhfImageUploadField
+                  id="ukFlag"
+                  label="UK flag image"
+                  path="ukFlag"
+                  register={register}
+                  errors={errors}
+                  previewValue={savedImages?.ukFlag}
+                  previewAlt="Current UK flag"
+                  previewClassName="mt-2 h-20 w-40 rounded object-cover"
+                  errorClassName="mt-1 text-sm text-red-600"
+                />
               </div>
             </div>
           </div>
@@ -294,26 +277,16 @@ const HeroSection = ({
                         `heroCardSections.${index}.existingImageUrl`,
                       )}
                     />
-                    <label
-                      htmlFor={`hero-card-${index}-image`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Image
-                    </label>
-                    <input
+                    <RhfImageUploadField
                       id={`hero-card-${index}-image`}
-                      type="file"
-                      accept="image/*"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(`heroCardSections.${index}.image`)}
+                      label="Image"
+                      path={`heroCardSections.${index}.image`}
+                      register={register}
+                      errors={errors}
+                      previewValue={existingHeroCardImage}
+                      previewAlt="Current card image"
+                      errorClassName="mt-1 text-sm text-red-600"
                     />
-                    {existingHeroCardImage && (
-                      <img
-                        src={existingHeroCardImage}
-                        alt="Current card image"
-                        className="mt-2 h-20 rounded object-cover"
-                      />
-                    )}
                   </div>
 
                   <div>

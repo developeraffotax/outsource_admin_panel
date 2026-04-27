@@ -1,5 +1,13 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useEffect, useState, type ReactElement } from "react";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  Outlet,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
+
+// Page Imports
 import LoginPage from "./pages/Login.page";
 import DashboardPage from "./pages/Dashboard.page";
 import BuyServicePage from "./pages/BuyService.page";
@@ -9,58 +17,25 @@ import Faq from "./pages/Faq.page";
 import Services from "./pages/Services.page";
 import OrdersPage from "./pages/Orders.page";
 import UsersPage from "./pages/Users.page.tsx";
+
 import EntryPreloader from "./components/layout/entry-preloader.component";
 import { isAuthenticated, isCurrentUserAdmin } from "./utils/auth";
 
 const SESSION_KEY_ENTRY_ANIMATION = "cms_seen_entry_animation";
 
-type AdminOnlyRouteProps = {
-  children: ReactElement;
+const GuestRoute = () => {
+  return isAuthenticated() ? <Navigate to="/dashboard" replace /> : <Outlet />;
 };
 
-type GuestOnlyRouteProps = {
-  children: ReactElement;
+const PrivateRoute = () => {
+  return isAuthenticated() ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
-type AuthenticatedRouteProps = {
-  children: ReactElement;
+const AdminRoute = () => {
+  if (!isAuthenticated()) return <Navigate to="/login" replace />;
+  if (!isCurrentUserAdmin()) return <Navigate to="/dashboard" replace />;
+  return <Outlet />;
 };
-
-function AuthLandingRoute() {
-  return isAuthenticated() ? (
-    <Navigate to="/dashboard" replace />
-  ) : (
-    <Navigate to="/login" replace />
-  );
-}
-
-function GuestOnlyRoute({ children }: GuestOnlyRouteProps) {
-  if (isAuthenticated()) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return children;
-}
-
-function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
-  if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-}
-
-function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
-  if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!isCurrentUserAdmin()) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return children;
-}
 
 function App() {
   const [showEntry, setShowEntry] = useState(true);
@@ -69,10 +44,9 @@ function App() {
     const hasSeenEntry = sessionStorage.getItem(SESSION_KEY_ENTRY_ANIMATION);
     if (hasSeenEntry) {
       setShowEntry(false);
-      return;
+    } else {
+      sessionStorage.setItem(SESSION_KEY_ENTRY_ANIMATION, "1");
     }
-
-    sessionStorage.setItem(SESSION_KEY_ENTRY_ANIMATION, "1");
   }, []);
 
   return (
@@ -81,80 +55,39 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AuthLandingRoute />} />
           <Route
-            path="/login"
+            path="/"
             element={
-              <GuestOnlyRoute>
-                <LoginPage />
-              </GuestOnlyRoute>
+              <Navigate
+                to={isAuthenticated() ? "/dashboard" : "/login"}
+                replace
+              />
             }
           />
-          <Route
-            path="/dashboard"
-            element={
-              <AuthenticatedRoute>
-                <DashboardPage />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="/buy-service"
-            element={
-              <AuthenticatedRoute>
-                <BuyServicePage />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="/about-us"
-            element={
-              <AuthenticatedRoute>
-                <AboutUs />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="/contact-us"
-            element={
-              <AuthenticatedRoute>
-                <ContactUs />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="/faq"
-            element={
-              <AuthenticatedRoute>
-                <Faq />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="/services"
-            element={
-              <AuthenticatedRoute>
-                <Services />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <AdminOnlyRoute>
-                <OrdersPage />
-              </AdminOnlyRoute>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <AdminOnlyRoute>
-                <UsersPage />
-              </AdminOnlyRoute>
-            }
-          />
-          <Route path="*" element={<AuthLandingRoute />} />
+
+          {/* 3. Guest Only Routes (Login, etc.) */}
+          <Route element={<GuestRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
+
+          {/* 4. Authenticated User Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/buy-service" element={<BuyServicePage />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/services" element={<Services />} />
+          </Route>
+
+          {/* 5. Admin Only Routes */}
+          <Route element={<AdminRoute />}>
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/users" element={<UsersPage />} />
+          </Route>
+
+          {/* 6. Catch-all Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </>

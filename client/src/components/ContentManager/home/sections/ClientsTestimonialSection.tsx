@@ -1,6 +1,7 @@
 import { createEmptyTestimonialCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const ClientsTestimonialSection = ({
   register,
@@ -111,79 +112,29 @@ const ClientsTestimonialSection = ({
                         `clientsTestimonial.testimonialCards.${index}.existingTestimonialPersonImg`,
                       )}
                     />
-                    <label
-                      htmlFor={`testimonial-card-${index}-testimonialBgImg`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Background image
-                    </label>
-                    <input
+                    <RhfImageUploadField
                       id={`testimonial-card-${index}-testimonialBgImg`}
-                      type="file"
-                      accept="image/*"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(
-                        `clientsTestimonial.testimonialCards.${index}.testimonialBgImg`,
-                      )}
+                      label="Background image"
+                      path={`clientsTestimonial.testimonialCards.${index}.testimonialBgImg`}
+                      register={register}
+                      errors={errors}
+                      previewValue={existingTestimonialBgImg}
+                      previewAlt="Current background"
+                      errorClassName="mt-1 text-sm text-red-600"
                     />
-                    {existingTestimonialBgImg && (
-                      <img
-                        src={existingTestimonialBgImg}
-                        alt="Current background"
-                        className="mt-2 h-20 rounded object-cover"
-                      />
-                    )}
-                    {(
-                      errors.clientsTestimonial?.testimonialCards?.[index]
-                        ?.testimonialBgImg as { message?: string }
-                    )?.message && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {
-                          (
-                            errors.clientsTestimonial?.testimonialCards?.[index]
-                              ?.testimonialBgImg as { message?: string }
-                          ).message
-                        }
-                      </p>
-                    )}
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`testimonial-card-${index}-testimonialPersonImg`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Person image
-                    </label>
-                    <input
+                    <RhfImageUploadField
                       id={`testimonial-card-${index}-testimonialPersonImg`}
-                      type="file"
-                      accept="image/*"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(
-                        `clientsTestimonial.testimonialCards.${index}.testimonialPersonImg`,
-                      )}
+                      label="Person image"
+                      path={`clientsTestimonial.testimonialCards.${index}.testimonialPersonImg`}
+                      register={register}
+                      errors={errors}
+                      previewValue={existingTestimonialPersonImg}
+                      previewAlt="Current person image"
+                      errorClassName="mt-1 text-sm text-red-600"
                     />
-                    {existingTestimonialPersonImg && (
-                      <img
-                        src={existingTestimonialPersonImg}
-                        alt="Current person image"
-                        className="mt-2 h-20 rounded object-cover"
-                      />
-                    )}
-                    {(
-                      errors.clientsTestimonial?.testimonialCards?.[index]
-                        ?.testimonialPersonImg as { message?: string }
-                    )?.message && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {
-                          (
-                            errors.clientsTestimonial?.testimonialCards?.[index]
-                              ?.testimonialPersonImg as { message?: string }
-                          ).message
-                        }
-                      </p>
-                    )}
                   </div>
                 </div>
 

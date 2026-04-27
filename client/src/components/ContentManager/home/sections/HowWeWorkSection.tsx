@@ -1,6 +1,7 @@
 import type { Path } from "react-hook-form";
 import type { FormValues } from "../home-form.types";
 import type { HomeSectionProps, SavedImages } from "./section-props.types";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 type StepCardProps = {
   stepIndex: number;
@@ -10,10 +11,10 @@ type StepCardProps = {
   titleField: Path<FormValues>;
   descriptionField: Path<FormValues>;
   imageKey: string;
-  iconErrorMessage?: string;
   titleErrorMessage?: string;
   descriptionErrorMessage?: string;
   savedImages: SavedImages | undefined;
+  errors: HomeSectionProps["errors"];
   register: HomeSectionProps["register"];
 };
 
@@ -25,10 +26,10 @@ const StepCard = ({
   titleField,
   descriptionField,
   imageKey,
-  iconErrorMessage,
   titleErrorMessage,
   descriptionErrorMessage,
   savedImages,
+  errors,
   register,
 }: StepCardProps) => {
   const stepNumber = stepIndex + 1;
@@ -63,22 +64,17 @@ const StepCard = ({
         )}
       </div>
 
-      <label
-        htmlFor={iconInputId}
-        className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-600"
-      >
-        {stepLabel} icon
-      </label>
-      <input
+      <RhfImageUploadField
         id={iconInputId}
-        type="file"
-        accept="image/*"
-        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-        {...register(iconField)}
+        label={`${stepLabel} icon`}
+        path={iconField}
+        register={register}
+        errors={errors}
+        previewValue={savedIconUrl}
+        previewAlt={`${stepLabel} icon`}
+        labelClassName="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-600"
+        errorClassName="mt-1 text-sm text-red-600"
       />
-      {iconErrorMessage && (
-        <p className="mt-1 text-sm text-red-600">{iconErrorMessage}</p>
-      )}
 
       <label
         htmlFor={titleInputId}
@@ -164,10 +160,14 @@ const HowWeWorkSection = ({
                   titleField="howWeWork.title"
                   descriptionField="howWeWork.description"
                   imageKey="howWeWorkIcon_0"
-                  iconErrorMessage={errors.howWeWork?.oneIcon?.message as string | undefined}
-                  titleErrorMessage={errors.howWeWork?.title?.message as string | undefined}
-                  descriptionErrorMessage={errors.howWeWork?.description?.message as string | undefined}
+                  titleErrorMessage={
+                    errors.howWeWork?.title?.message as string | undefined
+                  }
+                  descriptionErrorMessage={
+                    errors.howWeWork?.description?.message as string | undefined
+                  }
                   savedImages={savedImages}
+                  errors={errors}
                   register={register}
                 />
 
@@ -191,10 +191,16 @@ const HowWeWorkSection = ({
                   titleField="howWeWork.titleTwo"
                   descriptionField="howWeWork.descriptionTwo"
                   imageKey="howWeWorkIcon_1"
-                  iconErrorMessage={errors.howWeWork?.twoIcon?.message as string | undefined}
-                  titleErrorMessage={errors.howWeWork?.titleTwo?.message as string | undefined}
-                  descriptionErrorMessage={errors.howWeWork?.descriptionTwo?.message as string | undefined}
+                  titleErrorMessage={
+                    errors.howWeWork?.titleTwo?.message as string | undefined
+                  }
+                  descriptionErrorMessage={
+                    errors.howWeWork?.descriptionTwo?.message as
+                      | string
+                      | undefined
+                  }
                   savedImages={savedImages}
+                  errors={errors}
                   register={register}
                 />
 
@@ -218,69 +224,47 @@ const HowWeWorkSection = ({
                   titleField="howWeWork.threeTitle"
                   descriptionField="howWeWork.threeDescription"
                   imageKey="howWeWorkIcon_2"
-                  iconErrorMessage={errors.howWeWork?.threeIcon?.message as string | undefined}
-                  titleErrorMessage={errors.howWeWork?.threeTitle?.message as string | undefined}
-                  descriptionErrorMessage={errors.howWeWork?.threeDescription?.message as string | undefined}
+                  titleErrorMessage={
+                    errors.howWeWork?.threeTitle?.message as string | undefined
+                  }
+                  descriptionErrorMessage={
+                    errors.howWeWork?.threeDescription?.message as
+                      | string
+                      | undefined
+                  }
                   savedImages={savedImages}
+                  errors={errors}
                   register={register}
                 />
               </div>
 
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="rounded-xl border border-slate-200 bg-white/92 p-3">
-                  <label
-                    htmlFor="howWeWork-lineOne"
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    Connector line 1
-                  </label>
-                  <input
+                  <RhfImageUploadField
                     id="howWeWork-lineOne"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("howWeWork.lineOne")}
+                    label="Connector line 1"
+                    path="howWeWork.lineOne"
+                    register={register}
+                    errors={errors}
+                    previewValue={savedImages?.lineOne}
+                    previewAlt="Current line 1"
+                    previewClassName="mt-2 h-16 w-full rounded bg-white object-contain"
+                    errorClassName="mt-1 text-sm text-red-600"
                   />
-                  {savedImages?.lineOne && (
-                    <img
-                      src={savedImages.lineOne}
-                      alt="Current line 1"
-                      className="mt-2 h-16 w-full rounded bg-white object-contain"
-                    />
-                  )}
-                  {errors.howWeWork?.lineOne && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.lineOne.message as string}
-                    </p>
-                  )}
                 </div>
 
                 <div className="rounded-xl border border-slate-200 bg-white/92 p-3">
-                  <label
-                    htmlFor="howWeWork-lineTwo"
-                    className="mb-1 block text-sm font-medium text-slate-700"
-                  >
-                    Connector line 2
-                  </label>
-                  <input
+                  <RhfImageUploadField
                     id="howWeWork-lineTwo"
-                    type="file"
-                    accept="image/*"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                    {...register("howWeWork.lineTwo")}
+                    label="Connector line 2"
+                    path="howWeWork.lineTwo"
+                    register={register}
+                    errors={errors}
+                    previewValue={savedImages?.lineTwo}
+                    previewAlt="Current line 2"
+                    previewClassName="mt-2 h-16 w-full rounded bg-white object-contain"
+                    errorClassName="mt-1 text-sm text-red-600"
                   />
-                  {savedImages?.lineTwo && (
-                    <img
-                      src={savedImages.lineTwo}
-                      alt="Current line 2"
-                      className="mt-2 h-16 w-full rounded bg-white object-contain"
-                    />
-                  )}
-                  {errors.howWeWork?.lineTwo && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.howWeWork.lineTwo.message as string}
-                    </p>
-                  )}
                 </div>
               </div>
             </div>

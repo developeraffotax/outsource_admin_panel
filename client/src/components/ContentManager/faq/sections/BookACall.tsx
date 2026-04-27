@@ -1,4 +1,5 @@
 import type { FaqSectionProps } from "./FaqProps";
+import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const BookACall = ({ register, savedImages }: FaqSectionProps) => {
   return (
@@ -21,24 +22,14 @@ const BookACall = ({ register, savedImages }: FaqSectionProps) => {
           />
         </div>
 
-        <div>
-          <label
-            htmlFor="bookACall-img"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Image
-          </label>
-          <input
-            id="bookACall-img"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("bookACall.img")}
-          />
-          {savedImages?.bookACallImg && (
-            <img src={savedImages.bookACallImg} alt="Current book a call" className="mt-2 h-20 rounded object-cover" />
-          )}
-        </div>
+        <RhfImageUploadField
+          id="bookACall-img"
+          label="Image"
+          path="bookACall.img"
+          register={register}
+          previewValue={savedImages?.bookACallImg}
+          previewAlt="Current book a call"
+        />
 
         <div className="md:col-span-2">
           <label
@@ -60,4 +51,3 @@ const BookACall = ({ register, savedImages }: FaqSectionProps) => {
 };
 
 export default BookACall;
-
