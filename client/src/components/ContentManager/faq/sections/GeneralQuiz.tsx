@@ -1,4 +1,6 @@
 import { useFieldArray } from "react-hook-form";
+import RhfTextInput from "../../shared/RhfTextInput";
+import RhfTextarea from "../../shared/RhfTextarea";
 import type { FaqSectionProps } from "./FaqProps";
 
 const GeneralQuiz = ({ register, errors, control }: FaqSectionProps) => {
@@ -14,10 +16,7 @@ const GeneralQuiz = ({ register, errors, control }: FaqSectionProps) => {
       </h2>
 
       {fields.map((field, index) => (
-        <details
-          key={field.id}
-          className="rounded-md border border-slate-200"
-        >
+        <details key={field.id} className="rounded-md border border-slate-200">
           <summary className="flex cursor-pointer items-center justify-between bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
             {`Question ${index + 1}`}
             <button
@@ -30,40 +29,24 @@ const GeneralQuiz = ({ register, errors, control }: FaqSectionProps) => {
           </summary>
 
           <div className="grid gap-4 border-t border-slate-200 p-4">
-            <div>
-              <label
-                htmlFor={`generalQuiz-service-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Service / Question
-              </label>
-              <input
-                id={`generalQuiz-service-${index}`}
-                type="text"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`generalQuiz.${index}.service`)}
-              />
-              {errors.generalQuiz?.[index]?.service && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.generalQuiz[index]?.service?.message as string}
-                </p>
-              )}
-            </div>
+            <RhfTextInput
+              label="Service / Question"
+              path={`generalQuiz.${index}.service`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
 
-            <div>
-              <label
-                htmlFor={`generalQuiz-description-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Description / Answer
-              </label>
-              <textarea
-                id={`generalQuiz-description-${index}`}
-                rows={3}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`generalQuiz.${index}.description`)}
-              />
-            </div>
+            <RhfTextarea
+              label="Description / Answer"
+              path={`generalQuiz.${index}.description`}
+              register={register}
+              errors={errors}
+              rows={3}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
           </div>
         </details>
       ))}
@@ -82,4 +65,3 @@ const GeneralQuiz = ({ register, errors, control }: FaqSectionProps) => {
 };
 
 export default GeneralQuiz;
-

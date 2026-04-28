@@ -1,6 +1,6 @@
 import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
-import FormFieldError from "./FormFieldError";
+import RhfTextInput from "../../shared/RhfTextInput";
 import type { ServiceSectionProps } from "./ServicesProps";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
@@ -33,34 +33,22 @@ const ServiceProcess = ({
       <h3 className="text-sm font-semibold text-slate-900">Service Process</h3>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Heading
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`services.${index}.ServiceProcess.heading`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.ServiceProcess.heading`}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Highlight Heading
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`services.${index}.ServiceProcess.highlightheading`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.ServiceProcess.highlightheading`}
-          />
-        </div>
+        <RhfTextInput
+          label="Heading"
+          path={`services.${index}.ServiceProcess.heading`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="Highlight Heading"
+          path={`services.${index}.ServiceProcess.highlightheading`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
       </div>
 
       <div className="space-y-2">
@@ -93,38 +81,22 @@ const ServiceProcess = ({
                 previewValue={stepValues?.[stepIndex]?.imgSrc}
                 allowFileListPreview
               />
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.ServiceProcess.stepCard.${stepIndex}.title`,
-                  )}
-                />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.ServiceProcess.stepCard.${stepIndex}.title`}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.ServiceProcess.stepCard.${stepIndex}.description`,
-                  )}
-                />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.ServiceProcess.stepCard.${stepIndex}.description`}
-                />
-              </div>
+              <RhfTextInput
+                label="Title"
+                path={`services.${index}.ServiceProcess.stepCard.${stepIndex}.title`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
+              <RhfTextInput
+                label="Description"
+                path={`services.${index}.ServiceProcess.stepCard.${stepIndex}.description`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
             </div>
           </details>
         ))}

@@ -2,6 +2,9 @@ import { createEmptyHeroCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
+import RhfTextInput from "../../shared/RhfTextInput";
+import RhfTextarea from "../../shared/RhfTextarea";
+import RhfSelect from "../../shared/RhfSelect";
 
 const HeroSection = ({
   register,
@@ -43,23 +46,14 @@ const HeroSection = ({
           <div className="relative z-10 flex flex-col gap-4 p-3 sm:p-4 lg:flex-row lg:items-start lg:justify-start lg:gap-4 lg:p-5">
             <div className="w-full space-y-3 lg:w-[58%]">
               <div className="inline-block max-w-full rounded-xl border border-white/45 bg-white/80 p-2 backdrop-blur-sm">
-                <label
-                  htmlFor="title"
-                  className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-600"
-                >
-                  Title pill
-                </label>
-                <input
-                  type="text"
-                  id="title"
+                <RhfTextInput
+                  label="Title pill"
+                  path="title"
+                  register={register}
+                  errors={errors}
                   className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800"
-                  {...register("title")}
+                  labelClassName="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-600"
                 />
-                {errors.title?.message && (
-                  <p className="mt-1 text-xs text-red-200">
-                    {String(errors.title.message)}
-                  </p>
-                )}
               </div>
 
               <div className="space-y-2">
@@ -67,105 +61,60 @@ const HeroSection = ({
                   Hero heading
                 </label>
                 <div className="grid gap-2 sm:grid-cols-3">
-                  <input
-                    id="headingFirstText"
-                    type="text"
+                  <RhfTextInput
+                    path="headingFirstText"
+                    register={register}
+                    errors={errors}
                     placeholder="First part"
                     className="rounded-md border border-white/35 bg-white/94 px-3 py-2 text-sm text-slate-900"
-                    {...register("headingFirstText")}
                   />
-                  {errors.headingFirstText?.message && (
-                    <p className="text-xs text-red-200">
-                      {String(errors.headingFirstText.message)}
-                    </p>
-                  )}
-                  <input
-                    id="headingMiddleText"
-                    type="text"
+                  <RhfTextInput
+                    path="headingMiddleText"
+                    register={register}
+                    errors={errors}
                     placeholder="Middle highlight"
                     className="rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900"
-                    {...register("headingMiddleText")}
                   />
-                  {errors.headingMiddleText?.message && (
-                    <p className="text-xs text-red-200">
-                      {String(errors.headingMiddleText.message)}
-                    </p>
-                  )}
-                  <input
-                    id="headingEndText"
-                    type="text"
+                  <RhfTextInput
+                    path="headingEndText"
+                    register={register}
+                    errors={errors}
                     placeholder="End part"
                     className="rounded-md border border-white/35 bg-white/94 px-3 py-2 text-sm text-slate-900"
-                    {...register("headingEndText")}
                   />
-                  {errors.headingEndText?.message && (
-                    <p className="text-xs text-red-200">
-                      {String(errors.headingEndText.message)}
-                    </p>
-                  )}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div>
-                  <label
-                    htmlFor="descriptionHeroHomepage"
-                    className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-100"
-                  >
-                    Description one
-                  </label>
-                  <textarea
-                    id="descriptionHeroHomepage"
-                    rows={2}
-                    className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
-                    {...register("descriptionHeroHomepage")}
-                  />
-                  {errors.descriptionHeroHomepage?.message && (
-                    <p className="mt-1 text-xs text-red-200">
-                      {String(errors.descriptionHeroHomepage.message)}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="descriptionHeroHomePageTwo"
-                    className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-100"
-                  >
-                    Description two
-                  </label>
-                  <textarea
-                    id="descriptionHeroHomePageTwo"
-                    rows={2}
-                    className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
-                    {...register("descriptionHeroHomePageTwo")}
-                  />
-                  {errors.descriptionHeroHomePageTwo?.message && (
-                    <p className="mt-1 text-xs text-red-200">
-                      {String(errors.descriptionHeroHomePageTwo.message)}
-                    </p>
-                  )}
-                </div>
+                <RhfTextarea
+                  label="Description one"
+                  path="descriptionHeroHomepage"
+                  register={register}
+                  errors={errors}
+                  rows={2}
+                  className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
+                  labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-100"
+                />
+                <RhfTextarea
+                  label="Description two"
+                  path="descriptionHeroHomePageTwo"
+                  register={register}
+                  errors={errors}
+                  rows={2}
+                  className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
+                  labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-100"
+                />
               </div>
 
               <div className="max-w-xs">
-                <label
-                  htmlFor="freeConsultation"
-                  className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-100"
-                >
-                  CTA button text
-                </label>
-                <input
-                  id="freeConsultation"
-                  type="text"
+                <RhfTextInput
+                  label="CTA button text"
+                  path="freeConsultation"
+                  register={register}
+                  errors={errors}
                   className="w-full rounded-md border border-white/35 bg-white/92 px-3 py-2 text-sm text-slate-900"
-                  {...register("freeConsultation")}
+                  labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-100"
                 />
-                {errors.freeConsultation?.message && (
-                  <p className="mt-1 text-xs text-red-200">
-                    {String(errors.freeConsultation.message)}
-                  </p>
-                )}
               </div>
             </div>
 
@@ -212,22 +161,20 @@ const HeroSection = ({
           </h3>
 
           <div>
-            <label
-              htmlFor="heroCardName"
-              className="mb-1 block text-sm font-medium text-slate-700"
-            >
-              Card name
-            </label>
-            <select
-              id="heroCardName"
+            <RhfSelect
+              label="Card name"
+              path="heroCardName"
+              register={register}
+              errors={errors}
+              placeholder="Select card name"
+              options={[
+                { label: "Services", value: "Services" },
+                { label: "Features", value: "Features" },
+                { label: "Highlights", value: "Highlights" },
+              ]}
               className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              {...register("heroCardName")}
-            >
-              <option value="">Select card name</option>
-              <option value="Services">Services</option>
-              <option value="Features">Features</option>
-              <option value="Highlights">Highlights</option>
-            </select>
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
           </div>
 
           {fields.map((field, index) => {
@@ -289,35 +236,23 @@ const HeroSection = ({
                     />
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor={`hero-card-${index}-title`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Title
-                    </label>
-                    <input
-                      id={`hero-card-${index}-title`}
-                      type="text"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(`heroCardSections.${index}.title`)}
-                    />
-                  </div>
+                  <RhfTextInput
+                    label="Title"
+                    path={`heroCardSections.${index}.title`}
+                    register={register}
+                    errors={errors}
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                  />
 
-                  <div>
-                    <label
-                      htmlFor={`hero-card-${index}-content`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Content
-                    </label>
-                    <input
-                      id={`hero-card-${index}-content`}
-                      type="text"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(`heroCardSections.${index}.content`)}
-                    />
-                  </div>
+                  <RhfTextInput
+                    label="Content"
+                    path={`heroCardSections.${index}.content`}
+                    register={register}
+                    errors={errors}
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                  />
                 </div>
               </details>
             );

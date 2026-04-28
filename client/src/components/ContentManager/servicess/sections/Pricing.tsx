@@ -1,5 +1,7 @@
 import { useFieldArray, useWatch } from "react-hook-form";
-import FormFieldError from "./FormFieldError";
+import RhfTextInput from "../../shared/RhfTextInput";
+import RhfTextarea from "../../shared/RhfTextarea";
+import RhfFieldError from "../../shared/RhfFieldError";
 import type { ServiceSectionProps } from "./ServicesProps";
 import type { PricingPlan } from "../Services.type";
 import {
@@ -56,42 +58,43 @@ const PricingPlanEditor = ({
       )}
 
       <div className="space-y-2">
-        <input
-          type="text"
+        <RhfTextInput
+          path={`${basePath}.name`}
+          register={register}
+          errors={errors}
           placeholder="Plan name"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xl font-semibold text-gray-900 outline-none focus:border-blue-200 focus:bg-blue-50"
-          {...register(`${basePath}.name` as const)}
         />
-        <FormFieldError errors={errors} path={`${basePath}.name`} />
-        <input
-          type="text"
+        <RhfTextInput
+          path={`${basePath}.description`}
+          register={register}
+          errors={errors}
           placeholder="Plan description"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-sm text-gray-600 outline-none focus:border-blue-200 focus:bg-blue-50"
-          {...register(`${basePath}.description` as const)}
         />
-        <FormFieldError errors={errors} path={`${basePath}.description`} />
-        <input
-          type="text"
+        <RhfTextInput
+          path={`${basePath}.checkoutName`}
+          register={register}
+          errors={errors}
           placeholder="Checkout name"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xs text-gray-500 outline-none focus:border-blue-200 focus:bg-blue-50"
-          {...register(`${basePath}.checkoutName` as const)}
         />
-        <FormFieldError errors={errors} path={`${basePath}.checkoutName`} />
-        <input
-          type="text"
+        <RhfTextInput
+          path={`${basePath}.billingCycle`}
+          register={register}
+          errors={errors}
           placeholder="Billing cycle"
           className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xs font-medium uppercase tracking-wide text-blue-800 outline-none focus:border-blue-200 focus:bg-blue-50"
-          {...register(`${basePath}.billingCycle` as const)}
         />
-        <FormFieldError errors={errors} path={`${basePath}.billingCycle`} />
       </div>
 
       <div className="mt-4 flex items-end gap-2">
-        <input
-          type="text"
+        <RhfTextInput
+          path={`${basePath}.currency`}
+          register={register}
+          errors={errors}
           placeholder="£"
           className="w-16 rounded-md border border-transparent bg-transparent px-2 py-1 text-4xl font-bold text-gray-900 outline-none focus:border-blue-200 focus:bg-blue-50"
-          {...register(`${basePath}.currency` as const)}
         />
         <input
           type="number"
@@ -103,8 +106,7 @@ const PricingPlanEditor = ({
           })}
         />
       </div>
-      <FormFieldError errors={errors} path={`${basePath}.currency`} />
-      <FormFieldError errors={errors} path={`${basePath}.price`} />
+      <RhfFieldError errors={errors} path={`${basePath}.price`} />
 
       <ul className="mt-6 flex flex-1 flex-col gap-2">
         {featureFields.map((featureField, featureIndex) => {
@@ -123,19 +125,14 @@ const PricingPlanEditor = ({
                   `${basePath}.features.${featureIndex}.included` as const,
                 )}
               />
-              <input
-                type="text"
+              <RhfTextInput
+                path={`${basePath}.features.${featureIndex}.text`}
+                register={register}
+                errors={errors}
                 placeholder="Feature"
                 className={`w-full rounded-md border border-transparent bg-transparent px-2 py-1 outline-none focus:border-blue-200 focus:bg-blue-50 ${
                   included ? "text-gray-700" : "text-gray-500 line-through"
                 }`}
-                {...register(
-                  `${basePath}.features.${featureIndex}.text` as const,
-                )}
-              />
-              <FormFieldError
-                errors={errors}
-                path={`${basePath}.features.${featureIndex}.text`}
               />
               <button
                 type="button"
@@ -152,16 +149,15 @@ const PricingPlanEditor = ({
       <div className="mt-5 space-y-3 border-t border-gray-100 pt-4">
         <div className="grid gap-3 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">
-              Plan ID
-            </label>
-            <input
-              type="text"
+            <RhfTextInput
+              label="Plan ID"
+              path={`${basePath}.id`}
+              register={register}
+              errors={errors}
               placeholder="aa-starter"
               className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm"
-              {...register(`${basePath}.id` as const)}
+              labelClassName="mb-1 block text-xs font-medium text-gray-600"
             />
-            <FormFieldError errors={errors} path={`${basePath}.id`} />
           </div>
 
           <label className="mt-6 flex items-center gap-2 text-sm font-medium text-gray-700 md:mt-0 md:self-end">
@@ -213,37 +209,29 @@ const Pricing = ({ index, register, control, errors }: ServiceSectionProps) => {
         className="rounded-2xl border border-blue-100 bg-linear-to-b from-blue-50 to-white px-4 py-8 md:px-8 md:py-10"
       >
         <div className="mx-auto max-w-3xl text-center">
-          <input
-            type="text"
+          <RhfTextInput
+            path={`services.${index}.Pricing.config.eyebrow`}
+            register={register}
+            errors={errors}
             placeholder="Transparent Pricing"
             className="mx-auto block w-full max-w-sm rounded-md border border-transparent bg-transparent px-2 py-1 text-center text-sm font-semibold uppercase tracking-wide text-blue-800 outline-none focus:border-blue-200 focus:bg-white"
-            {...register(`services.${index}.Pricing.config.eyebrow`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.Pricing.config.eyebrow`}
           />
 
-          <input
-            type="text"
+          <RhfTextInput
+            path={`services.${index}.Pricing.config.title`}
+            register={register}
+            errors={errors}
             placeholder="Annual Accounts Plans"
             className="mx-auto mt-2 block w-full max-w-2xl rounded-md border border-transparent bg-transparent px-2 py-1 text-center text-2xl font-semibold text-gray-900 outline-none focus:border-blue-200 focus:bg-white md:text-4xl"
-            {...register(`services.${index}.Pricing.config.title`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.Pricing.config.title`}
           />
 
-          <textarea
+          <RhfTextarea
+            path={`services.${index}.Pricing.config.description`}
+            register={register}
+            errors={errors}
             rows={2}
             placeholder="Choose the right annual accounts package for your company size and filing needs."
             className="mx-auto mt-3 block w-full max-w-3xl resize-none rounded-md border border-transparent bg-transparent px-2 py-1 text-center text-sm text-gray-600 outline-none focus:border-blue-200 focus:bg-white md:text-base"
-            {...register(`services.${index}.Pricing.config.description`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.Pricing.config.description`}
           />
         </div>
 

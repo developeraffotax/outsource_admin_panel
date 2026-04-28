@@ -1,6 +1,6 @@
 import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
-import FormFieldError from "./FormFieldError";
+import RhfTextInput from "../../shared/RhfTextInput";
 import type { ServiceSectionProps } from "./ServicesProps";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
@@ -37,20 +37,14 @@ const WhyChooseUs = ({
       <h3 className="text-sm font-semibold text-slate-900">Why Choose Us</h3>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Heading
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`services.${index}.WhyChooseUs.heading`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`services.${index}.WhyChooseUs.heading`}
-          />
-        </div>
+        <RhfTextInput
+          label="Heading"
+          path={`services.${index}.WhyChooseUs.heading`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
         <RhfImageUploadField
           id={`why-choose-us-${index}-img`}
           label="Image"
@@ -92,38 +86,22 @@ const WhyChooseUs = ({
                 previewValue={cardValues?.[cardIndex]?.img}
                 allowFileListPreview
               />
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.WhyChooseUs.card.${cardIndex}.title`,
-                  )}
-                />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.WhyChooseUs.card.${cardIndex}.title`}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.WhyChooseUs.card.${cardIndex}.description`,
-                  )}
-                />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.WhyChooseUs.card.${cardIndex}.description`}
-                />
-              </div>
+              <RhfTextInput
+                label="Title"
+                path={`services.${index}.WhyChooseUs.card.${cardIndex}.title`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
+              <RhfTextInput
+                label="Description"
+                path={`services.${index}.WhyChooseUs.card.${cardIndex}.description`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
             </div>
           </details>
         ))}

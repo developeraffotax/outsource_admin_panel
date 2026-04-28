@@ -8,6 +8,7 @@ import {
   normalizeRole,
 } from "../../../utils/auth";
 import { extractErrorMessage } from "../../../utils/http";
+import RhfTextInput from "../shared/RhfTextInput";
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -34,7 +35,10 @@ const getAuthConfigOrFeedback = (
 ): ReturnType<typeof buildAuthConfig> => {
   const config = buildAuthConfig();
   if (!config) {
-    setFeedback({ type: "error", message: "Missing session token. Please sign in again." });
+    setFeedback({
+      type: "error",
+      message: "Missing session token. Please sign in again.",
+    });
   }
   return config;
 };
@@ -47,7 +51,6 @@ const normalizeManagedUser = (user: RawApiUser): ManagedUser => ({
 
 const sortUsersByEmail = (users: ManagedUser[]): ManagedUser[] =>
   [...users].sort((a, b) => a.email.localeCompare(b.email));
-
 
 const Users = () => {
   const {
@@ -126,7 +129,9 @@ const Users = () => {
         config,
       );
 
-      const createdUser = normalizeManagedUser((response.data.user ?? {}) as RawApiUser);
+      const createdUser = normalizeManagedUser(
+        (response.data.user ?? {}) as RawApiUser,
+      );
 
       if (!createdUser.id || !createdUser.email) {
         throw new Error("Invalid user response from server");
@@ -275,57 +280,43 @@ const Users = () => {
           className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-start"
           onSubmit={handleSubmit(onCreateUser)}
         >
-          <div>
-            <label
-              className="mb-1 block text-sm text-slate-600"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="new.user@example.com"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
-            />
-            {errors.email?.message && (
-              <p className="mt-1 text-xs font-semibold text-rose-600">
-                {String(errors.email.message)}
-              </p>
-            )}
-          </div>
+          <RhfTextInput
+            label="Email"
+            path="email"
+            register={register}
+            errors={errors}
+            type="email"
+            placeholder="new.user@example.com"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            labelClassName="mb-1 block text-sm text-slate-600"
+            errorClassName="mt-1 text-xs font-semibold text-rose-600"
+            registerOptions={{
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            }}
+          />
 
-          <div>
-            <label
-              className="mb-1 block text-sm text-slate-600"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Minimum 8 characters"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: MIN_PASSWORD_LENGTH,
-                  message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
-                },
-              })}
-            />
-            {errors.password?.message && (
-              <p className="mt-1 text-xs font-semibold text-rose-600">
-                {String(errors.password.message)}
-              </p>
-            )}
-          </div>
+          <RhfTextInput
+            label="Password"
+            path="password"
+            register={register}
+            errors={errors}
+            type="password"
+            placeholder="Minimum 8 characters"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            labelClassName="mb-1 block text-sm text-slate-600"
+            errorClassName="mt-1 text-xs font-semibold text-rose-600"
+            registerOptions={{
+              required: "Password is required",
+              minLength: {
+                value: MIN_PASSWORD_LENGTH,
+                message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+              },
+            }}
+          />
 
           <button
             type="submit"

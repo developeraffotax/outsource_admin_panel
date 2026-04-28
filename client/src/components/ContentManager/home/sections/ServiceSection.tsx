@@ -2,6 +2,8 @@ import { createEmptyServiceCard } from "../home-form.types";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { HomeSectionProps } from "./section-props.types";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
+import RhfTextInput from "../../shared/RhfTextInput";
+import RhfTextarea from "../../shared/RhfTextarea";
 
 const ServiceSection = ({
   register,
@@ -28,44 +30,23 @@ const ServiceSection = ({
         </h2>
       </div>
       <div className="cms-section-body space-y-4 p-5">
-        <div>
-          <label
-            htmlFor="headingService"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Heading
-          </label>
-          <input
-            id="headingService"
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("headingService")}
-          />
-          {errors.headingService && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.headingService.message as string}
-            </p>
-          )}
-        </div>
+        <RhfTextInput
+          label="Heading"
+          path="headingService"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
 
-        <div>
-          <label
-            htmlFor="descriptionService"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            Description
-          </label>
-          <textarea
-            id="descriptionService"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("descriptionService")}
-          />
-          {errors.descriptionService && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.descriptionService.message as string}
-            </p>
-          )}
-        </div>
+        <RhfTextarea
+          label="Description"
+          path="descriptionService"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
 
         <div className="cms-subsection-card space-y-3 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -134,100 +115,32 @@ const ServiceSection = ({
                     />
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor={`service-card-${index}-titleServiceCard`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Title
-                    </label>
-                    <input
-                      id={`service-card-${index}-titleServiceCard`}
-                      type="text"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(`serviceCards.${index}.titleServiceCard`)}
-                    />
-                    {(
-                      errors.serviceCards?.[index]?.titleServiceCard as {
-                        message?: string;
-                      }
-                    )?.message && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {
-                          (
-                            errors.serviceCards?.[index]?.titleServiceCard as {
-                              message?: string;
-                            }
-                          ).message
-                        }
-                      </p>
-                    )}
-                  </div>
+                  <RhfTextInput
+                    label="Title"
+                    path={`serviceCards.${index}.titleServiceCard`}
+                    register={register}
+                    errors={errors}
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                  />
 
-                  <div>
-                    <label
-                      htmlFor={`service-card-${index}-descriptionServiceCard`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Description
-                    </label>
-                    <textarea
-                      id={`service-card-${index}-descriptionServiceCard`}
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(
-                        `serviceCards.${index}.descriptionServiceCard`,
-                      )}
-                    />
-                    {(
-                      errors.serviceCards?.[index]?.descriptionServiceCard as {
-                        message?: string;
-                      }
-                    )?.message && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {
-                          (
-                            errors.serviceCards?.[index]
-                              ?.descriptionServiceCard as {
-                              message?: string;
-                            }
-                          ).message
-                        }
-                      </p>
-                    )}
-                  </div>
+                  <RhfTextarea
+                    label="Description"
+                    path={`serviceCards.${index}.descriptionServiceCard`}
+                    register={register}
+                    errors={errors}
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                  />
 
-                  <div>
-                    <label
-                      htmlFor={`service-card-${index}-buttontxtServiceCard`}
-                      className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                      Button text
-                    </label>
-                    <input
-                      id={`service-card-${index}-buttontxtServiceCard`}
-                      type="text"
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                      {...register(
-                        `serviceCards.${index}.buttontxtServiceCard`,
-                      )}
-                    />
-                    {(
-                      errors.serviceCards?.[index]?.buttontxtServiceCard as {
-                        message?: string;
-                      }
-                    )?.message && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {
-                          (
-                            errors.serviceCards?.[index]
-                              ?.buttontxtServiceCard as {
-                              message?: string;
-                            }
-                          ).message
-                        }
-                      </p>
-                    )}
-                  </div>
+                  <RhfTextInput
+                    label="Button text"
+                    path={`serviceCards.${index}.buttontxtServiceCard`}
+                    register={register}
+                    errors={errors}
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                  />
 
                   <div>
                     <label

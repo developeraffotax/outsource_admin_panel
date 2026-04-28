@@ -1,5 +1,6 @@
 import { useWatch } from "react-hook-form";
-import FormFieldError from "./FormFieldError";
+import RhfTextInput from "../../shared/RhfTextInput";
+import RhfTextarea from "../../shared/RhfTextarea";
 import Pricing from "./Pricing";
 import SectionAccordion from "./SectionAccordion";
 import ServiceProcess from "./ServiceProcess";
@@ -35,17 +36,14 @@ const HeroSection = ({
 
   return (
     <div className="space-y-4">
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
-          Slug
-        </label>
-        <input
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register(`${servicePath}.slug`)}
-        />
-        <FormFieldError errors={errors} path={`${servicePath}.slug`} />
-      </div>
+      <RhfTextInput
+        label="Slug"
+        path={`${servicePath}.slug`}
+        register={register}
+        errors={errors}
+        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+        labelClassName="mb-1 block text-sm font-medium text-slate-700"
+      />
 
       <div className="relative overflow-hidden rounded-2xl border border-sky-100 bg-sky-50 shadow-sm">
         {heroBackgroundUrl ? (
@@ -66,90 +64,60 @@ const HeroSection = ({
                 Title row
               </label>
               <div className="grid gap-2 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base font-bold text-slate-900"
-                    {...register(`${servicePath}.title`)}
-                  />
-                  <FormFieldError
-                    errors={errors}
-                    path={`${servicePath}.title`}
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Title highlight"
-                    className="w-full rounded-md border border-sky-300 bg-sky-100 px-3 py-2 text-base font-bold text-sky-900"
-                    {...register(`${servicePath}.titleHighlight`)}
-                  />
-                  <FormFieldError
-                    errors={errors}
-                    path={`${servicePath}.titleHighlight`}
-                  />
-                </div>
+                <RhfTextInput
+                  path={`${servicePath}.title`}
+                  register={register}
+                  errors={errors}
+                  placeholder="Title"
+                  className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base font-bold text-slate-900"
+                />
+                <RhfTextInput
+                  path={`${servicePath}.titleHighlight`}
+                  register={register}
+                  errors={errors}
+                  placeholder="Title highlight"
+                  className="w-full rounded-md border border-sky-300 bg-sky-100 px-3 py-2 text-base font-bold text-sky-900"
+                />
               </div>
             </div>
 
-            <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">
-                Subtitle
-              </label>
-              <input
-                type="text"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base font-semibold text-slate-900"
-                {...register(`${servicePath}.subtitle`)}
-              />
-              <FormFieldError
-                errors={errors}
-                path={`${servicePath}.subtitle`}
-              />
-            </div>
+            <RhfTextInput
+              label="Subtitle"
+              path={`${servicePath}.subtitle`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base font-semibold text-slate-900"
+              labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600"
+            />
 
-            <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">
-                Description paragraph one
-              </label>
-              <textarea
-                rows={2}
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
-                {...register(`${servicePath}.description`)}
-              />
-              <FormFieldError
-                errors={errors}
-                path={`${servicePath}.description`}
-              />
-            </div>
+            <RhfTextarea
+              label="Description paragraph one"
+              path={`${servicePath}.description`}
+              register={register}
+              errors={errors}
+              rows={2}
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
+              labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600"
+            />
 
-            <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">
-                Description paragraph two
-              </label>
-              <textarea
-                rows={2}
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
-                {...register(`${servicePath}.descriptiontwo`)}
-              />
-              <FormFieldError
-                errors={errors}
-                path={`${servicePath}.descriptiontwo`}
-              />
-            </div>
+            <RhfTextarea
+              label="Description paragraph two"
+              path={`${servicePath}.descriptiontwo`}
+              register={register}
+              errors={errors}
+              rows={2}
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
+              labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600"
+            />
 
             <div className="max-w-xs">
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">
-                Button text
-              </label>
-              <input
-                type="text"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
-                {...register(`${servicePath}.buttonText`)}
-              />
-              <FormFieldError
-                errors={errors}
+              <RhfTextInput
+                label="Button text"
                 path={`${servicePath}.buttonText`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+                labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600"
               />
             </div>
           </div>
@@ -203,48 +171,30 @@ const GetStartedSection = ({ index, register, errors }: CommonSectionProps) => {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="md:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Heading
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${servicePath}.GetStarted.heading`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`${servicePath}.GetStarted.heading`}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Description One
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${servicePath}.GetStarted.descriptionone`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`${servicePath}.GetStarted.descriptionone`}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Description Two
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${servicePath}.GetStarted.descriptiontwo`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`${servicePath}.GetStarted.descriptiontwo`}
-          />
-        </div>
+        <RhfTextInput
+          label="Heading"
+          path={`${servicePath}.GetStarted.heading`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="Description One"
+          path={`${servicePath}.GetStarted.descriptionone`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="Description Two"
+          path={`${servicePath}.GetStarted.descriptiontwo`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
       </div>
     </div>
   );
@@ -268,56 +218,39 @@ const DataSection = ({
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Heading
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${fieldPath}.heading`)}
-          />
-          <FormFieldError errors={errors} path={`${fieldPath}.heading`} />
-        </div>
-        <div>
-          <RhfImageUploadField
-            id={`${fieldPath}-img`}
-            label="Image"
-            path={`${fieldPath}.img`}
-            register={register}
-            errors={errors}
-            previewValue={imageValue}
-            allowFileListPreview
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Description One
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${fieldPath}.descriptionone`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`${fieldPath}.descriptionone`}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
-            Description Two
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register(`${fieldPath}.descriptiontwo`)}
-          />
-          <FormFieldError
-            errors={errors}
-            path={`${fieldPath}.descriptiontwo`}
-          />
-        </div>
+        <RhfTextInput
+          label="Heading"
+          path={`${fieldPath}.heading`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfImageUploadField
+          id={`${fieldPath}-img`}
+          label="Image"
+          path={`${fieldPath}.img`}
+          register={register}
+          errors={errors}
+          previewValue={imageValue}
+          allowFileListPreview
+        />
+        <RhfTextInput
+          label="Description One"
+          path={`${fieldPath}.descriptionone`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="Description Two"
+          path={`${fieldPath}.descriptiontwo`}
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
       </div>
     </div>
   );

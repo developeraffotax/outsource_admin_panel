@@ -1,6 +1,6 @@
 import { useFieldArray } from "react-hook-form";
+import RhfTextInput from "../../shared/RhfTextInput";
 import type { AboutUsSectionProps } from "./AboutUsProp";
-import RhfFieldError from "../../shared/RhfFieldError";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const OurStory = ({
@@ -29,48 +29,30 @@ const OurStory = ({
             previewAlt="Current Our Story"
           />
         </div>
-        <div>
-          <label
-            htmlFor="headingOurStory"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            headingOurStory
-          </label>
-          <input
-            type="text"
-            id="headingOurStory"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("OurStory.headingOurStory")}
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="descriptionOurStory"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            descriptionOurStory
-          </label>
-          <input
-            type="text"
-            id="descriptionOurStory"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("OurStory.descriptionOurStory")}
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="descriptiontwoOurStory"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            descriptiontwoOurStory
-          </label>
-          <input
-            type="text"
-            id="descriptiontwoOurStory"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("OurStory.descriptiontwoOurStory")}
-          />
-        </div>
+        <RhfTextInput
+          label="headingOurStory"
+          path="OurStory.headingOurStory"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="descriptionOurStory"
+          path="OurStory.descriptionOurStory"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="descriptiontwoOurStory"
+          path="OurStory.descriptiontwoOurStory"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
       </div>
 
       <section className="cms-subsection-card space-y-4 rounded-lg border border-slate-200 p-4">
@@ -98,44 +80,23 @@ const OurStory = ({
                 previewAlt="Current card image"
               />
 
-              <div>
-                <label
-                  htmlFor={`headingStatment-${index}`}
-                  className="mb-1 block text-sm font-medium text-slate-700"
-                >
-                  Heading
-                </label>
-                <input
-                  id={`headingStatment-${index}`}
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `OurStory.missionStatmentCards.${index}.headingStatment`,
-                  )}
-                />
-                <RhfFieldError
-                  errors={errors}
-                  path={`OurStory.missionStatmentCards.${index}.headingStatment`}
-                  className="mt-1 text-sm text-red-600"
-                />
-              </div>
+              <RhfTextInput
+                label="Heading"
+                path={`OurStory.missionStatmentCards.${index}.headingStatment`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
 
-              <div className="md:col-span-2">
-                <label
-                  htmlFor={`descriptionStatement-${index}`}
-                  className="mb-1 block text-sm font-medium text-slate-700"
-                >
-                  Description
-                </label>
-                <input
-                  id={`descriptionStatement-${index}`}
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `OurStory.missionStatmentCards.${index}.descriptionStatement`,
-                  )}
-                />
-              </div>
+              <RhfTextInput
+                label="Description"
+                path={`OurStory.missionStatmentCards.${index}.descriptionStatement`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
             </div>
           </details>
         ))}

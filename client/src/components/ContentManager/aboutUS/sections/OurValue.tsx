@@ -1,6 +1,6 @@
 import { useFieldArray } from "react-hook-form";
+import RhfTextInput from "../../shared/RhfTextInput";
 import type { AboutUsSectionProps } from "./AboutUsProp";
-import RhfFieldError from "../../shared/RhfFieldError";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const OurValue = ({
@@ -37,40 +37,23 @@ const OurValue = ({
               previewAlt="Current value image"
             />
 
-            <div>
-              <label
-                htmlFor={`headingValue-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Heading
-              </label>
-              <input
-                id={`headingValue-${index}`}
-                type="text"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`OurValue.${index}.headingValue`)}
-              />
-              <RhfFieldError
-                errors={errors}
-                path={`OurValue.${index}.headingValue`}
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
+            <RhfTextInput
+              label="Heading"
+              path={`OurValue.${index}.headingValue`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
 
-            <div className="md:col-span-2">
-              <label
-                htmlFor={`descriptionValue-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Description
-              </label>
-              <input
-                id={`descriptionValue-${index}`}
-                type="text"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`OurValue.${index}.descriptionValue`)}
-              />
-            </div>
+            <RhfTextInput
+              label="Description"
+              path={`OurValue.${index}.descriptionValue`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
           </div>
         </details>
       ))}

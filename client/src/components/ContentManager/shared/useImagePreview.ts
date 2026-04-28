@@ -1,21 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 export const useImagePreview = (
   value: unknown,
   allowFileList = false,
 ): string | null => {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const createdObjectUrlRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (createdObjectUrlRef.current) {
-      URL.revokeObjectURL(createdObjectUrlRef.current);
-      createdObjectUrlRef.current = null;
-    }
-
+  const previewUrl = useMemo(() => {
     if (typeof value === "string" && value.trim().length > 0) {
-      setPreviewUrl(value);
-      return;
+      return value;
     }
 
     if (
@@ -24,23 +15,19 @@ export const useImagePreview = (
       value instanceof FileList &&
       value.length > 0
     ) {
-      const objectUrl = URL.createObjectURL(value[0]);
-      createdObjectUrlRef.current = objectUrl;
-      setPreviewUrl(objectUrl);
-      return;
+      return URL.createObjectURL(value[0]);
     }
 
-    setPreviewUrl(null);
+    return null;
   }, [value, allowFileList]);
 
   useEffect(() => {
     return () => {
-      if (createdObjectUrlRef.current) {
-        URL.revokeObjectURL(createdObjectUrlRef.current);
-        createdObjectUrlRef.current = null;
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
       }
     };
-  }, []);
+  }, [previewUrl]);
 
   return previewUrl;
 };

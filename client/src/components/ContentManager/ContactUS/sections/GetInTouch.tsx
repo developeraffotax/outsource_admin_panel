@@ -1,6 +1,6 @@
 import { useFieldArray } from "react-hook-form";
+import RhfTextInput from "../../shared/RhfTextInput";
 import type { AboutUsSectionProps } from "./ConatctUsProps";
-import RhfFieldError from "../../shared/RhfFieldError";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const GetInTouch = ({
@@ -37,55 +37,32 @@ const GetInTouch = ({
               previewAlt="Current card image"
             />
 
-            <div>
-              <label
-                htmlFor={`getInTouch-title-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Title
-              </label>
-              <input
-                id={`getInTouch-title-${index}`}
-                type="text"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`getInTouch.${index}.title`)}
-              />
-              <RhfFieldError
-                errors={errors}
-                path={`getInTouch.${index}.title`}
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
+            <RhfTextInput
+              label="Title"
+              path={`getInTouch.${index}.title`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
 
-            <div>
-              <label
-                htmlFor={`getInTouch-description-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Description
-              </label>
-              <input
-                id={`getInTouch-description-${index}`}
-                type="text"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`getInTouch.${index}.description`)}
-              />
-            </div>
+            <RhfTextInput
+              label="Description"
+              path={`getInTouch.${index}.description`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
 
-            <div>
-              <label
-                htmlFor={`getInTouch-detail-${index}`}
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Detail
-              </label>
-              <input
-                id={`getInTouch-detail-${index}`}
-                type="text"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                {...register(`getInTouch.${index}.detail`)}
-              />
-            </div>
+            <RhfTextInput
+              label="Detail"
+              path={`getInTouch.${index}.detail`}
+              register={register}
+              errors={errors}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              labelClassName="mb-1 block text-sm font-medium text-slate-700"
+            />
           </div>
         </details>
       ))}

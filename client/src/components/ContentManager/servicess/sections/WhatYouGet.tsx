@@ -1,6 +1,6 @@
 import type { MouseEvent } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
-import FormFieldError from "./FormFieldError";
+import RhfTextInput from "../../shared/RhfTextInput";
 import type { ServiceSectionProps } from "./ServicesProps";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
@@ -32,20 +32,14 @@ const WhatYouGet = ({
     <section className="cms-subsection-card space-y-4 rounded-lg border border-slate-200 p-4">
       <h3 className="text-sm font-semibold text-slate-900">What You Get</h3>
 
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
-          Heading
-        </label>
-        <input
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          {...register(`services.${index}.WhatYouGet.heading`)}
-        />
-        <FormFieldError
-          errors={errors}
-          path={`services.${index}.WhatYouGet.heading`}
-        />
-      </div>
+      <RhfTextInput
+        label="Heading"
+        path={`services.${index}.WhatYouGet.heading`}
+        register={register}
+        errors={errors}
+        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+        labelClassName="mb-1 block text-sm font-medium text-slate-700"
+      />
 
       <div className="space-y-2">
         <p className="text-sm font-medium text-slate-700">
@@ -77,38 +71,22 @@ const WhatYouGet = ({
                 previewValue={cardValues?.[cardIndex]?.img}
                 allowFileListPreview
               />
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.WhatYouGet.card.${cardIndex}.title`,
-                  )}
-                />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.WhatYouGet.card.${cardIndex}.title`}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                  {...register(
-                    `services.${index}.WhatYouGet.card.${cardIndex}.description`,
-                  )}
-                />
-                <FormFieldError
-                  errors={errors}
-                  path={`services.${index}.WhatYouGet.card.${cardIndex}.description`}
-                />
-              </div>
+              <RhfTextInput
+                label="Title"
+                path={`services.${index}.WhatYouGet.card.${cardIndex}.title`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
+              <RhfTextInput
+                label="Description"
+                path={`services.${index}.WhatYouGet.card.${cardIndex}.description`}
+                register={register}
+                errors={errors}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+                labelClassName="mb-1 block text-sm font-medium text-slate-700"
+              />
             </div>
           </details>
         ))}

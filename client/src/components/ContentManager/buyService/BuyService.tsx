@@ -3,6 +3,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config/api";
 import { CmsSaveBar } from "../shared/CmsSaveBar";
+import RhfTextInput from "../shared/RhfTextInput";
 
 type BuyServiceEntry = {
   name: string;
@@ -66,7 +67,10 @@ const BuyService = () => {
   const showSaveMessage = (msg: string) => {
     setSaveMessage(msg);
     if (saveMessageTimer.current) clearTimeout(saveMessageTimer.current);
-    saveMessageTimer.current = setTimeout(() => setSaveMessage(null), SAVE_MESSAGE_TIMEOUT_MS);
+    saveMessageTimer.current = setTimeout(
+      () => setSaveMessage(null),
+      SAVE_MESSAGE_TIMEOUT_MS,
+    );
   };
 
   useEffect(() => {
@@ -140,54 +144,34 @@ const BuyService = () => {
                   </summary>
 
                   <div className="cms-accordion-content grid gap-4 border-t border-slate-200 p-4 md:grid-cols-[1fr_180px]">
-                    <div>
-                      <label
-                        htmlFor={`name-${index}`}
-                        className="mb-1 block text-sm font-medium text-slate-700"
-                      >
-                        Name
-                      </label>
-                      <input
-                        id={`name-${index}`}
-                        type="text"
-                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                        {...register(`nameAndPrice.${index}.name`, {
-                          required: "Please enter name",
-                        })}
-                      />
-                      {errors.nameAndPrice?.[index]?.name && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.nameAndPrice[index]?.name?.message as string}
-                        </p>
-                      )}
-                    </div>
+                    <RhfTextInput
+                      label="Name"
+                      path={`nameAndPrice.${index}.name`}
+                      register={register}
+                      errors={errors}
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                      errorClassName="mt-1 text-sm text-red-600"
+                      registerOptions={{ required: "Please enter name" }}
+                    />
 
-                    <div>
-                      <label
-                        htmlFor={`price-${index}`}
-                        className="mb-1 block text-sm font-medium text-slate-700"
-                      >
-                        Price
-                      </label>
-                      <input
-                        id={`price-${index}`}
-                        type="text"
-                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-                        {...register(`nameAndPrice.${index}.price`, {
-                          required: "Please enter price",
-                          pattern: {
-                            value: /^\d+(\.\d{1,2})?$/,
-                            message:
-                              "Please enter a valid number (e.g. 299 or 299.99)",
-                          },
-                        })}
-                      />
-                      {errors.nameAndPrice?.[index]?.price && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.nameAndPrice[index]?.price?.message as string}
-                        </p>
-                      )}
-                    </div>
+                    <RhfTextInput
+                      label="Price"
+                      path={`nameAndPrice.${index}.price`}
+                      register={register}
+                      errors={errors}
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      labelClassName="mb-1 block text-sm font-medium text-slate-700"
+                      errorClassName="mt-1 text-sm text-red-600"
+                      registerOptions={{
+                        required: "Please enter price",
+                        pattern: {
+                          value: /^\d+(\.\d{1,2})?$/,
+                          message:
+                            "Please enter a valid number (e.g. 299 or 299.99)",
+                        },
+                      }}
+                    />
                   </div>
                 </details>
               );

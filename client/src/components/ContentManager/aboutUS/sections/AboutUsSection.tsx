@@ -1,4 +1,5 @@
 import type { AboutUsSectionProps } from "./AboutUsProp";
+import RhfTextInput from "../../shared/RhfTextInput";
 import RhfImageUploadField from "../../shared/RhfImageUploadField";
 
 const AboutUsSection = ({
@@ -13,34 +14,22 @@ const AboutUsSection = ({
       </h2>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="heading"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            heading
-          </label>
-          <input
-            type="text"
-            id="heading"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("heading")}
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="subHeading"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
-            subHeading
-          </label>
-          <input
-            type="text"
-            id="subHeading"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            {...register("subHeading")}
-          />
-        </div>
+        <RhfTextInput
+          label="heading"
+          path="heading"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
+        <RhfTextInput
+          label="subHeading"
+          path="subHeading"
+          register={register}
+          errors={errors}
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          labelClassName="mb-1 block text-sm font-medium text-slate-700"
+        />
         <RhfImageUploadField
           id="imgHero"
           label="Background image"

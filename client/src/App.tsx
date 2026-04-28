@@ -5,7 +5,7 @@ import {
   Routes,
   Outlet,
 } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Page Imports
 import LoginPage from "./pages/Login.page";
@@ -38,16 +38,13 @@ const AdminRoute = () => {
 };
 
 function App() {
-  const [showEntry, setShowEntry] = useState(true);
-
-  useEffect(() => {
+  const [showEntry, setShowEntry] = useState(() => {
     const hasSeenEntry = sessionStorage.getItem(SESSION_KEY_ENTRY_ANIMATION);
-    if (hasSeenEntry) {
-      setShowEntry(false);
-    } else {
+    if (!hasSeenEntry) {
       sessionStorage.setItem(SESSION_KEY_ENTRY_ANIMATION, "1");
     }
-  }, []);
+    return !hasSeenEntry;
+  });
 
   return (
     <>
