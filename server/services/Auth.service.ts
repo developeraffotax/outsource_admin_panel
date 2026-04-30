@@ -2,23 +2,20 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 import type { ISafeUser, UserRole } from "../models/User.model.js";
+import { AppError } from "../utils/app-error.js";
 
-async function AuthService(
+async function authenticateUser(
   email: string,
   password: string,
 ): Promise<{ token: string; user: ISafeUser }> {
-  /* 
-        find email in the database with email that's been passed down
-        compare password with the hashed password in the database
-        if password is match then generate token and send it the controller */
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 400);
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
-    throw new Error("Invalid password");
+    throw new AppError("Invalid password", 400);
   }
 
   const normalizedEmail = user.email.trim().toLowerCase();
@@ -32,9 +29,14 @@ async function AuthService(
     await user.save();
   }
 
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new AppError("Server misconfigured: JWT secret missing", 500);
+  }
+
   const token = jwt.sign(
     { id: user._id.toString(), role },
-    process.env.JWT_SECRET!,
+    secret,
     {
       expiresIn: "8h",
     },
@@ -51,4 +53,4 @@ async function AuthService(
     user: safeUser,
   };
 }
-export { AuthService };
+export { authenticateUser };

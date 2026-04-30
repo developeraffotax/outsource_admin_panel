@@ -1,5 +1,6 @@
 import Service from "../models/Service.model.js";
 import type { IService, IPricing } from "../models/Service.model.js";
+import { AppError } from "../utils/app-error.js";
 
 // Fetch all services from MongoDB
 export async function getServiceContent(): Promise<IService[]> {
@@ -31,7 +32,7 @@ export async function saveServiceContent(
     { $set: data },
     { upsert: true, new: true, setDefaultsOnInsert: true },
   );
-  if (!doc) throw new Error("Failed to save Service content");
+  if (!doc) throw new AppError("Failed to save service content", 500);
   return doc.toObject();
 }
 
@@ -46,6 +47,6 @@ export async function saveServicePricingBySlug(
     { upsert: true, new: true, setDefaultsOnInsert: true },
   );
 
-  if (!doc) throw new Error("Failed to save Service pricing");
+  if (!doc) throw new AppError("Failed to save service pricing", 500);
   return doc.toObject();
 }

@@ -3,10 +3,10 @@ import { z } from "zod";
 import {
   createUserService,
   deleteUserService,
-  isUserServiceError,
   listUsersService,
   updateUserPasswordService,
 } from "../services/User.service.js";
+import { catchAsync } from "../utils/catch-async.js";
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 
@@ -23,84 +23,49 @@ const userIdParamsSchema = z.object({
   id: z.string().regex(objectIdRegex, "Invalid user id"),
 });
 
-const handleControllerError = (error: unknown, res: Response): void => {
-  if (error instanceof z.ZodError) {
-    res.status(400).json({ error: error.issues });
-    return;
-  }
-
-  if (isUserServiceError(error)) {
-    res.status(error.statusCode).json({ error: error.message });
-    return;
-  }
-
-  if (error instanceof Error) {
-    res.status(500).json({ error: error.message });
-    return;
-  }
-
-  res.status(500).json({ error: "Internal Server Error" });
-};
-
-async function listUsersController(
+const listUsersController = catchAsync(async (
   _req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const users = await listUsersService();
-    res.status(200).json({ users });
-  } catch (error) {
-    handleControllerError(error, res);
-  }
-}
+): Promise<void> => {
+  const users = await listUsersService();
+  res.status(200).json({ users });
+});
 
-async function createUserController(
+const createUserController = catchAsync(async (
   req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const payload = createUserSchema.parse(req.body);
-    const user = await createUserService(payload.email, payload.password);
-    res.status(201).json({ user });
-  } catch (error) {
-    handleControllerError(error, res);
-  }
-}
+): Promise<void> => {
+  const payload = createUserSchema.parse(req.body);
+  const user = await createUserService(payload.email, payload.password);
+  res.status(201).json({ user });
+});
 
-async function updateUserPasswordController(
+const updateUserPasswordController = catchAsync(async (
   req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const { id } = userIdParamsSchema.parse(req.params);
-    const payload = updatePasswordSchema.parse(req.body);
+): Promise<void> => {
+  const { id } = userIdParamsSchema.parse(req.params);
+  const payload = updatePasswordSchema.parse(req.body);
 
-    const user = await updateUserPasswordService(id, payload.password);
-    res.status(200).json({ user, message: "Password updated" });
-  } catch (error) {
-    handleControllerError(error, res);
-  }
-}
+  const user = await updateUserPasswordService(id, payload.password);
+  res.status(200).json({ user, message: "Password updated" });
+});
 
-async function deleteUserController(
+const deleteUserController = catchAsync(async (
   req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const currentUserId = req.user?.id;
-    if (!currentUserId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
-
-    const { id } = userIdParamsSchema.parse(req.params);
-    const user = await deleteUserService(id, currentUserId);
-
-    res.status(200).json({ user, message: "User deleted" });
-  } catch (error) {
-    handleControllerError(error, res);
+): Promise<void> => {
+  const currentUserId = req.user?.id;
+  if (!currentUserId) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
   }
-}
+
+  const { id } = userIdParamsSchema.parse(req.params);
+  const user = await deleteUserService(id, currentUserId);
+
+  res.status(200).json({ user, message: "User deleted" });
+});
 
 export {
   createUserController,

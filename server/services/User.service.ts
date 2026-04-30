@@ -2,18 +2,9 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import User from "../models/User.model.js";
 import type { ISafeUser } from "../models/User.model.js";
+import { AppError } from "../utils/app-error.js";
 
 const SALT_ROUNDS = 10;
-
-class UserServiceError extends Error {
-  statusCode: number;
-
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.name = "UserServiceError";
-    this.statusCode = statusCode;
-  }
-}
 
 const normalizeRole = (role: unknown): "admin" | "user" =>
   role === "admin" ? "admin" : "user";
@@ -30,7 +21,7 @@ const toSafeUser = (user: {
 
 const validateObjectId = (id: string): void => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new UserServiceError("Invalid user id", 400);
+    throw new AppError("Invalid user id", 400);
   }
 };
 
@@ -49,7 +40,7 @@ async function createUserService(
   const existingUser = await User.findOne({ email: normalizedEmail });
 
   if (existingUser) {
-    throw new UserServiceError("User already exists", 409);
+    throw new AppError("User already exists", 409);
   }
 
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -71,7 +62,7 @@ async function updateUserPasswordService(
 
   const user = await User.findById(userId);
   if (!user) {
-    throw new UserServiceError("User not found", 404);
+    throw new AppError("User not found", 404);
   }
 
   user.password = await bcrypt.hash(password, SALT_ROUNDS);
@@ -90,25 +81,21 @@ async function deleteUserService(
   validateObjectId(currentUserId);
 
   if (targetUserId === currentUserId) {
-    throw new UserServiceError("You cannot delete your own account", 400);
+    throw new AppError("You cannot delete your own account", 400);
   }
 
   const deletedUser = await User.findByIdAndDelete(targetUserId);
 
   if (!deletedUser) {
-    throw new UserServiceError("User not found", 404);
+    throw new AppError("User not found", 404);
   }
 
   return toSafeUser(deletedUser);
 }
 
-const isUserServiceError = (error: unknown): error is UserServiceError =>
-  error instanceof UserServiceError;
-
 export {
   createUserService,
   deleteUserService,
-  isUserServiceError,
   listUsersService,
   updateUserPasswordService,
 };

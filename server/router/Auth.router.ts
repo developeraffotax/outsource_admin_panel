@@ -1,5 +1,5 @@
 import express from "express";
-import { AuthController } from "../controller/Auth.controller.js";
+import { loginController } from "../controller/Auth.controller.js";
 import AuthMiddleware from "../middleware/Auth.middleware.js";
 import RequireAdminMiddleware from "../middleware/RequireAdmin.middleware.js";
 import {
@@ -14,7 +14,7 @@ import {
 } from "../controller/Order.controller.js";
 const router = express.Router();
 
-router.post("/login", AuthController);
+router.post("/login", loginController);
 router.get("/me", AuthMiddleware, (req, res) => {
   res.status(200).json({ user: req.user });
 });

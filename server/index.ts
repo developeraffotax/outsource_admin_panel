@@ -9,10 +9,13 @@ import morgan from "morgan";
 import dns from "node:dns";
 import path from "node:path";
 import mongoose from "mongoose";
+import { z } from "zod";
 
 import connectDB from "./config/db.config.js";
+import { corsOptions } from "./config/cors.config.js";
 import authRouter from "./router/Auth.router.js";
 import contentRouter from "./router/Content.router.js";
+import { AppError } from "./utils/app-error.js";
 
 const app = express();
 const isVercel = process.env.VERCEL === "1";
@@ -35,13 +38,6 @@ const ensureDbConnection = async (): Promise<void> => {
   await dbConnectionPromise;
 };
 
-const allowedOrigins = new Set(
-  (process.env.CORS_ORIGINS || "http://localhost:5173,http://localhost:3000")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean),
-);
-
 const mongoDnsServers = process.env.MONGO_DNS_SERVERS;
 if (mongoDnsServers) {
   dns.setServers(
@@ -53,20 +49,7 @@ if (mongoDnsServers) {
 }
 
 // Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.has(origin)) {
-        callback(null, true);
-        return;
-      }
-
-      callback(new Error("Not allowed by CORS"));
-    },
-    optionsSuccessStatus: 200,
-  }),
-);
-
+app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use("/api", async (_req, _res, next) => {
@@ -92,6 +75,16 @@ app.get("/", (_req, res) => {
 });
 
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof z.ZodError) {
+    res.status(400).json({ error: err.issues });
+    return;
+  }
+
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({ error: err.message });
+    return;
+  }
+
   const message = err instanceof Error ? err.message : "Internal Server Error";
   res.status(500).json({ error: message });
 });

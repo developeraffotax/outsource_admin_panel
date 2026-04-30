@@ -2,9 +2,9 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import {
   getOrderByIdService,
-  isOrderServiceError,
   listOrdersService,
 } from "../services/Order.service.js";
+import { catchAsync } from "../utils/catch-async.js";
 
 const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
@@ -17,51 +17,24 @@ const orderIdParamsSchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, "Invalid order id"),
 });
 
-const handleControllerError = (error: unknown, res: Response): void => {
-  if (error instanceof z.ZodError) {
-    res.status(400).json({ error: error.issues });
-    return;
-  }
-
-  if (isOrderServiceError(error)) {
-    res.status(error.statusCode).json({ error: error.message });
-    return;
-  }
-
-  if (error instanceof Error) {
-    res.status(500).json({ error: error.message });
-    return;
-  }
-
-  res.status(500).json({ error: "Internal Server Error" });
-};
-
-async function listOrdersController(
+const listOrdersController = catchAsync(async (
   req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const query = listOrdersQuerySchema.parse(req.query);
-    const result = await listOrdersService(query);
+): Promise<void> => {
+  const query = listOrdersQuerySchema.parse(req.query);
+  const result = await listOrdersService(query);
 
-    res.status(200).json(result);
-  } catch (error) {
-    handleControllerError(error, res);
-  }
-}
+  res.status(200).json(result);
+});
 
-async function getOrderByIdController(
+const getOrderByIdController = catchAsync(async (
   req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const { id } = orderIdParamsSchema.parse(req.params);
-    const order = await getOrderByIdService(id);
+): Promise<void> => {
+  const { id } = orderIdParamsSchema.parse(req.params);
+  const order = await getOrderByIdService(id);
 
-    res.status(200).json({ order });
-  } catch (error) {
-    handleControllerError(error, res);
-  }
-}
+  res.status(200).json({ order });
+});
 
 export { getOrderByIdController, listOrdersController };

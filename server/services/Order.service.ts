@@ -3,6 +3,7 @@ import Order, {
   type IOrderDetails,
   type IOrderSummary,
 } from "../models/Order.model.js";
+import { AppError } from "../utils/app-error.js";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 25;
@@ -12,16 +13,6 @@ type ListOrdersOptions = {
   page?: number;
   limit?: number;
 };
-
-class OrderServiceError extends Error {
-  statusCode: number;
-
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.name = "OrderServiceError";
-    this.statusCode = statusCode;
-  }
-}
 
 const trimOrFallback = (value: unknown, fallback = "N/A"): string => {
   if (typeof value !== "string") return fallback;
@@ -105,20 +96,20 @@ async function listOrdersService(options: ListOrdersOptions = {}): Promise<{
 
 async function getOrderByIdService(orderId: string): Promise<IOrderDetails> {
   if (!mongoose.Types.ObjectId.isValid(orderId)) {
-    throw new OrderServiceError("Invalid order id", 400);
+    throw new AppError("Invalid order id", 400);
   }
 
   const document = await Order.findById(orderId).lean();
 
   if (!document) {
-    throw new OrderServiceError("Order not found", 404);
+    throw new AppError("Order not found", 404);
   }
 
   const doc = document as Record<string, unknown>;
   const summary = normalizeDocument(doc);
 
   if (!summary.id) {
-    throw new OrderServiceError("Order not found", 404);
+    throw new AppError("Order not found", 404);
   }
 
   return {
@@ -128,7 +119,4 @@ async function getOrderByIdService(orderId: string): Promise<IOrderDetails> {
   };
 }
 
-const isOrderServiceError = (error: unknown): error is OrderServiceError =>
-  error instanceof OrderServiceError;
-
-export { getOrderByIdService, isOrderServiceError, listOrdersService };
+export { getOrderByIdService, listOrdersService };

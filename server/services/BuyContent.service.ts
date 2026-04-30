@@ -1,5 +1,6 @@
 import BuyService from "../models/BuyService.model.js";
 import type { IBuyService } from "../models/BuyService.model.js";
+import { AppError } from "../utils/app-error.js";
 
 // Fetch buy service content
 export async function getBuyServiceContent(): Promise<IBuyService | null> {
@@ -16,6 +17,6 @@ export async function saveBuyServiceContent(
     { $set: data },
     { upsert: true, new: true, setDefaultsOnInsert: true },
   );
-  if (!doc) throw new Error("Failed to save buy service content");
+  if (!doc) throw new AppError("Failed to save buy service content", 500);
   return doc.toObject() as IBuyService;
 }
