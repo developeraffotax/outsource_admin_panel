@@ -65,7 +65,7 @@ const ServiceSection = ({
                 key={field.id}
                 className="cms-accordion group rounded-lg border border-slate-200 bg-white"
               >
-                <summary className="cms-accordion-summary flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
+                <summary className="cms-accordion-summary w-full flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
                   <span>
                     {serviceCardSummary || `Service card ${index + 1}`}
                   </span>

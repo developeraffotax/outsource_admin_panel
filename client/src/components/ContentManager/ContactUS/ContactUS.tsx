@@ -91,14 +91,20 @@ const ContactUS = () => {
 
   if (loading) {
     return (
-      <div className="cms-form-shell mx-auto w-full max-w-5xl">
+      <div className="  mx-auto w-full max-w-6xl">
         <p className="text-sm text-slate-500">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="cms-form-shell mx-auto w-full max-w-5xl">
+    <div className="  mx-auto w-full max-w-6xl">
+       <div className="cms-page-header">
+        <h1 className="cms-page-title">Conact Us</h1>
+        <p className="cms-page-subtitle">
+          Edit the content displayed on your public Contact Us page.
+        </p>
+      </div>
       <form
         className="space-y-6"
         action="post"

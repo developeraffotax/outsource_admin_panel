@@ -204,12 +204,12 @@ const Home = () => {
   );
 
   return (
-    <div className="cms-form-shell mx-auto w-full max-w-5xl">
+    <div className="  mx-auto w-full max-w-6xl">
       {/* Page header */}
       <div className="cms-page-header">
-        <h1 className="cms-page-title">Landing Page</h1>
+        <h1 className="cms-page-title">Homepage</h1>
         <p className="cms-page-subtitle">
-          Edit the content displayed on your public landing page.
+          Edit the content displayed on your public homepage.
         </p>
       </div>
 
@@ -222,7 +222,7 @@ const Home = () => {
         <CmsSaveBar saving={saving} saveMessage={saveMessage} />
 
         {sectionPanels.map((sectionPanel) => (
-          <SectionAccordion key={sectionPanel.key} title={sectionPanel.title}>
+          <SectionAccordion key={sectionPanel.key} title={sectionPanel.title} >
             {sectionPanel.content}
           </SectionAccordion>
         ))}

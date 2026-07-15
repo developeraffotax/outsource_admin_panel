@@ -102,8 +102,13 @@ const BuyService = () => {
   };
 
   return (
-    <div className="cms-form-shell mx-auto w-full max-w-5xl">
-      <label className="cms-page-title mb-4 block">Buy Service</label>
+    <div className="  mx-auto w-full max-w-6xl">
+       <div className="cms-page-header">
+        <h1 className="cms-page-title">Prices</h1>
+        <p className="cms-page-subtitle">
+          Edit the content displayed on your public Prices.
+        </p>
+      </div>
 
       <form
         className="space-y-6"
