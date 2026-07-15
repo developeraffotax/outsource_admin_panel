@@ -9,7 +9,7 @@ const GetInTouch = ({
   control,
   savedImages,
 }: AboutUsSectionProps) => {
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "getInTouch",
   });
@@ -22,8 +22,16 @@ const GetInTouch = ({
 
       {fields.map((field, index) => (
         <details key={field.id} className="rounded-md border border-slate-200">
-          <summary className="cursor-pointer bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
+          <summary className="w-full flex justify-between items-center cursor-pointer bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
             {`Card ${index + 1}`}
+
+           <button
+              type="button"
+              onClick={() => remove(index)}
+              className="text-xs text-red-500 hover:text-red-700"
+            >
+              Remove
+            </button>
           </summary>
 
           <div className="grid gap-4 border-t border-slate-200 p-4 md:grid-cols-2">
